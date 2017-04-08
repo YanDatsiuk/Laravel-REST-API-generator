@@ -1,0 +1,27 @@
+<?php
+
+namespace {{controllersNamespace}};
+
+use {{modelsNamespace}}\{{Model}};
+use TMPHP\RestApiGenerators\Core\BaseController;
+use {{transformersNamespace}}\{{Model}}Transformer;
+
+class {{Model}}Controller extends BaseController
+{
+    /**
+     * Validation rules for request parameters
+     *
+     * @var array $rules
+     */
+    protected $rules = [
+    ];
+
+    /**
+     * {{Model}}Controller constructor
+     */
+    public function __construct()
+    {
+        parent::__construct(new {{Model}}(), {{Model}}Transformer::class);
+    }
+
+}

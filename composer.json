@@ -1,0 +1,15 @@
+{
+    "name": "tmphp/rest-api-generators",
+    "description": "Laravel REST API scuffolding.",
+    "require": {
+        "darkaonline/l5-swagger": "~4.0",
+        "dingo/api": "1.0.*@dev",
+        "tymon/jwt-auth": "0.5.*"
+    },
+    "authors": [
+        {
+            "name": "Yan Datsyuk",
+            "email": "yan.datsiuk@thinkmobiles.com"
+        }
+    ]
+}

@@ -1,0 +1,27 @@
+<?php
+
+namespace {{modelsNamespace}};
+
+use TMPHP\RestApiGenerators\Core\BaseModel;
+
+class {{ModelCapitalized}} extends BaseModel
+{
+    /**
+     * Indicates if the model should be timestamped.
+     *
+     * @var bool
+     */
+    public $timestamps = false;
+
+    /**
+     * Table Name
+     *
+     * @var string
+     */
+    protected $table = '{{table_name}}';
+
+    {{FillableArray}}
+
+    {{RulesArray}}
+
+}

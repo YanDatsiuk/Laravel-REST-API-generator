@@ -1,0 +1,8 @@
+/**
+      * Validation rules for model
+      *
+      * @var array
+      */
+    protected $rules = [
+        {{fields}}
+    ];

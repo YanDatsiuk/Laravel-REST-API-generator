@@ -1,0 +1,7 @@
+ <?php
+ /**
+  * @SWG\Definition (
+  * definition="{{ModelLowercase}}",
+  *     {{SwaggerProperties}}
+  * )
+  */

@@ -1,6 +1,7 @@
 {
     "name": "tmphp/rest-api-generators",
     "description": "Laravel REST API scuffolding.",
+    "minimum-stability": "stable",
     "require": {
         "php": ">=5.6.4",
         "darkaonline/l5-swagger": "~4.0",

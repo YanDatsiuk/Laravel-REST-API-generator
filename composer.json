@@ -22,5 +22,10 @@
             "name": "Yan Datsyuk",
             "email": "yan.datsiuk@thinkmobiles.com"
         }
-    ]
+    ],
+    "autoload": {
+        "psr-4": {
+            "TMPHP\\RestApiGenerators\\": "src/"
+        }
+    }
 }

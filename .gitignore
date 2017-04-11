@@ -1,1 +1,15 @@
-.idea
+/.idea
+/.vagrant
+/app
+/bootstrap
+/database
+/public
+/resources
+/routes
+/storage
+/vendor
+/node_modules
+.env
+Vagrantfile
+Homestead.json
+Homestead.yaml

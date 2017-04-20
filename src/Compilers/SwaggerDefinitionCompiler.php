@@ -24,7 +24,7 @@ class SwaggerDefinitionCompiler extends StubCompilerAbstract
      */
     public function __construct($saveToPath = null, $saveFileName = null, $stub = null)
     {
-        $saveToPath = storage_path('CRUD/Swagger/');
+        $saveToPath = base_path(config('rest-api-generator.paths.documentations'));
         $saveFileName = '';
         $this->schema= DB::getDoctrineSchemaManager();
 

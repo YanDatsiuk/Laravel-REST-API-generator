@@ -24,13 +24,13 @@ return [
     |
     | This value is the paths of the generated files.
     */
-	'paths'           => [
-		'controllers'    => '/app/REST/Http/Controllers/Api/V1',
-		'models'         => '/app/REST/',
-		'transformers'   => '/app/REST/Transformers',
-		'documentations' => '/app/REST/Documentations',
-		'routes'         => '/app/REST/routes'
-	],
+    'paths'           => [
+        'controllers'    => '/app/REST/Http/Controllers/Api/V1/',
+        'models'         => '/app/REST/',
+        'transformers'   => '/app/REST/Transformers/',
+        'documentations' => '/app/REST/Documentations/',
+        'routes'         => '/app/REST/routes/'
+    ],
 
 	/*
     |--------------------------------------------------------------------------

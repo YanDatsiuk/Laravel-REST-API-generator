@@ -24,7 +24,7 @@ class ApiRoutesCompiler extends StubCompilerAbstract
      */
     public function __construct($saveToPath = null, $saveFileName = null, $stub = null)
     {
-        $saveToPath   = storage_path('CRUD/Routes/');
+        $saveToPath   = base_path(config('rest-api-generator.paths.routes'));
         $saveFileName = 'api.php';
 
         parent::__construct($saveToPath, $saveFileName, $stub);

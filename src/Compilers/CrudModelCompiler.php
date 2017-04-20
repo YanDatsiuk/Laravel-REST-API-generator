@@ -28,7 +28,7 @@ class CrudModelCompiler extends StubCompilerAbstract
      */
     public function __construct($saveToPath = null, $saveFileName = null, $stub = null)
     {
-        $saveToPath = storage_path('CRUD/Models/');
+        $saveToPath = base_path(config('rest-api-generator.paths.models'));
         $saveFileName = '';
         $this->schema= DB::getDoctrineSchemaManager();
 

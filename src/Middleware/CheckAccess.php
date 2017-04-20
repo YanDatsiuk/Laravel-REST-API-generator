@@ -2,9 +2,9 @@
 
 namespace TMPHP\RestApiGenerators\Middleware;
 
-use TMPHP\RestApiGenerators\Helpers\ErrorFormatable;
-use Illuminate\Support\Facades\Route;
-use Tymon\JWTAuth\Exceptions\JWTException;
+use Dingo\Api\Facade\Route;
+use TMPHP\RestApiGenerators\Helpers\Traits\ErrorFormatable;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 /**
  * Class CheckAccess
@@ -24,54 +24,68 @@ class CheckAccess
      */
     public function handle($request, \Closure $next)
     {
-        //disabling
-        if (env('APP_ENV') === 'local'){
+        /* Disable check access*/
+        if ( ! env('CHECK_ACCESS')) {
             return $next($request);
         }
 
-        $query = Role::with('actions')->whereName('subscriber');
-        $roles = $query->get();
+        $roles = $this->role()->with('actions')->whereName('subscriber')->get();
 
-        try {
-            $token = Helper::customParseJWTToken();
-
-            if ($token) {
-                $user = \Tymon\JWTAuth\Facades\JWTAuth::toUser($token);
-                if ($user) {
-                    $roles = $user->roles;
-                }
-            };
-        } catch (JWTException $e) {
+        if (JWTAuth::getToken()) {
+            if ($user = JWTAuth::toUser()) {
+                $roles = $user->roles;
+            }
         }
 
         //Checking access in user/guest actions to the current endpoint
         if ($this->checkAccessToAction($roles)) {
             return $next($request);
-        } else {
-            return $this->responseErrorMessage(
-                'Access forbidden',
-                403,
-                [Action::class => 'You don\'t have permission to access']
-            );
         }
+
+        return $this->responseErrorMessage('Access forbidden', 403, ['You don\'t have permission to access']);
     }
 
     /**
-     * AccessChecker
+     * Define class of Roles
+     *
+     * @return \App\REST\Role
+     */
+    public function role()
+    {
+        return new \App\REST\Role();
+    }
+
+    /**
+     * Access checker
      *
      * @param $roles
+     *
      * @return bool Check access in actions to current route name
      */
     private function checkAccessToAction($roles)
     {
-        foreach ($roles as $role) {
-            foreach ($role->actions as $action) {
-                if ($action->name === Route::currentRouteName()) {
-                    return true;
-                }
-            }
-        }
+        $actions = array_unique($roles->pluck('actions')->flatten()->pluck('name')->toArray());
 
-        return false;
+        return in_array($this->route()->currentRouteName(), $actions, true);
+    }
+
+    /**
+     * Define class of router
+     *
+     * @return mixed
+     */
+    public function route()
+    {
+        return Route::getFacadeRoot();
+    }
+
+    /**
+     * Define class of actions
+     *
+     * @return \App\REST\Action
+     */
+    public function action()
+    {
+        return new \App\REST\Action();
     }
 }

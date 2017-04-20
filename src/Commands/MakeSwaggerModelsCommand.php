@@ -25,12 +25,16 @@ class MakeSwaggerModelsCommand extends Command
     protected $description = 'Create swagger models.';
 
     /**
-     * @var array list of model names
+     * List of model names
+     * 
+     * @var array 
      */
     private $models = [];
 
     /**
-     * @var array list of table names for gathering schema info
+     * List of table names for gathering schema info
+     * 
+     * @var array 
      */
     private $tables = [];
 
@@ -38,7 +42,7 @@ class MakeSwaggerModelsCommand extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return void
      */
     public function fire()
     {
@@ -73,9 +77,7 @@ class MakeSwaggerModelsCommand extends Command
                 'tableName' => $this->tables[$i],
             ]);
         }
-
-        //
+        
         $this->info('make:swagger-models cmd executed');
     }
-
 }

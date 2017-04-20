@@ -11,9 +11,9 @@
                  *     produces= {"application/json"},
                  *
                  *      @SWG\Parameter(
-                 *         name="x-app-authorization",
+                 *         name="Authorization",
                  *         in="header",
-                 *         description="JWTAuthToken example - Bearer token",
+                 *         description="JWTAuthToken example - Bearer {token}",
                  *         required=true,
                  *         type="string"
                  *     ),
@@ -47,12 +47,13 @@
                  *     produces= {"application/json"},
                  *
                  *      @SWG\Parameter(
-                 *         name="x-app-authorization",
+                 *         name="Authorization",
                  *         in="header",
-                 *         description="JWTAuthToken example - Bearer token",
+                 *         description="JWTAuthToken example - Bearer {token}",
                  *         required=true,
                  *         type="string"
                  *     ),
+                 *
                  *     @SWG\Parameter(
                  *         name="id",
                  *         in="path",
@@ -89,9 +90,9 @@
                  *     produces= {"application/json"},
                  *
                  *     @SWG\Parameter(
-                 *         name="x-app-authorization",
+                 *         name="Authorization",
                  *         in="header",
-                 *         description="JWTAuthToken example - Bearer token",
+                 *         description="JWTAuthToken example - Bearer {token}",
                  *         required=true,
                  *         type="string"
                  *     ),
@@ -138,9 +139,9 @@
                  *     produces= {"application/json"},
                  *
                  *     @SWG\Parameter(
-                 *         name="x-app-authorization",
+                 *         name="Authorization",
                  *         in="header",
-                 *         description="JWTAuthToken example - Bearer token",
+                 *         description="JWTAuthToken example - Bearer {token}",
                  *         required=true,
                  *         type="string"
                  *     ),
@@ -194,9 +195,9 @@
                  *     produces= {"application/json"},
                  *
                  *     @SWG\Parameter(
-                 *         name="x-app-authorization",
+                 *         name="Authorization",
                  *         in="header",
-                 *         description="JWTAuthToken example - Bearer token",
+                 *         description="JWTAuthToken example - Bearer {token}",
                  *         required=true,
                  *         type="string"
                  *     ),

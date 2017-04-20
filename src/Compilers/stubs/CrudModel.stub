@@ -2,9 +2,9 @@
 
 namespace {{modelsNamespace}};
 
-use TMPHP\RestApiGenerators\Core\BaseModel;
+use Illuminate\Database\Eloquent\Model;
 
-class {{ModelCapitalized}} extends BaseModel
+class {{ModelCapitalized}} extends Model
 {
     /**
      * Indicates if the model should be timestamped.
@@ -23,5 +23,4 @@ class {{ModelCapitalized}} extends BaseModel
     {{FillableArray}}
 
     {{RulesArray}}
-
 }

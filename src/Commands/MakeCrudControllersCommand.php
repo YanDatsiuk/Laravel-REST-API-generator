@@ -32,7 +32,7 @@ class MakeCrudControllersCommand extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return void
      */
     public function fire()
     {
@@ -42,6 +42,7 @@ class MakeCrudControllersCommand extends Command
         //check whether model names were submitted
         if (strlen($this->models[0]) === 0) {
             $this->error('Please specify model names in camelCase notation');
+
             return;
         }
 
@@ -49,13 +50,11 @@ class MakeCrudControllersCommand extends Command
         foreach ($this->models as $model) {
             $crudControllerCompiler = new CrudControllerCompiler();
             $crudControllerCompiler->compile([
-                'modelNameCamelcase' => $model
+                'modelNameCamelcase' => $model,
             ]);
         }
 
-        //
         $this->info('make:crud-controllers  cmd executed');
-
     }
 
 }

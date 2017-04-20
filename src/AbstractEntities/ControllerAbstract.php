@@ -1,41 +1,46 @@
 <?php
 
-namespace TMPHP\RestApiGenerators\Core;
+namespace TMPHP\RestApiGenerators\AbstractEntities;
 
-use TMPHP\RestApiGenerators\Contracts\Validable as ValidableContract;
-use TMPHP\RestApiGenerators\Helpers\ErrorFormatable;
-use TMPHP\RestApiGenerators\Helpers\Validable;
-use App\Exceptions\WrongTypeException;
-use App\Http\Controllers\Controller;
 use Dingo\Api\Http\Request;
 use Dingo\Api\Routing\Helpers;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Database\Eloquent\Builder as IlluminateQueryBuilder;
+use Illuminate\Database\Eloquent\Model as IlluminateModel;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Routing\Controller as IlluminateController;
 use League\Fractal\TransformerAbstract;
+use TMPHP\RestApiGenerators\Exceptions\WrongTypeException;
+use TMPHP\RestApiGenerators\Helpers\Traits\ErrorFormatable;
 
 /**
  * Base Controller contained most uses methods and vars
  * Realization basic logic for CRUD operations
  *
- * Class BaseController
+ * Class ControllerAbstract
  *
- * @package App\Core
+ * @package TMPHP\RestApiGenerators\AbstractEntities
  */
-abstract class BaseController extends Controller implements ValidableContract
+abstract class ControllerAbstract extends IlluminateController
 {
-    use Helpers, Validable, ErrorFormatable;
+    use Helpers,
+        ErrorFormatable,
+        AuthorizesRequests,
+        DispatchesJobs,
+        ValidatesRequests;
 
     /**
      * Container for current Model
      *
-     * @var BaseModel $model
+     * @var IlluminateModel $model
      */
     protected $model;
 
     /**
      * Container for builder
      *
-     * @var Builder
+     * @var IlluminateQueryBuilder
      */
     protected $query;
 
@@ -68,27 +73,40 @@ abstract class BaseController extends Controller implements ValidableContract
     protected $relations = [];
 
     /**
-     * BaseController constructor
+     * Validation rules
      *
-     * @param BaseModel $model
+     * @var array $rules
+     */
+    protected $rules = [
+        'index'   => [],
+        'store'   => [],
+        'update'  => [],
+        'show'    => [],
+        'destroy' => [],
+    ];
+
+    /**
+     * ControllerAbstract constructor
+     *
+     * @param IlluminateModel $model
      *
      * @param string $transformerClass namespace of transformer class
      */
-    public function __construct(BaseModel $model, string $transformerClass)
+    public function __construct(IlluminateModel $model, string $transformerClass)
     {
-        $this->model = $model;
-        $this->query = $model->query();
+        $this->model            = $model;
+        $this->query            = $model->query();
         $this->transformerClass = $transformerClass;
     }
 
     /**
      * Set Model
      *
-     * @param BaseModel $model
+     * @param IlluminateModel $model
      *
      * @return $this
      */
-    public function setModel(BaseModel $model)
+    public function setModel(IlluminateModel $model)
     {
         $this->model = $model;
 
@@ -98,10 +116,11 @@ abstract class BaseController extends Controller implements ValidableContract
     /**
      * Set Model
      *
-     * @param Builder $query
+     * @param IlluminateQueryBuilder $query
+     *
      * @return $this
      */
-    public function setQuery(Builder $query)
+    public function setQuery(IlluminateQueryBuilder $query)
     {
         $this->query = $query;
 
@@ -118,11 +137,13 @@ abstract class BaseController extends Controller implements ValidableContract
      */
     public function setTransformClass(string $transformer)
     {
-        if (class_exists($transformer) && new $transformer([]) instanceof TransformerAbstract) {
+        if (class_exists($transformer) && new $transformer() instanceof TransformerAbstract) {
             $this->transformerClass = $transformer;
         } else {
-            throw new WrongTypeException('Expected string of namespace to TransformerClass, but according this namespace class don\'t exist or have WrongType',
-                500);
+            throw new WrongTypeException(
+                'Expected string of namespace to TransformerClass, but according this namespace class don\'t exist or have WrongType',
+                500
+            );
         }
 
         return $this;
@@ -137,27 +158,10 @@ abstract class BaseController extends Controller implements ValidableContract
      */
     public function index(Request $request)
     {
-        $requestInputs = $request->all();
-
-        //validating data from request
-        $validator = $this->model->checkRules($requestInputs);
-
-        if ($validator->fails()) {
-            return $this->responseWithValidatorErrors($validator);
-        }
-
-        //setting common parameters
+        $this->validate($request, $this->rules[__METHOD__] ?: []);
         $this->setParams($request);
 
-        //getting response from cache or setting it into cache
-        /*$paginator = SmartCache::paginateByQuery(
-            [get_class($this->model)],
-            $this->query->with($this->model->getRelationNames()),
-            $this->model->getKeys(),
-            $this->page,
-            $this->limit);*/
-
-        $paginator = $this->query->paginate();
+        $paginator = $this->query->with($this->relations)->paginate($this->limit);
 
         return $this->response->paginator($paginator, new $this->transformerClass());
     }
@@ -171,11 +175,15 @@ abstract class BaseController extends Controller implements ValidableContract
     protected function setParams(Request $request)
     {
         if ($request->input('limit')) {
-            $this->setRequestedLimit($request->input('limit'));
+            $this->setLimit($request->input('limit'));
         }
 
         if ($request->input('page')) {
-            $this->setRequestedPage($request->input('page'));
+            $this->setPage($request->input('page'));
+        }
+
+        if ($request->input('include')) {
+            $this->setRelations($request->input('include'));
         }
     }
 
@@ -183,9 +191,10 @@ abstract class BaseController extends Controller implements ValidableContract
      * Set requested limit\per page
      *
      * @param int|string $limit
+     *
      * @return $this
      */
-    protected function setRequestedLimit($limit)
+    protected function setLimit($limit)
     {
         $this->limit = intval($limit);
 
@@ -196,11 +205,26 @@ abstract class BaseController extends Controller implements ValidableContract
      * Set requested page
      *
      * @param int|string $page
+     *
      * @return $this
      */
-    protected function setRequestedPage($page)
+    protected function setPage($page)
     {
         $this->page = intval($page);
+
+        return $this;
+    }
+
+    /**
+     * Set requested relations
+     *
+     * @param array $relations
+     *
+     * @return $this
+     */
+    public function setRelations($relations)
+    {
+        $this->relations = (array)$relations;
 
         return $this;
     }
@@ -209,30 +233,22 @@ abstract class BaseController extends Controller implements ValidableContract
      * Create new model item
      *
      * @param Request $request
+     *
      * @return \Dingo\Api\Http\Response
      */
     public function store(Request $request)
     {
         $requestInputs = $request->all();
 
-        //validating data from request
-        $validator = $this->model->checkRules($requestInputs, false);
-
-        if ($validator->fails()) {
-            return $this->responseWithValidatorErrors($validator);
-        }
-
-        //setting common parameters
-        $this->setParams($request);
+        $this->validate($request, $this->rules[__METHOD__] ?: []);
 
         $model = $this->model->newInstance();
         $model->fill($requestInputs)->save();
 
-        if (!$model->getKey()) {
+        if ( ! $model) {
             return $this->responseCouldNotCreate(get_class($this->model));
         }
 
-        //response
         return $this->response->item(
             $model,
             new $this->transformerClass()
@@ -244,27 +260,22 @@ abstract class BaseController extends Controller implements ValidableContract
      *
      * @param Request $request
      * @param $id
-     * @return \Dingo\Api\Http\Response|Response
+     *
+     * @return \Dingo\Api\Http\Response
      */
     public function show(Request $request, $id)
     {
-        //setting common parameters
+        $this->validate($request, $this->rules[__METHOD__] ?: []);
         $this->setParams($request);
 
-        $requestInputs = $request->all();
+        $model = $this->query->find($id)->with($this->relations);
 
-        //validating data from request
-        $validator = $this->model->checkRules($requestInputs);
-
-        if ($validator->fails()) {
-            return $this->responseWithValidatorErrors($validator);
+        if ( ! $model) {
+            return $this->responseNotFoundModel($model);
         }
 
-        $data = $this->query->where('id', '=', $id)->first();
-
-        //response
         return $this->response->item(
-            $data,
+            $model,
             new $this->transformerClass()
         );
     }
@@ -274,25 +285,15 @@ abstract class BaseController extends Controller implements ValidableContract
      *
      * @param Request $request
      * @param $id
+     *
      * @return \Dingo\Api\Http\Response|
      */
     public function update(Request $request, $id)
     {
-        $requestInputs = $request->all();
-
-        //validating data from request
-        $validator = $this->model->checkRules($requestInputs);
-
-        if ($validator->fails()) {
-            return $this->responseWithValidatorErrors($validator);
-        }
-
-        //setting common parameters
-        $this->setParams($request);
-
+        $this->validate($request, $this->rules[__METHOD__] ?: []);
         $model = $this->query->withoutGlobalScopes()->find($id);
 
-        if ($model === null) {
+        if ( ! $model) {
             return $this->responseNotFoundModel($this->model);
         }
 
@@ -308,10 +309,13 @@ abstract class BaseController extends Controller implements ValidableContract
      * Remove from DB by id
      *
      * @param $id
+     * @param $request
+     *
      * @return \Dingo\Api\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
+        $this->validate($request, $this->rules[__METHOD__] ?: []);
         $model = $this->query->withoutGlobalScopes()->find($id);
 
         if ($model === null) {
@@ -321,38 +325,5 @@ abstract class BaseController extends Controller implements ValidableContract
         $model->delete();
 
         return $this->response->accepted();
-    }
-
-    /**
-     * Validates request inputs by action rules
-     *
-     * @param $requestInputs
-     * @param $actionName
-     *
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
-    protected function validateRequest(array $requestInputs, string $actionName)
-    {
-        $rules = [];
-
-        //get validation rules for action
-        if (isset($this->rules[$actionName])) {
-            $rules = $this->rules[$actionName];
-        }
-
-        return $this->checkRules($requestInputs, $rules);
-    }
-
-    /**
-     * Overwrite logic of check rules
-     * for validate requests
-     *
-     * @param array $requestInputs
-     * @param array $rules
-     * @return \Illuminate\Validation\Validator
-     */
-    public function checkRules(array $requestInputs, array $rules = []): \Illuminate\Validation\Validator
-    {
-        return Validator::make($requestInputs, $rules);
     }
 }

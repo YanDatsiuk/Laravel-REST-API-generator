@@ -38,7 +38,7 @@ class MakeCrudModelsCommand extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return void
      */
     public function fire()
     {
@@ -57,6 +57,7 @@ class MakeCrudModelsCommand extends Command
         //check whether model names were submitted
         if (strlen($this->tables[0]) === 0) {
             $this->error('Please specify table names');
+
             return;
         }
 
@@ -74,7 +75,6 @@ class MakeCrudModelsCommand extends Command
             ]);
         }
 
-        //
         $this->info('make:crud-models cmd executed');
     }
 

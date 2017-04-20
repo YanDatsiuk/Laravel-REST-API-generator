@@ -3,9 +3,9 @@
 namespace TMPHP\RestApiGenerators\Compilers;
 
 
-use TMPHP\RestApiGenerators\Core\StubCompiler;
+use TMPHP\RestApiGenerators\Core\StubCompilerAbstract;
 
-class CrudModelRoutesCompiler extends StubCompiler
+class CrudModelRoutesCompiler extends StubCompilerAbstract
 {
 
     /**

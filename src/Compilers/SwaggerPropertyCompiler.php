@@ -4,9 +4,9 @@ namespace TMPHP\RestApiGenerators\Compilers;
 
 
 use Illuminate\Support\Facades\Log;
-use TMPHP\RestApiGenerators\Core\StubCompiler;
+use TMPHP\RestApiGenerators\Core\StubCompilerAbstract;
 
-class SwaggerPropertyCompiler extends StubCompiler
+class SwaggerPropertyCompiler extends StubCompilerAbstract
 {
 
     /**

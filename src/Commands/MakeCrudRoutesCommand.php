@@ -32,7 +32,7 @@ class MakeCrudRoutesCommand extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return void
      */
     public function fire()
     {
@@ -42,6 +42,7 @@ class MakeCrudRoutesCommand extends Command
         //check whether model names were submitted
         if (strlen($this->models[0])===0){
             $this->error('Please specify model names in kebab notation');
+
             return;
         }
 
@@ -51,7 +52,6 @@ class MakeCrudRoutesCommand extends Command
         $apiRoutesCompiler->compile(['models' => $this->models]);
 
         $this->info('make:crud-routes cmd executed');
-
     }
 
 }

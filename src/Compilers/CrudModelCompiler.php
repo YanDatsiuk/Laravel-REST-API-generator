@@ -5,9 +5,9 @@ namespace TMPHP\RestApiGenerators\Compilers;
 
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Illuminate\Support\Facades\DB;
-use TMPHP\RestApiGenerators\Core\StubCompiler;
+use TMPHP\RestApiGenerators\Core\StubCompilerAbstract;
 
-class CrudModelCompiler extends StubCompiler
+class CrudModelCompiler extends StubCompilerAbstract
 {
 
     /**

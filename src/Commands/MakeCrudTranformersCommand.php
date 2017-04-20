@@ -32,7 +32,7 @@ class MakeCrudTranformersCommand extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return void
      */
     public function fire()
     {
@@ -53,9 +53,7 @@ class MakeCrudTranformersCommand extends Command
             ]);
         }
 
-        //
         $this->info('make:crud-transformers  cmd executed');
-
     }
 
 }

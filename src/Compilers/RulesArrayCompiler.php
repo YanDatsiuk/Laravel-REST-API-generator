@@ -4,9 +4,9 @@ namespace TMPHP\RestApiGenerators\Compilers;
 
 
 use Illuminate\Support\Facades\Log;
-use TMPHP\RestApiGenerators\Core\StubCompiler;
+use TMPHP\RestApiGenerators\Core\StubCompilerAbstract;
 
-class RulesArrayCompiler extends StubCompiler
+class RulesArrayCompiler extends StubCompilerAbstract
 {
 
     /**

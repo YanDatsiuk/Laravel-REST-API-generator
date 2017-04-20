@@ -13,8 +13,13 @@ class {{Model}}Controller extends BaseController
      *
      * @var array $rules
      */
-    protected $rules = [
-    ];
+     protected $rules = [
+       'index'   => [],
+       'store'   => [],
+       'update'  => [],
+       'show'    => [],
+       'destroy' => [],
+     ];
 
     /**
      * {{Model}}Controller constructor

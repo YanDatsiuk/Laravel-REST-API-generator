@@ -2,9 +2,9 @@
 
 namespace TMPHP\RestApiGenerators\Compilers;
 
-use TMPHP\RestApiGenerators\Core\StubCompiler;
+use TMPHP\RestApiGenerators\Core\StubCompilerAbstract;
 
-class CrudTransformerCompiler extends StubCompiler
+class CrudTransformerCompiler extends StubCompilerAbstract
 {
 
     /**

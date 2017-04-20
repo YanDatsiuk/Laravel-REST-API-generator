@@ -6,9 +6,9 @@ namespace TMPHP\RestApiGenerators\Compilers;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use TMPHP\RestApiGenerators\Core\StubCompiler;
+use TMPHP\RestApiGenerators\Core\StubCompilerAbstract;
 
-class SwaggerDefinitionCompiler extends StubCompiler
+class SwaggerDefinitionCompiler extends StubCompilerAbstract
 {
 
     /**

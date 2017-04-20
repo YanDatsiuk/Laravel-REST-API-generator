@@ -2,89 +2,79 @@
 
 namespace TMPHP\RestApiGenerators\Compilers;
 
+use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 
-use Doctrine\DBAL\Schema\AbstractSchemaManager;
-use Illuminate\Support\Facades\DB;
-use TMPHP\RestApiGenerators\Core\StubCompiler;
-
-class CrudControllerCompiler extends StubCompiler
+/**
+ * Class CrudControllerCompiler
+ * @package TMPHP\RestApiGenerators\Compilers
+ */
+class CrudControllerCompiler extends StubCompilerAbstract
 {
-
-    /**
-     * @var string
-     */
+    /** @var string $controllersNamespace */
     private $controllersNamespace;
 
-    /**
-     * @var string
-     */
+    /** @var string $modelsNamespace */
     private $modelsNamespace;
 
-    /**
-     * @var string
-     */
+    /** @var string $transformersNamespace*/
     private $transformersNamespace;
 
     /**
      * CrudControllerCompiler constructor.
+     *
      * @param null $saveToPath
      * @param null $saveFileName
      * @param null $stub
      */
     public function __construct($saveToPath = null, $saveFileName = null, $stub = null)
     {
-        $saveToPath = storage_path('CRUD/Controllers/');
+        $saveToPath   = config('rest-api-generator.paths.controllers');
         $saveFileName = '';
 
-        $this->controllersNamespace = config('rest-api-generator.controllers-namespace');
-        $this->modelsNamespace = config('rest-api-generator.models-namespace');
-        $this->transformersNamespace = config('rest-api-generator.transformers-namespace');
+        $this->controllersNamespace  = config('rest-api-generator.namespaces.controllers');
+        $this->modelsNamespace       = config('rest-api-generator.namespaces.models');
+        $this->transformersNamespace = config('rest-api-generator.namespaces.transformers');
 
         parent::__construct($saveToPath, $saveFileName, $stub);
     }
 
     /**
+     * Run compile process
+     *
      * @param array $params
+     *
      * @return bool|mixed|string
      */
-    public function compile(array $params):string
+    public function compile(array $params): string
     {
-        //
         $this->saveFileName = ucfirst($params['modelNameCamelcase']).'Controller.php';
 
-        //
         $this->stub = str_replace(
             '{{Model}}',
             ucfirst($params['modelNameCamelcase']),
             $this->stub
         );
 
-        //
         $this->stub = str_replace(
             '{{controllersNamespace}}',
             $this->controllersNamespace,
             $this->stub
         );
 
-        //
         $this->stub = str_replace(
             '{{modelsNamespace}}',
             $this->modelsNamespace,
             $this->stub
         );
 
-        //
         $this->stub = str_replace(
             '{{transformersNamespace}}',
             $this->transformersNamespace,
             $this->stub
         );
 
-        //
         $this->saveStub();
 
-        //
         return $this->stub;
     }
-
 }

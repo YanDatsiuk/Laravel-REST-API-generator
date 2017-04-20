@@ -53,7 +53,7 @@ trait ErrorFormatable
     }
 
     /** Format and set response with error */
-    private function formatErrors()
+    public function formatErrors()
     {
         return [
             'message'     => $this->message,
@@ -124,7 +124,7 @@ trait ErrorFormatable
      *
      * @return Response
      */
-    public function response($content, $status_code = 200, array $headers): \Symfony\Component\HttpFoundation\Response
+    public function response($content, $status_code = 200, array $headers = []): \Symfony\Component\HttpFoundation\Response
     {
         return new Response($content, $status_code, $headers);
     }

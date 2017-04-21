@@ -26,6 +26,7 @@ class GeneratorsServiceProviders extends ServiceProvider
             ]
         );
     }
+
     /**
      * Register the application services.
      *

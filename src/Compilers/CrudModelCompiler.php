@@ -5,7 +5,7 @@ namespace TMPHP\RestApiGenerators\Compilers;
 
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Illuminate\Support\Facades\DB;
-use TMPHP\RestApiGenerators\Core\StubCompilerAbstract;
+use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 
 class CrudModelCompiler extends StubCompilerAbstract
 {
@@ -28,11 +28,11 @@ class CrudModelCompiler extends StubCompilerAbstract
      */
     public function __construct($saveToPath = null, $saveFileName = null, $stub = null)
     {
-        $saveToPath = storage_path('CRUD/Models/');
+        $saveToPath = base_path(config('rest-api-generator.paths.models'));
         $saveFileName = '';
-        $this->schema= DB::getDoctrineSchemaManager();
+        $this->schema = DB::getDoctrineSchemaManager();
 
-        $this->modelsNamespace = config('rest-api-generator.models-namespace');
+        $this->modelsNamespace = config('rest-api-generator.namespaces.models');
 
         parent::__construct($saveToPath, $saveFileName, $stub);
     }
@@ -41,10 +41,10 @@ class CrudModelCompiler extends StubCompilerAbstract
      * @param array $params
      * @return bool|mixed|string
      */
-    public function compile(array $params):string
+    public function compile(array $params): string
     {
         //
-        $this->saveFileName = ucfirst($params['modelName']).'.php';
+        $this->saveFileName = ucfirst($params['modelName']) . '.php';
 
         /**
          * @var \Doctrine\DBAL\Schema\Column[]

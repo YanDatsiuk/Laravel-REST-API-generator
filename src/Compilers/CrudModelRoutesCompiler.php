@@ -3,7 +3,7 @@
 namespace TMPHP\RestApiGenerators\Compilers;
 
 
-use TMPHP\RestApiGenerators\Core\StubCompilerAbstract;
+use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 
 class CrudModelRoutesCompiler extends StubCompilerAbstract
 {
@@ -22,10 +22,10 @@ class CrudModelRoutesCompiler extends StubCompilerAbstract
      */
     public function __construct($saveToPath = null, $saveFileName = null, $stub = null)
     {
-        $saveToPath = storage_path('CRUD/Routes/');
+        $saveToPath = base_path(config('rest-api-generator.paths.routes'));
         $saveFileName = '';
 
-        $this->controllersNamespace = config('rest-api-generator.controllers-namespace');
+        $this->controllersNamespace = config('rest-api-generator.namespaces.controllers');
 
         parent::__construct($saveToPath, $saveFileName, $stub);
     }
@@ -87,14 +87,14 @@ class CrudModelRoutesCompiler extends StubCompilerAbstract
      * @param string $string example: user-role
      * @return string
      */
-    private function pluralizeKebabCase(string $string):string
+    private function pluralizeKebabCase(string $string): string
     {
         //
         $subStrings = explode('-', $string);
 
         //
         $pluralizedSubStrings = [];
-        foreach ($subStrings as $subString){
+        foreach ($subStrings as $subString) {
             array_push($pluralizedSubStrings, str_plural($subString));
         }
 

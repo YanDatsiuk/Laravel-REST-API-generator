@@ -69,7 +69,7 @@ class MakeRestApiProjectCommand extends Command
         //initialize submitted parameters and stop execution if there are any errors
         $isValidInput = $this->initInputParams();
 
-        if ( ! $isValidInput) {
+        if (!$isValidInput) {
 
             $this->warn('You do not pass --models and --tables parameters');
 
@@ -82,7 +82,7 @@ class MakeRestApiProjectCommand extends Command
             switch ($choice) {
                 case "0":
                     $isValidConfig = $this->loadParametersFromConfigFile();
-                    if ( ! $isValidConfig) {
+                    if (!$isValidConfig) {
                         $this->error('wrong config');
 
                         return;
@@ -90,7 +90,7 @@ class MakeRestApiProjectCommand extends Command
                     break;
                 case "1":
                     $isValidConfig = $this->loadParametersFromDatabaseSchema();
-                    if ( ! $isValidConfig) {
+                    if (!$isValidConfig) {
                         $this->error('wrong config');
 
                         return;
@@ -182,8 +182,8 @@ class MakeRestApiProjectCommand extends Command
     private function loadParametersFromConfigFile()
     {
         $modelNamesTables = config('rest-api-generator.models');
-        $this->models     = array_keys($modelNamesTables);
-        $this->tables     = array_values($modelNamesTables);
+        $this->models = array_keys($modelNamesTables);
+        $this->tables = array_values($modelNamesTables);
 
         $this->transformModelsToRequiredNotations();
 
@@ -211,8 +211,8 @@ class MakeRestApiProjectCommand extends Command
      */
     private function getModelNamesFromTableNames(array $tableNames): array
     {
-        $dbTablePrefix = config('rest-api-generator.db-table-prefix');
-        $modelNames    = [];
+        $dbTablePrefix = config('rest-api-generator.db_table_prefix');
+        $modelNames = [];
 
         foreach ($tableNames as $tableName) {
             //remove prefix from table

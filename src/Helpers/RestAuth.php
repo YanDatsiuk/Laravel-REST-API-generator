@@ -28,8 +28,10 @@ class RestAuth
             $api->post('/register', 'App\REST\Http\Controllers\Api\v1\Auth\AuthController@register')->name('register');
 
             // Reset password Routes
-            $api->post('/password/email', 'App\REST\Http\Controllers\Api\v1\Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
-            $api->post('/password/reset', 'App\REST\Http\Controllers\Api\v1\Auth\ResetPasswordController@reset')->name('password.reset');
+            $api->post('/password/email',
+                'App\REST\Http\Controllers\Api\v1\Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
+            $api->post('/password/reset',
+                'App\REST\Http\Controllers\Api\v1\Auth\ResetPasswordController@reset')->name('password.reset');
         });
     }
 }

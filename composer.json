@@ -1,31 +1,35 @@
 {
-    "name": "tmphp/rest-api-generators",
-    "description": "Laravel REST API scuffolding.",
-    "minimum-stability": "stable",
-    "require": {
-        "php": ">=5.6.4",
-        "darkaonline/l5-swagger": "~4.0",
-        "laravel/framework": "5.4.*",
-        "laravel/tinker": "~1.0",
-        "tymon/jwt-auth": "0.5.*"
+  "name": "tmphp/rest-api-generators",
+  "description": "Laravel REST API scuffolding.",
+  "minimum-stability": "stable",
+  "require": {
+    "php": ">=5.6.4",
+    "darkaonline/l5-swagger": "~4.0",
+    "laravel/framework": "5.4.*",
+    "laravel/tinker": "~1.0",
+    "tymon/jwt-auth": "0.5.*"
+  },
+  "require-dev": {
+    "fzaninotto/faker": "~1.4",
+    "laravel/homestead": "^5.1",
+    "mockery/mockery": "0.9.*",
+    "phpunit/phpunit": "~5.7",
+    "xethron/migrations-generator": "^2.0",
+    "dingo/api": "1.0.*@dev"
+  },
+  "authors": [
+    {
+      "name": "Alex Storojenko",
+      "email": "alex.storojenko@thinkmobiles.com"
     },
-    "require-dev": {
-        "fzaninotto/faker": "~1.4",
-        "laravel/homestead": "^5.1",
-        "mockery/mockery": "0.9.*",
-        "phpunit/phpunit": "~5.7",
-        "xethron/migrations-generator": "^2.0",
-        "dingo/api": "1.0.*@dev"
-    },
-    "authors": [
-        {
-            "name": "Yan Datsyuk",
-            "email": "yan.datsiuk@thinkmobiles.com"
-        }
-    ],
-    "autoload": {
-        "psr-4": {
-            "TMPHP\\RestApiGenerators\\": "src/"
-        }
+    {
+      "name": "Yan Datsyuk",
+      "email": "yan.datsiuk@thinkmobiles.com"
     }
+  ],
+  "autoload": {
+    "psr-4": {
+      "TMPHP\\RestApiGenerators\\": "src/"
+    }
+  }
 }

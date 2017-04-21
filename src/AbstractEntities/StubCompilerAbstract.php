@@ -29,7 +29,7 @@ abstract class StubCompilerAbstract
      */
     public function __construct(string $saveToPath, string $saveFileName, string $stub = null)
     {
-        $this->saveToPath   = $saveToPath;
+        $this->saveToPath = $saveToPath;
         $this->saveFileName = $saveFileName;
         $this->createRequiredDirectories();
 
@@ -37,7 +37,7 @@ abstract class StubCompilerAbstract
         if ($stub === null) {
             $this->stubFileName = str_replace('Compiler', '', (new \ReflectionClass($this))->getShortName());
             $this->stubFileName .= '.stub';
-            $this->stub         = file_get_contents($this->getClassDirectory().'/stubs/'.$this->stubFileName);
+            $this->stub = file_get_contents($this->getClassDirectory() . '/stubs/' . $this->stubFileName);
         } else {
             $this->stub = $stub;
         }
@@ -48,7 +48,7 @@ abstract class StubCompilerAbstract
      */
     private function createRequiredDirectories()
     {
-        if ( ! file_exists($this->saveToPath)) {
+        if (!file_exists($this->saveToPath)) {
             mkdir($this->saveToPath, 0755, true);
         }
     }
@@ -81,7 +81,7 @@ abstract class StubCompilerAbstract
     {
         //save stub in the folder
         file_put_contents(
-            $this->saveToPath.$this->saveFileName,
+            $this->saveToPath . $this->saveFileName,
             $this->stub
         );
     }

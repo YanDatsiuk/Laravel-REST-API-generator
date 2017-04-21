@@ -25,7 +25,7 @@ class CheckAccess
     public function handle($request, \Closure $next)
     {
         /* Disable check access*/
-        if ( ! env('CHECK_ACCESS')) {
+        if (!env('CHECK_ACCESS')) {
             return $next($request);
         }
 

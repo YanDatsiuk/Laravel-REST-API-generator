@@ -4,7 +4,7 @@ namespace TMPHP\RestApiGenerators\Compilers;
 
 
 use Illuminate\Support\Facades\Log;
-use TMPHP\RestApiGenerators\Core\StubCompilerAbstract;
+use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 
 class SwaggerPropertyCompiler extends StubCompilerAbstract
 {
@@ -17,7 +17,7 @@ class SwaggerPropertyCompiler extends StubCompilerAbstract
      */
     public function __construct($saveToPath = null, $saveFileName = null, $stub = null)
     {
-        $saveToPath = storage_path('CRUD/Swagger/');
+        $saveToPath = base_path(config('rest-api-generator.paths.documentations'));
         $saveFileName = '';
 
         parent::__construct($saveToPath, $saveFileName, $stub);
@@ -27,7 +27,7 @@ class SwaggerPropertyCompiler extends StubCompilerAbstract
      * @param array $params
      * @return bool|mixed|string
      */
-    public function compile(array $params):string
+    public function compile(array $params): string
     {
         //
         $this->stub = str_replace(
@@ -37,10 +37,15 @@ class SwaggerPropertyCompiler extends StubCompilerAbstract
         );
 
         //check type and do required transformation
-        switch ($params['type']){
-            case 'Time': $params['type'] = 'string'; break;
-            case 'DateTime': $params['type'] = 'string'; break;
-            default: break;
+        switch ($params['type']) {
+            case 'Time':
+                $params['type'] = 'string';
+                break;
+            case 'DateTime':
+                $params['type'] = 'string';
+                break;
+            default:
+                break;
         }
 
         //

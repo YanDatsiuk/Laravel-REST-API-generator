@@ -26,15 +26,15 @@ class MakeSwaggerModelsCommand extends Command
 
     /**
      * List of model names
-     * 
-     * @var array 
+     *
+     * @var array
      */
     private $models = [];
 
     /**
      * List of table names for gathering schema info
-     * 
-     * @var array 
+     *
+     * @var array
      */
     private $tables = [];
 
@@ -77,7 +77,7 @@ class MakeSwaggerModelsCommand extends Command
                 'tableName' => $this->tables[$i],
             ]);
         }
-        
+
         $this->info('make:swagger-models cmd executed');
     }
 }

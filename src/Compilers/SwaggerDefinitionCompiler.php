@@ -6,7 +6,7 @@ namespace TMPHP\RestApiGenerators\Compilers;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use TMPHP\RestApiGenerators\Core\StubCompilerAbstract;
+use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 
 class SwaggerDefinitionCompiler extends StubCompilerAbstract
 {
@@ -24,9 +24,9 @@ class SwaggerDefinitionCompiler extends StubCompilerAbstract
      */
     public function __construct($saveToPath = null, $saveFileName = null, $stub = null)
     {
-        $saveToPath = storage_path('CRUD/Swagger/');
+        $saveToPath = base_path(config('rest-api-generator.paths.documentations'));
         $saveFileName = '';
-        $this->schema= DB::getDoctrineSchemaManager();
+        $this->schema = DB::getDoctrineSchemaManager();
 
         parent::__construct($saveToPath, $saveFileName, $stub);
     }
@@ -35,11 +35,11 @@ class SwaggerDefinitionCompiler extends StubCompilerAbstract
      * @param array $params
      * @return bool|mixed|string
      */
-    public function compile(array $params):string
+    public function compile(array $params): string
     {
 
         //
-        $this->saveFileName = $params['modelName'].'.php';
+        $this->saveFileName = $params['modelName'] . '.php';
 
         //
         $this->stub = str_replace(
@@ -53,11 +53,11 @@ class SwaggerDefinitionCompiler extends StubCompilerAbstract
         $columns = $this->schema->listTableColumns($params['tableName']);
 
         //compile swagger properties for table columns
-        foreach ($columns as $column){
+        foreach ($columns as $column) {
 
             $swaggerPropertyCompiler = new SwaggerPropertyCompiler();
             $compiledProperties .= $swaggerPropertyCompiler->compile([
-               'name' => $column->getName(),
+                'name' => $column->getName(),
                 'type' => $column->getType(),
             ]);
         }

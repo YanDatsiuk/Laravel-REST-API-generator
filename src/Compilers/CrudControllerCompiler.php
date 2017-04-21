@@ -28,7 +28,7 @@ class CrudControllerCompiler extends StubCompilerAbstract
      */
     public function __construct($saveToPath = null, $saveFileName = null, $stub = null)
     {
-        $saveToPath   = config('rest-api-generator.paths.controllers');
+        $saveToPath   = base_path(config('rest-api-generator.paths.controllers'));
         $saveFileName = '';
 
         $this->controllersNamespace  = config('rest-api-generator.namespaces.controllers');

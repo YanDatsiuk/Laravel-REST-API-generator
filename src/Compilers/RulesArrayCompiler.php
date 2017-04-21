@@ -4,7 +4,7 @@ namespace TMPHP\RestApiGenerators\Compilers;
 
 
 use Illuminate\Support\Facades\Log;
-use TMPHP\RestApiGenerators\Core\StubCompilerAbstract;
+use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 
 class RulesArrayCompiler extends StubCompilerAbstract
 {
@@ -17,7 +17,7 @@ class RulesArrayCompiler extends StubCompilerAbstract
      */
     public function __construct($saveToPath = null, $saveFileName = null, $stub = null)
     {
-        $saveToPath = storage_path('CRUD/Models/');
+        $saveToPath = base_path(config('rest-api-generator.paths.models'));
         $saveFileName = '';
 
         parent::__construct($saveToPath, $saveFileName, $stub);
@@ -40,31 +40,31 @@ class RulesArrayCompiler extends StubCompilerAbstract
             if (!$column->getAutoincrement()) {
                 switch ($column->getType()) {
                     case 'Boolean':
-                        $fields .= "'{$column->getName()}' => 'boolean', \n";
+                        $fields .= "'{$column->getName()}' => 'boolean', \n\t\t";
                         break;
 
                     case 'Integer':
-                        $fields .= "'{$column->getName()}' => 'integer', \n";
+                        $fields .= "'{$column->getName()}' => 'integer', \n\t\t";
                         break;
 
                     case 'SmallInt'://todo specify ranges
-                        $fields .= "'{$column->getName()}' => 'integer', \n";
+                        $fields .= "'{$column->getName()}' => 'integer', \n\t\t";
                         break;
 
                     case 'Float':
-                        $fields .= "'{$column->getName()}' => 'numeric', \n";
+                        $fields .= "'{$column->getName()}' => 'numeric', \n\t\t";
                         break;
 
                     case 'Decimal':
-                        $fields .= "'{$column->getName()}' => 'numeric', \n";
+                        $fields .= "'{$column->getName()}' => 'numeric', \n\t\t";
                         break;
 
                     case 'BigInt':
-                        $fields .= "'{$column->getName()}' => 'numeric', \n";
+                        $fields .= "'{$column->getName()}' => 'numeric', \n\t\t";
                         break;
 
                     case 'String':
-                        $fields .= "'{$column->getName()}' => 'string', \n";
+                        $fields .= "'{$column->getName()}' => 'string', \n\t\t";
                         break;
                     default:
                         break;

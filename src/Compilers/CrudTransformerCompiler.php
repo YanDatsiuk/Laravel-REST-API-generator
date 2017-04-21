@@ -2,7 +2,7 @@
 
 namespace TMPHP\RestApiGenerators\Compilers;
 
-use TMPHP\RestApiGenerators\Core\StubCompilerAbstract;
+use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 
 class CrudTransformerCompiler extends StubCompilerAbstract
 {
@@ -20,10 +20,10 @@ class CrudTransformerCompiler extends StubCompilerAbstract
      */
     public function __construct($saveToPath = null, $saveFileName = null, $stub = null)
     {
-        $saveToPath = storage_path('CRUD/Transformers/');
+        $saveToPath = base_path(config('rest-api-generator.paths.transformers'));
         $saveFileName = '';
 
-        $this->transformersNamespace = config('rest-api-generator.transformers-namespace');
+        $this->transformersNamespace = config('rest-api-generator.namespaces.transformers');
 
         parent::__construct($saveToPath, $saveFileName, $stub);
     }
@@ -32,10 +32,10 @@ class CrudTransformerCompiler extends StubCompilerAbstract
      * @param array $params
      * @return bool|mixed|string
      */
-    public function compile(array $params):string
+    public function compile(array $params): string
     {
         //
-        $this->saveFileName = ucfirst($params['modelNameCamelcase']).'Transformer.php';
+        $this->saveFileName = ucfirst($params['modelNameCamelcase']) . 'Transformer.php';
 
         //
         $this->stub = str_replace(

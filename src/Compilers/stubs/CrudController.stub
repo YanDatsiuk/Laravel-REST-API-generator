@@ -3,10 +3,10 @@
 namespace {{controllersNamespace}};
 
 use {{modelsNamespace}}\{{Model}};
-use TMPHP\RestApiGenerators\Core\BaseController;
+use TMPHP\RestApiGenerators\AbstractEntities\ControllerAbstract;
 use {{transformersNamespace}}\{{Model}}Transformer;
 
-class {{Model}}Controller extends BaseController
+class {{Model}}Controller extends ControllerAbstract
 {
     /**
      * Validation rules for request parameters

@@ -4,7 +4,7 @@ namespace TMPHP\RestApiGenerators\Compilers;
 
 
 use Illuminate\Support\Facades\Log;
-use TMPHP\RestApiGenerators\Core\StubCompilerAbstract;
+use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 
 class FillableArrayCompiler extends StubCompilerAbstract
 {
@@ -17,7 +17,7 @@ class FillableArrayCompiler extends StubCompilerAbstract
      */
     public function __construct($saveToPath = null, $saveFileName = null, $stub = null)
     {
-        $saveToPath = storage_path('CRUD/Models/');
+        $saveToPath = base_path(config('rest-api-generator.paths.models'));
         $saveFileName = '';
 
         parent::__construct($saveToPath, $saveFileName, $stub);
@@ -38,7 +38,7 @@ class FillableArrayCompiler extends StubCompilerAbstract
         $fields = '';
         foreach ($columns as $column){
             if (!$column->getAutoincrement()){
-                $fields .= "'{$column->getName()}', \n";
+                $fields .= "'{$column->getName()}', \n\t\t";
             }
         }
 

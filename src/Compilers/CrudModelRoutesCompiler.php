@@ -87,14 +87,14 @@ class CrudModelRoutesCompiler extends StubCompilerAbstract
      * @param string $string example: user-role
      * @return string
      */
-    private function pluralizeKebabCase(string $string):string
+    private function pluralizeKebabCase(string $string): string
     {
         //
         $subStrings = explode('-', $string);
 
         //
         $pluralizedSubStrings = [];
-        foreach ($subStrings as $subString){
+        foreach ($subStrings as $subString) {
             array_push($pluralizedSubStrings, str_plural($subString));
         }
 

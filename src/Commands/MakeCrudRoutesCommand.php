@@ -40,7 +40,7 @@ class MakeCrudRoutesCommand extends Command
         $this->models = explode(',', $this->option('models'));
 
         //check whether model names were submitted
-        if (strlen($this->models[0])===0){
+        if (strlen($this->models[0]) === 0) {
             $this->error('Please specify model names in kebab notation');
 
             return;

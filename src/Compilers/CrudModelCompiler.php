@@ -30,7 +30,7 @@ class CrudModelCompiler extends StubCompilerAbstract
     {
         $saveToPath = base_path(config('rest-api-generator.paths.models'));
         $saveFileName = '';
-        $this->schema= DB::getDoctrineSchemaManager();
+        $this->schema = DB::getDoctrineSchemaManager();
 
         $this->modelsNamespace = config('rest-api-generator.namespaces.models');
 
@@ -41,10 +41,10 @@ class CrudModelCompiler extends StubCompilerAbstract
      * @param array $params
      * @return bool|mixed|string
      */
-    public function compile(array $params):string
+    public function compile(array $params): string
     {
         //
-        $this->saveFileName = ucfirst($params['modelName']).'.php';
+        $this->saveFileName = ucfirst($params['modelName']) . '.php';
 
         /**
          * @var \Doctrine\DBAL\Schema\Column[]

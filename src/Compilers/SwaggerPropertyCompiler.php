@@ -27,7 +27,7 @@ class SwaggerPropertyCompiler extends StubCompilerAbstract
      * @param array $params
      * @return bool|mixed|string
      */
-    public function compile(array $params):string
+    public function compile(array $params): string
     {
         //
         $this->stub = str_replace(
@@ -37,10 +37,15 @@ class SwaggerPropertyCompiler extends StubCompilerAbstract
         );
 
         //check type and do required transformation
-        switch ($params['type']){
-            case 'Time': $params['type'] = 'string'; break;
-            case 'DateTime': $params['type'] = 'string'; break;
-            default: break;
+        switch ($params['type']) {
+            case 'Time':
+                $params['type'] = 'string';
+                break;
+            case 'DateTime':
+                $params['type'] = 'string';
+                break;
+            default:
+                break;
         }
 
         //

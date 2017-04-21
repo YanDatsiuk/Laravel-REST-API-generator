@@ -78,10 +78,10 @@ abstract class ControllerAbstract extends IlluminateController
      * @var array $rules
      */
     protected $rules = [
-        'index'   => [],
-        'store'   => [],
-        'update'  => [],
-        'show'    => [],
+        'index' => [],
+        'store' => [],
+        'update' => [],
+        'show' => [],
         'destroy' => [],
     ];
 
@@ -94,8 +94,8 @@ abstract class ControllerAbstract extends IlluminateController
      */
     public function __construct(IlluminateModel $model, string $transformerClass)
     {
-        $this->model            = $model;
-        $this->query            = $model->query();
+        $this->model = $model;
+        $this->query = $model->query();
         $this->transformerClass = $transformerClass;
     }
 
@@ -245,7 +245,7 @@ abstract class ControllerAbstract extends IlluminateController
         $model = $this->model->newInstance();
         $model->fill($requestInputs)->save();
 
-        if ( ! $model) {
+        if (!$model) {
             return $this->responseCouldNotCreate(get_class($this->model));
         }
 
@@ -270,7 +270,7 @@ abstract class ControllerAbstract extends IlluminateController
 
         $model = $this->query->find($id)->with($this->relations);
 
-        if ( ! $model) {
+        if (!$model) {
             return $this->responseNotFoundModel($model);
         }
 
@@ -293,7 +293,7 @@ abstract class ControllerAbstract extends IlluminateController
         $this->validate($request, $this->rules[__METHOD__] ?: []);
         $model = $this->query->withoutGlobalScopes()->find($id);
 
-        if ( ! $model) {
+        if (!$model) {
             return $this->responseNotFoundModel($this->model);
         }
 

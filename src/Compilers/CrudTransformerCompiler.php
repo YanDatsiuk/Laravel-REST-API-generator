@@ -32,10 +32,10 @@ class CrudTransformerCompiler extends StubCompilerAbstract
      * @param array $params
      * @return bool|mixed|string
      */
-    public function compile(array $params):string
+    public function compile(array $params): string
     {
         //
-        $this->saveFileName = ucfirst($params['modelNameCamelcase']).'Transformer.php';
+        $this->saveFileName = ucfirst($params['modelNameCamelcase']) . 'Transformer.php';
 
         //
         $this->stub = str_replace(

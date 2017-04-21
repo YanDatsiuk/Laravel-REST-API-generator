@@ -45,19 +45,19 @@ trait ErrorFormatable
      */
     public function responseNotFoundModel(IlluminateModel $model, int $status_code = 422)
     {
-        $this->message     = 'Not found this'.get_class($model);
-        $this->errors      = [$model->getKey() => 'Not found this'.get_class($model)];
+        $this->message = 'Not found this' . get_class($model);
+        $this->errors = [$model->getKey() => 'Not found this' . get_class($model)];
         $this->status_code = $status_code;
 
-        return $this->response($this->formatErrors(), $this->status_code);
+        return $this->responseWithError($this->formatErrors(), $this->status_code);
     }
 
     /** Format and set response with error */
     public function formatErrors()
     {
         return [
-            'message'     => $this->message,
-            'errors'      => $this->errors,
+            'message' => $this->message,
+            'errors' => $this->errors,
             'status_code' => $this->status_code,
         ];
     }
@@ -80,11 +80,11 @@ trait ErrorFormatable
      */
     public function responseCouldNotCreate($nameOfEntity)
     {
-        $this->message     = 'Could not create'.$nameOfEntity;
-        $this->errors[]    = '';
+        $this->message = 'Could not create' . $nameOfEntity;
+        $this->errors[] = '';
         $this->status_code = 500;
 
-        return $this->response($this->formatErrors(), $this->status_code);
+        return $this->responseWithError($this->formatErrors(), $this->status_code);
     }
 
     /**
@@ -107,11 +107,11 @@ trait ErrorFormatable
      */
     public function responseErrorMessage(string $message, int $status_code = 500, array $errors = [])
     {
-        $this->message     = $message;
-        $this->errors      = $errors;
+        $this->message = $message;
+        $this->errors = $errors;
         $this->status_code = $status_code;
 
-        return $this->response($this->formatErrors(), $this->status_code);
+        return $this->responseWithError($this->formatErrors(), $this->status_code);
     }
 
     /**
@@ -124,8 +124,11 @@ trait ErrorFormatable
      *
      * @return Response
      */
-    public function response($content, $status_code = 200, array $headers = []): \Symfony\Component\HttpFoundation\Response
-    {
+    public function responseWithError(
+        $content,
+        $status_code = 200,
+        array $headers = []
+    ): \Symfony\Component\HttpFoundation\Response {
         return new Response($content, $status_code, $headers);
     }
 }

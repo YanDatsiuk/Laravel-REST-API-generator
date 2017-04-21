@@ -81,7 +81,7 @@ class CrudModelCompiler extends StubCompilerAbstract
             $this->stub
         );
 
-        //
+        //{{modelsNamespace}}
         $this->stub = str_replace(
             '{{modelsNamespace}}',
             $this->modelsNamespace,

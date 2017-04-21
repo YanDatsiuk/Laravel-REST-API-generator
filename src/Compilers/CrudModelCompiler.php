@@ -51,6 +51,22 @@ class CrudModelCompiler extends StubCompilerAbstract
          */
         $columns = $this->schema->listTableColumns($params['tableName']);
 
+        //{{FillableArray}}
+        $this->compileFillableArray($columns);
+
+        //{{RulesArray}}
+        $this->compileRulesArray($columns);
+
+        //{{BelongsToRelations}}
+        $this->compileBelongsToRelations($params['modelName'], $params['tableName']);
+
+        //{{HasManyRelations}}
+        $this->compileHasManyRelations($params['modelName'], $params['tableName']);
+
+        //{{BelongsToManyRelations}}
+        $this->compileBelongsToManyRelations($params['modelName'], $params['tableName']);
+
+
         //{{ModelCapitalized}}
         $this->stub = str_replace(
             '{{ModelCapitalized}}',
@@ -62,26 +78,6 @@ class CrudModelCompiler extends StubCompilerAbstract
         $this->stub = str_replace(
             '{{table_name}}',
             $params['tableName'],
-            $this->stub
-        );
-
-        //{{FillableArray}}
-        $fillableArrayCompiler = new FillableArrayCompiler();
-        $fillableArrayCompiled = $fillableArrayCompiler->compile(['columns' => $columns]);
-
-        $this->stub = str_replace(
-            '{{FillableArray}}',
-            $fillableArrayCompiled,
-            $this->stub
-        );
-
-        //{{RulesArray}}
-        $rulesArrayCompiler = new RulesArrayCompiler();
-        $rulesArrayCompiled = $rulesArrayCompiler->compile(['columns' => $columns]);
-
-        $this->stub = str_replace(
-            '{{RulesArray}}',
-            $rulesArrayCompiled,
             $this->stub
         );
 
@@ -98,5 +94,96 @@ class CrudModelCompiler extends StubCompilerAbstract
         //
         return $this->stub;
     }
+
+    /**
+     * @param array $columns
+     */
+    private function compileFillableArray(array $columns)
+    {
+        $fillableArrayCompiler = new FillableArrayCompiler();
+        $fillableArrayCompiled = $fillableArrayCompiler->compile(['columns' => $columns]);
+
+        $this->stub = str_replace(
+            '{{FillableArray}}',
+            $fillableArrayCompiled,
+            $this->stub
+        );
+    }
+
+    /**
+     * @param array $columns
+     */
+    private function compileRulesArray(array $columns)
+    {
+        $rulesArrayCompiler = new RulesArrayCompiler();
+        $rulesArrayCompiled = $rulesArrayCompiler->compile(['columns' => $columns]);
+
+        $this->stub = str_replace(
+            '{{RulesArray}}',
+            $rulesArrayCompiled,
+            $this->stub
+        );
+    }
+
+    /**
+     * @param string $modelName
+     * @param string $tableName
+     */
+    private function compileBelongsToRelations(string $modelName, string $tableName)
+    {
+        //todo get relations and call compiler for each
+        $relationCompiler = new BelongsToRelationCompiler();
+        $relationsCompiled = $relationCompiler->compile([
+            'modelName' => $modelName,
+            'tableName' => $tableName
+        ]);
+
+        $this->stub = str_replace(
+            '{{BelongsToRelations}}',
+            $relationsCompiled,
+            $this->stub
+        );
+    }
+
+    /**
+     * @param string $modelName
+     * @param string $tableName
+     */
+    private function compileHasManyRelations(string $modelName, string $tableName)
+    {
+        //todo get relations and call compiler for each
+        $relationCompiler = new HasManyRelationCompiler();
+        $relationsCompiled = $relationCompiler->compile([
+            'modelName' => $modelName,
+            'tableName' => $tableName
+        ]);
+
+        $this->stub = str_replace(
+            '{{HasManyRelations}}',
+            $relationsCompiled,
+            $this->stub
+        );
+    }
+
+    /**
+     * @param string $modelName
+     * @param string $tableName
+     */
+    private function compileBelongsToManyRelations(string $modelName, string $tableName)
+    {
+        //todo get relations and call compiler for each
+        $relationCompiler = new BelongsToManyRelationCompiler();
+        $relationsCompiled = $relationCompiler->compile([
+            'modelName' => $modelName,
+            'tableName' => $tableName
+        ]);
+
+        $this->stub = str_replace(
+            '{{BelongsToManyRelations}}',
+            $relationsCompiled,
+            $this->stub
+        );
+    }
+
 
 }

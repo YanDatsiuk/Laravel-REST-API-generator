@@ -1,0 +1,9 @@
+/**
+     * {{relatedModelCamelCaseSingular}}
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function {{relatedModelCamelCaseSingular}}()
+    {
+        return $this->belongsTo('App\{{relatedModelCamelCaseSingular}}');
+    }

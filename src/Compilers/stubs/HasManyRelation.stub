@@ -1,0 +1,9 @@
+/**
+     * {{relatedModelCamelCasePlural}}
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function {{relatedModelCamelCasePlural}}()
+    {
+        return $this->hasMany('App\{{relatedModelCamelCaseSingular}}', '{{foreignKey}}');
+    }

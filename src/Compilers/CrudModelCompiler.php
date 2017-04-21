@@ -131,12 +131,22 @@ class CrudModelCompiler extends StubCompilerAbstract
      */
     private function compileBelongsToRelations(string $modelName, string $tableName)
     {
-        //todo get relations and call compiler for each
-        $relationCompiler = new BelongsToRelationCompiler();
-        $relationsCompiled = $relationCompiler->compile([
-            'modelName' => $modelName,
-            'tableName' => $tableName
-        ]);
+        /** @var  $foreignKeys Doctrine\DBAL\Schema\ForeignKeyConstraint[] */
+        $foreignKeys = $this->schema->listTableForeignKeys($tableName);
+
+        $relationsCompiled = '';
+
+        foreach ($foreignKeys as $foreignKey){
+
+            $foreignTableName = $foreignKey->getForeignTableName();
+
+            //todo get relations and call compiler for each
+            $relationCompiler = new BelongsToRelationCompiler();
+            $relationsCompiled .= $relationCompiler->compile([
+                'modelName' => $modelName,
+                'tableName' => $tableName
+            ]);
+        }
 
         $this->stub = str_replace(
             '{{BelongsToRelations}}',

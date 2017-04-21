@@ -211,7 +211,7 @@ class MakeRestApiProjectCommand extends Command
      */
     private function getModelNamesFromTableNames(array $tableNames): array
     {
-        $dbTablePrefix = config('rest-api-generator.db-table-prefix');
+        $dbTablePrefix = config('rest-api-generator.db_table_prefix');
         $modelNames    = [];
 
         foreach ($tableNames as $tableName) {

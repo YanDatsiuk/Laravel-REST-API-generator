@@ -40,31 +40,31 @@ class RulesArrayCompiler extends StubCompilerAbstract
             if (!$column->getAutoincrement()) {
                 switch ($column->getType()) {
                     case 'Boolean':
-                        $fields .= "'{$column->getName()}' => 'boolean', \n";
+                        $fields .= "'{$column->getName()}' => 'boolean', \n\t\t";
                         break;
 
                     case 'Integer':
-                        $fields .= "'{$column->getName()}' => 'integer', \n";
+                        $fields .= "'{$column->getName()}' => 'integer', \n\t\t";
                         break;
 
                     case 'SmallInt'://todo specify ranges
-                        $fields .= "'{$column->getName()}' => 'integer', \n";
+                        $fields .= "'{$column->getName()}' => 'integer', \n\t\t";
                         break;
 
                     case 'Float':
-                        $fields .= "'{$column->getName()}' => 'numeric', \n";
+                        $fields .= "'{$column->getName()}' => 'numeric', \n\t\t";
                         break;
 
                     case 'Decimal':
-                        $fields .= "'{$column->getName()}' => 'numeric', \n";
+                        $fields .= "'{$column->getName()}' => 'numeric', \n\t\t";
                         break;
 
                     case 'BigInt':
-                        $fields .= "'{$column->getName()}' => 'numeric', \n";
+                        $fields .= "'{$column->getName()}' => 'numeric', \n\t\t";
                         break;
 
                     case 'String':
-                        $fields .= "'{$column->getName()}' => 'string', \n";
+                        $fields .= "'{$column->getName()}' => 'string', \n\t\t";
                         break;
                     default:
                         break;

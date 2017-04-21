@@ -32,7 +32,7 @@ class CrudModelCompiler extends StubCompilerAbstract
         $saveFileName = '';
         $this->schema= DB::getDoctrineSchemaManager();
 
-        $this->modelsNamespace = config('rest-api-generator.models-namespace');
+        $this->modelsNamespace = config('rest-api-generator.namespaces.models');
 
         parent::__construct($saveToPath, $saveFileName, $stub);
     }

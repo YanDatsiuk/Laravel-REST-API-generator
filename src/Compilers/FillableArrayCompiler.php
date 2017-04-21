@@ -38,7 +38,7 @@ class FillableArrayCompiler extends StubCompilerAbstract
         $fields = '';
         foreach ($columns as $column){
             if (!$column->getAutoincrement()){
-                $fields .= "'{$column->getName()}', \n";
+                $fields .= "'{$column->getName()}', \n\t\t";
             }
         }
 

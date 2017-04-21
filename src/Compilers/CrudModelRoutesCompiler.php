@@ -25,7 +25,7 @@ class CrudModelRoutesCompiler extends StubCompilerAbstract
         $saveToPath = base_path(config('rest-api-generator.paths.routes'));
         $saveFileName = '';
 
-        $this->controllersNamespace = config('rest-api-generator.controllers-namespace');
+        $this->controllersNamespace = config('rest-api-generator.namespaces.controllers');
 
         parent::__construct($saveToPath, $saveFileName, $stub);
     }

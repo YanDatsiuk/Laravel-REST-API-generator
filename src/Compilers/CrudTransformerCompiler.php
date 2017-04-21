@@ -23,7 +23,7 @@ class CrudTransformerCompiler extends StubCompilerAbstract
         $saveToPath = base_path(config('rest-api-generator.paths.transformers'));
         $saveFileName = '';
 
-        $this->transformersNamespace = config('rest-api-generator.transformers-namespace');
+        $this->transformersNamespace = config('rest-api-generator.namespaces.transformers');
 
         parent::__construct($saveToPath, $saveFileName, $stub);
     }

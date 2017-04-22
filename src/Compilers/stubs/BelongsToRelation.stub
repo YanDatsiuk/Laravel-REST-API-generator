@@ -1,0 +1,9 @@
+/**
+     * {{belongToRelationName}}
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function {{belongToRelationName}}()
+    {
+        return $this->belongsTo('App\{{relatedModelStudlyCaseSingular}}');
+    }

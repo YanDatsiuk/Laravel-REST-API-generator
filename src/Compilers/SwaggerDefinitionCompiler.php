@@ -7,12 +7,13 @@ use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
+use TMPHP\RestApiGenerators\Support\SchemaManager;
 
 class SwaggerDefinitionCompiler extends StubCompilerAbstract
 {
 
     /**
-     * @var AbstractSchemaManager
+     * @var SchemaManager
      */
     private $schema;
 
@@ -26,7 +27,7 @@ class SwaggerDefinitionCompiler extends StubCompilerAbstract
     {
         $saveToPath = base_path(config('rest-api-generator.paths.documentations'));
         $saveFileName = '';
-        $this->schema = DB::getDoctrineSchemaManager();
+        $this->schema = new SchemaManager();
 
         parent::__construct($saveToPath, $saveFileName, $stub);
     }

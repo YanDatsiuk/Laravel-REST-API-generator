@@ -7,6 +7,7 @@ use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use TMPHP\RestApiGenerators\Support\Helper;
 
 class MakeRestApiProjectCommand extends Command
 {
@@ -195,67 +196,13 @@ class MakeRestApiProjectCommand extends Command
     {
         $this->schema = DB::getDoctrineSchemaManager();
         $this->tables = $this->schema->listTableNames();
-        $this->models = $this->getModelNamesFromTableNames($this->tables);
+
+        $dbTablePrefix = config('rest-api-generator.db_table_prefix');
+        $this->models = Helper::getModelNamesFromTableNames($this->tables, $dbTablePrefix);
 
         $this->transformModelsToRequiredNotations();
 
         return true;
-    }
-
-    /**
-     * Get model names from table names
-     *
-     * @param array $tableNames
-     *
-     * @return array
-     */
-    private function getModelNamesFromTableNames(array $tableNames): array
-    {
-        $dbTablePrefix = config('rest-api-generator.db_table_prefix');
-        $modelNames = [];
-
-        foreach ($tableNames as $tableName) {
-            //remove prefix from table
-            if (starts_with($tableName, $dbTablePrefix)) {
-                $tableName = str_replace_first($dbTablePrefix, '', $tableName);
-            }
-
-            array_push($modelNames, $this->singularKebabCase($tableName));
-        }
-
-        return $modelNames;
-    }
-
-    /**
-     * Convert string from kebab case, or snake case to singular kebab case
-     *
-     * @param string $string example: users_roles
-     *
-     * @return string example: user-role
-     */
-    private function singularKebabCase(string $string): string
-    {
-
-        $delimiter = '_';
-
-        if (str_contains($string, '-')) {
-            $delimiter = '-';
-        }
-
-        $subStrings = explode($delimiter, $string);
-
-        $result = '';
-
-        foreach ($subStrings as $subString) {
-            $result .= str_singular($subString);
-            $result .= '-';
-        }
-
-        if (ends_with($result, '-')) {
-            $result = substr($result, 0, strlen($result) - 1);
-        }
-
-        return $result;
     }
 
     /**

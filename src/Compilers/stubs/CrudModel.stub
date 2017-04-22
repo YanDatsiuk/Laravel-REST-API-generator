@@ -23,4 +23,12 @@ class {{ModelCapitalized}} extends Model
     {{FillableArray}}
 
     {{RulesArray}}
+
+    {{BelongsToRelations}}
+
+    {{HasManyRelations}}
+
+    /**
+     *{{BelongsToManyRelations}}
+     */
 }

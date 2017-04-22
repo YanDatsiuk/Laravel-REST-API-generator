@@ -5,5 +5,5 @@
      */
     public function {{relatedModelCamelCaseSingular}}()
     {
-        return $this->belongsTo('App\{{relatedModelCamelCaseSingular}}');
+        return $this->belongsTo('App\{{relatedModelStudlyCaseSingular}}');
     }

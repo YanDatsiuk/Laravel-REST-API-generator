@@ -5,7 +5,9 @@ namespace TMPHP\RestApiGenerators\Compilers;
 
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
+use TMPHP\RestApiGenerators\Support\Helper;
 
 class CrudModelCompiler extends StubCompilerAbstract
 {
@@ -21,6 +23,11 @@ class CrudModelCompiler extends StubCompilerAbstract
     private $modelsNamespace;
 
     /**
+     * @var string
+     */
+    private $dbTablePrefix;
+
+    /**
      * CrudModelCompiler constructor.
      * @param null $saveToPath
      * @param null $saveFileName
@@ -33,6 +40,7 @@ class CrudModelCompiler extends StubCompilerAbstract
         $this->schema = DB::getDoctrineSchemaManager();
 
         $this->modelsNamespace = config('rest-api-generator.namespaces.models');
+        $this->dbTablePrefix = config('rest-api-generator.db_table_prefix');
 
         parent::__construct($saveToPath, $saveFileName, $stub);
     }
@@ -58,7 +66,7 @@ class CrudModelCompiler extends StubCompilerAbstract
         $this->compileRulesArray($columns);
 
         //{{BelongsToRelations}}
-        $this->compileBelongsToRelations($params['modelName'], $params['tableName']);
+        $this->compileBelongsToRelations($params['tableName']);
 
         //{{HasManyRelations}}
         $this->compileHasManyRelations($params['modelName'], $params['tableName']);
@@ -129,22 +137,23 @@ class CrudModelCompiler extends StubCompilerAbstract
      * @param string $modelName
      * @param string $tableName
      */
-    private function compileBelongsToRelations(string $modelName, string $tableName)
+    private function compileBelongsToRelations(string $tableName)
     {
         /** @var  $foreignKeys Doctrine\DBAL\Schema\ForeignKeyConstraint[] */
         $foreignKeys = $this->schema->listTableForeignKeys($tableName);
 
         $relationsCompiled = '';
 
+        //get relations and call compiler for each
         foreach ($foreignKeys as $foreignKey){
 
             $foreignTableName = $foreignKey->getForeignTableName();
 
-            //todo get relations and call compiler for each
+            $modelName = Helper::tableNameToModelName($foreignTableName, $this->dbTablePrefix);
+
             $relationCompiler = new BelongsToRelationCompiler();
             $relationsCompiled .= $relationCompiler->compile([
-                'modelName' => $modelName,
-                'tableName' => $tableName
+                'modelName' => $modelName
             ]);
         }
 

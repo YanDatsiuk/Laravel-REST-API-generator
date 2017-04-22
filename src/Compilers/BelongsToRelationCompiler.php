@@ -31,7 +31,21 @@ class BelongsToRelationCompiler extends StubCompilerAbstract
     public function compile(array $params):string
     {
 
-        //todo
+        $modelName = $params['modelName'];
+
+        //{{relatedModelCamelCaseSingular}}
+        $this->stub = str_replace(
+            '{{relatedModelCamelCaseSingular}}',
+            camel_case($modelName),
+            $this->stub
+        );
+
+        //{{relatedModelCamelCaseSingular}}
+        $this->stub = str_replace(
+            '{{relatedModelStudlyCaseSingular}}',
+            studly_case($modelName),
+            $this->stub
+        );
 
         //
         return $this->stub;

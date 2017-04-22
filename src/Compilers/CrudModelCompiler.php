@@ -70,10 +70,10 @@ class CrudModelCompiler extends StubCompilerAbstract
         $this->compileBelongsToRelations($params['tableName']);
 
         //{{HasManyRelations}}
-        $this->compileHasManyRelations($params['modelName'], $params['tableName']);
+        $this->compileHasManyRelations($params['tableName']);
 
         //{{BelongsToManyRelations}}
-        $this->compileBelongsToManyRelations($params['modelName'], $params['tableName']);
+        $this->compileBelongsToManyRelations($params['tableName']);
 
 
         //{{ModelCapitalized}}
@@ -167,10 +167,9 @@ class CrudModelCompiler extends StubCompilerAbstract
     }
 
     /**
-     * @param string $modelName
      * @param string $tableName
      */
-    private function compileHasManyRelations(string $modelName, string $tableName)
+    private function compileHasManyRelations(string $tableName)
     {
         //get all foreign keys
         $foreignKeys = $this->schema->listForeignKeys();
@@ -207,17 +206,30 @@ class CrudModelCompiler extends StubCompilerAbstract
     }
 
     /**
-     * @param string $modelName
-     * @param string $tableName
+     * @param string $tableName //TODO CHECK IT - this function is not tested yet
      */
-    private function compileBelongsToManyRelations(string $modelName, string $tableName)
+    private function compileBelongsToManyRelations(string $tableName)
     {
-        //todo get relations and call compiler for each
-        $relationCompiler = new BelongsToManyRelationCompiler();
-        $relationsCompiled = $relationCompiler->compile([
-            'modelName' => $modelName,
-            'tableName' => $tableName
-        ]);
+        //
+        $belongsToManyForeignKeys = $this->schema->listBelongsToManyForeignKeys($tableName);
+
+        //get relations and call compiler for each
+        $relationsCompiled = '';
+        foreach ($belongsToManyForeignKeys as $belongsToManyForeignKey){
+            $relationCompiler = new BelongsToManyRelationCompiler();
+
+            $relatedModelStudlyCasePlural = '';
+            $relatedModelCamelCasePlural = '';
+            $relatedModelCamelCaseSingular = '';
+            $pivotTableName = '';
+
+            $relationsCompiled .= $relationCompiler->compile([
+                'relatedModelStudlyCasePlural' => $relatedModelStudlyCasePlural,
+                'relatedModelCamelCasePlural' => $relatedModelCamelCasePlural,
+                'relatedModelCamelCaseSingular' => $relatedModelCamelCaseSingular,
+                'pivotTableName' => $pivotTableName,
+            ]);
+        }
 
         $this->stub = str_replace(
             '{{BelongsToManyRelations}}',

@@ -31,7 +31,33 @@ class BelongsToManyRelationCompiler extends StubCompilerAbstract
     public function compile(array $params):string
     {
 
-        //todo
+        //{{relatedModelStudlyCasePlural}}
+        $this->stub = str_replace(
+            '{{relatedModelStudlyCasePlural}}',
+            $params['relatedModelStudlyCasePlural'],
+            $this->stub
+        );
+
+        //{{relatedModelCamelCasePlural}}
+        $this->stub = str_replace(
+            '{{relatedModelCamelCasePlural}}',
+            $params['relatedModelCamelCasePlural'],
+            $this->stub
+        );
+
+        //{{relatedModelCamelCaseSingular}}
+        $this->stub = str_replace(
+            '{{relatedModelCamelCaseSingular}}',
+            $params['relatedModelCamelCaseSingular'],
+            $this->stub
+        );
+
+        //{{pivotTableName}}
+        $this->stub = str_replace(
+            '{{pivotTableName}}',
+            $params['pivotTableName'],
+            $this->stub
+        );
 
         //
         return $this->stub;

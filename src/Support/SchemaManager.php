@@ -55,4 +55,54 @@ class SchemaManager
 
         return $foreignKeys;
     }
+
+
+    /**
+     * List of foreign keys, which have foreign table equal to $tableName
+     *
+     * @param string $tableName
+     * @return array
+     */
+    public function listForeignKeysOnTable(string $tableName)
+    {
+        $allForeignKeys = $this->listForeignKeys();
+
+        $foreignKeysOnTable = [];
+
+        foreach ($allForeignKeys as $foreignKey) {
+            if ($foreignKey->getForeignTableName() === $tableName) {
+                array_push($foreignKeysOnTable, $foreignKey);
+            }
+        }
+
+        return $foreignKeysOnTable;
+    }
+
+    /**
+     * @param string $tableName
+     * @return array
+     */
+    public function listBelongsToManyForeignKeys(string $tableName): array
+    {
+        $foreignKeysOnTable = $this->listForeignKeysOnTable($tableName);
+
+        $belongsToManyForeignKeys = [];
+
+        foreach ($foreignKeysOnTable as $foreignKeyOnTable) {
+
+            $belongsToManyForeignKeys = array_merge(
+                $belongsToManyForeignKeys,
+                $this->schema->listTableForeignKeys($foreignKeyOnTable->getLocalTableName()));
+        }
+
+        //removing foreign keys, which points to $tableName
+        $result = [];
+        foreach ($belongsToManyForeignKeys as $belongsToManyForeignKey){
+            if ($belongsToManyForeignKey->getForeignTableName() !== $tableName) {
+                array_push($result, $belongsToManyForeignKey);
+            }
+        }
+
+        return $result;
+    }
 }

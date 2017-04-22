@@ -5,6 +5,8 @@ namespace TMPHP\RestApiGenerators\Support;
 class Helper
 {
     /**
+     * Get model name from table name
+     *
      * @param string $tableName
      * @param string $tablePrefix
      * @return string
@@ -71,6 +73,8 @@ class Helper
     }
 
     /**
+     * Get name for the "belongTo" relation based on column name
+     *
      * @param string $columnName
      * @param string $columnPostfix
      * @return string

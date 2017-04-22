@@ -8,12 +8,13 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 use TMPHP\RestApiGenerators\Support\Helper;
+use TMPHP\RestApiGenerators\Support\SchemaManager;
 
 class CrudModelCompiler extends StubCompilerAbstract
 {
 
     /**
-     * @var AbstractSchemaManager
+     * @var SchemaManager
      */
     private $schema;
 
@@ -37,7 +38,7 @@ class CrudModelCompiler extends StubCompilerAbstract
     {
         $saveToPath = base_path(config('rest-api-generator.paths.models'));
         $saveFileName = '';
-        $this->schema = DB::getDoctrineSchemaManager();
+        $this->schema = new SchemaManager();
 
         $this->modelsNamespace = config('rest-api-generator.namespaces.models');
         $this->dbTablePrefix = config('rest-api-generator.db_table_prefix');
@@ -171,15 +172,8 @@ class CrudModelCompiler extends StubCompilerAbstract
      */
     private function compileHasManyRelations(string $modelName, string $tableName)
     {
-        $tables = $this->schema->listTables();
-
         //get all foreign keys
-        $foreignKeys = [];
-        foreach ($tables as $table) {
-            foreach ($table->getForeignKeys() as $foreignKey){
-                array_push($foreignKeys, $foreignKey);
-            }
-        }
+        $foreignKeys = $this->schema->listForeignKeys();
 
         //get all foreign keys, where foreign table is equal to this table
         $filteredForeignKeys = [];

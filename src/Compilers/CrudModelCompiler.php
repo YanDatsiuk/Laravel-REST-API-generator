@@ -73,7 +73,7 @@ class CrudModelCompiler extends StubCompilerAbstract
         $this->compileHasManyRelations($params['tableName']);
 
         //{{BelongsToManyRelations}}
-        $this->compileBelongsToManyRelations($params['tableName']);
+        //$this->compileBelongsToManyRelations($params['tableName']);
 
 
         //{{ModelCapitalized}}
@@ -206,7 +206,9 @@ class CrudModelCompiler extends StubCompilerAbstract
     }
 
     /**
-     * @param string $tableName //TODO CHECK IT - this function is not tested yet
+     * @param string $tableName
+     * TODO CHECK IT - this function is not tested yet
+     * TODO Change this belongsToMany relation detection algorithm
      */
     private function compileBelongsToManyRelations(string $tableName)
     {
@@ -218,10 +220,10 @@ class CrudModelCompiler extends StubCompilerAbstract
         foreach ($belongsToManyForeignKeys as $belongsToManyForeignKey){
             $relationCompiler = new BelongsToManyRelationCompiler();
 
-            $relatedModelStudlyCasePlural = '';
-            $relatedModelCamelCasePlural = '';
-            $relatedModelCamelCaseSingular = '';
-            $pivotTableName = '';
+            $relatedModelStudlyCasePlural = '';//todo
+            $relatedModelCamelCasePlural = '';//todo
+            $relatedModelCamelCaseSingular = '';//todo
+            $pivotTableName = '';//todo
 
             $relationsCompiled .= $relationCompiler->compile([
                 'relatedModelStudlyCasePlural' => $relatedModelStudlyCasePlural,

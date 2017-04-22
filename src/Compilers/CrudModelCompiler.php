@@ -134,7 +134,6 @@ class CrudModelCompiler extends StubCompilerAbstract
     }
 
     /**
-     * @param string $modelName
      * @param string $tableName
      */
     private function compileBelongsToRelations(string $tableName)
@@ -145,15 +144,17 @@ class CrudModelCompiler extends StubCompilerAbstract
         $relationsCompiled = '';
 
         //get relations and call compiler for each
-        foreach ($foreignKeys as $foreignKey){
+        foreach ($foreignKeys as $foreignKey) {
 
             $foreignTableName = $foreignKey->getForeignTableName();
 
-            $modelName = Helper::tableNameToModelName($foreignTableName, $this->dbTablePrefix);
+            $relatedModelName = Helper::tableNameToModelName($foreignTableName, $this->dbTablePrefix);
+            $belongToRelationName = Helper::columnNameToBelongToRelationName($foreignKey->getColumns()[0]);//todo
 
             $relationCompiler = new BelongsToRelationCompiler();
             $relationsCompiled .= $relationCompiler->compile([
-                'modelName' => $modelName
+                'relatedModelName' => $relatedModelName,
+                'belongToRelationName' => $belongToRelationName,
             ]);
         }
 
@@ -170,13 +171,40 @@ class CrudModelCompiler extends StubCompilerAbstract
      */
     private function compileHasManyRelations(string $modelName, string $tableName)
     {
-        //todo get relations and call compiler for each
-        $relationCompiler = new HasManyRelationCompiler();
-        $relationsCompiled = $relationCompiler->compile([
-            'modelName' => $modelName,
-            'tableName' => $tableName
-        ]);
+        $tables = $this->schema->listTables();
 
+        //get all foreign keys
+        $foreignKeys = [];
+        foreach ($tables as $table) {
+            foreach ($table->getForeignKeys() as $foreignKey){
+                array_push($foreignKeys, $foreignKey);
+            }
+        }
+
+        //get all foreign keys, where foreign table is equal to this table
+        $filteredForeignKeys = [];
+        foreach ($foreignKeys as $foreignKey) {
+            if ($foreignKey->getForeignTableName() === $tableName ){
+                array_push($filteredForeignKeys, $foreignKey);
+            }
+        }
+
+        //get "has many" relations and call compiler for each
+        $relationsCompiled = '';
+        foreach ($filteredForeignKeys as $foreignKey){
+
+            $localTableName = $foreignKey->getLocalTableName();
+
+            $modelName = Helper::tableNameToModelName($localTableName, $this->dbTablePrefix);
+
+            $relationCompiler = new HasManyRelationCompiler();
+            $relationsCompiled .= $relationCompiler->compile([
+                'modelName' => $modelName,
+                'foreignKey' => $foreignKey->getColumns()[0]
+            ]);
+        }
+
+        //{{HasManyRelations}}
         $this->stub = str_replace(
             '{{HasManyRelations}}',
             $relationsCompiled,

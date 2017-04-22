@@ -23,10 +23,10 @@ class Helper
      * Get model names from table names
      *
      * @param array $tableNames
-     *
+     * @param string $tablePrefix
      * @return array
      */
-    public static function getModelNamesFromTableNames(array $tableNames, string $tablePrefix = ''): array
+    public static function getModelNamesFromTableNames(array $tableNames, string $tablePrefix = 'tb_'): array
     {
         $modelNames = [];
 
@@ -68,5 +68,20 @@ class Helper
         }
 
         return $result;
+    }
+
+    /**
+     * @param string $columnName
+     * @param string $columnPostfix
+     * @return string
+     */
+    public static function columnNameToBelongToRelationName(string $columnName, string $columnPostfix = '_id'): string
+    {
+        //remove prefix from column name
+        if (ends_with($columnName, $columnPostfix)) {
+            $columnName = str_replace_last($columnPostfix, '', $columnName);
+        }
+
+        return camel_case($columnName);
     }
 }

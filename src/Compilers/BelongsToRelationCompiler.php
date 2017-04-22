@@ -31,12 +31,12 @@ class BelongsToRelationCompiler extends StubCompilerAbstract
     public function compile(array $params):string
     {
 
-        $modelName = $params['modelName'];
+        $modelName = $params['relatedModelName'];
 
         //{{relatedModelCamelCaseSingular}}
         $this->stub = str_replace(
-            '{{relatedModelCamelCaseSingular}}',
-            camel_case($modelName),
+            '{{belongToRelationName}}',
+            $params['belongToRelationName'],
             $this->stub
         );
 

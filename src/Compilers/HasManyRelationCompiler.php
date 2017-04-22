@@ -31,7 +31,28 @@ class HasManyRelationCompiler extends StubCompilerAbstract
     public function compile(array $params):string
     {
 
-        //todo
+        $modelName = $params['modelName'];
+
+        //{{relatedModelCamelCasePlural}} //todo convert
+        $this->stub = str_replace(
+            '{{relatedModelCamelCasePlural}}',
+            str_plural(camel_case($modelName)),
+            $this->stub
+        );
+
+        //{{relatedModelStudlyCaseSingular}} //todo convert
+        $this->stub = str_replace(
+            '{{relatedModelStudlyCaseSingular}}',
+            studly_case($modelName),
+            $this->stub
+        );
+
+        //{{foreignKey}}
+        $this->stub = str_replace(
+            '{{foreignKey}}',
+            $params['foreignKey'],
+            $this->stub
+        );
 
         //
         return $this->stub;

@@ -5,5 +5,5 @@
      */
     public function {{relatedModelCamelCasePlural}}()
     {
-        return $this->hasMany('App\{{relatedModelCamelCaseSingular}}', '{{foreignKey}}');
+        return $this->hasMany('App\{{relatedModelStudlyCaseSingular}}', '{{foreignKey}}');
     }

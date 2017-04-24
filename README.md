@@ -24,6 +24,14 @@ Execute command
 php artisan vendor:publish
 ```
 
+Register middleware
+===================
+Add middleware to App/Http/Kernel.php to the $routeMiddleware array.
+
+```php
+'check.role.access' => CheckAccess::class,
+```
+
 Database schema
 =====
 Make sure, that you have created database schema. 

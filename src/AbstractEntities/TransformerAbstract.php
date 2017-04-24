@@ -49,7 +49,7 @@ abstract class TransformerAbstract extends \League\Fractal\TransformerAbstract
 
         $relatedModelClassName = class_basename($relation->getRelated());
 
-        $transformerClassName = 'App\\Transformers\\' . $relatedModelClassName . 'Transformer';
+        $transformerClassName = config('rest-api-generator.namespaces.transformers').'\\'. $relatedModelClassName . 'Transformer';
 
         //calling proper include method, based on relation type
         switch (class_basename($relation)) {

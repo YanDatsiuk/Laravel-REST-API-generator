@@ -9,6 +9,13 @@ use TMPHP\RestApiGenerators\AbstractEntities\TransformerAbstract;
 class {{Model}}Transformer extends TransformerAbstract
 {
 
+    {{AvailableIncludesArray}}
+
+    /**
+     *
+     */
+    private $validParams = ['limit', 'order'];
+
     /**
      * Transform model data to array
      *

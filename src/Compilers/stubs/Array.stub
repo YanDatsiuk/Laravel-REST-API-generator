@@ -1,0 +1,8 @@
+/**
+     * {{comment}}
+     *
+     * @var array
+     */
+    protected ${{name}} = [
+        {{fields}}
+    ];

@@ -47,9 +47,14 @@ class MakeCrudTranformersCommand extends Command
 
         //generate CRUD controllers for all models
         foreach ($this->models as $model) {
+
+            //todo get model relations
+            $modelRelations = null;
+
             $crudTransformerCompiler = new CrudTransformerCompiler();
             $crudTransformerCompiler->compile([
-                'modelNameCamelcase' => $model
+                'modelNameCamelcase' => $model,
+                'modelRelations' => $modelRelations,
             ]);
         }
 

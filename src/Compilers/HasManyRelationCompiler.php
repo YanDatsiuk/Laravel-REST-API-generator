@@ -54,6 +54,13 @@ class HasManyRelationCompiler extends StubCompilerAbstract
             $this->stub
         );
 
+        //{{modelsNamespace}}
+        $this->stub = str_replace(
+            '{{modelsNamespace}}',
+            $params['modelsNamespace'],
+            $this->stub
+        );
+
         //
         return $this->stub;
     }

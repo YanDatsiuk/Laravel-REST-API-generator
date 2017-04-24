@@ -5,5 +5,5 @@
      */
     public function {{belongToRelationName}}()
     {
-        return $this->belongsTo('App\{{relatedModelStudlyCaseSingular}}');
+        return $this->belongsTo('{{modelsNamespace}}\{{relatedModelStudlyCaseSingular}}');
     }

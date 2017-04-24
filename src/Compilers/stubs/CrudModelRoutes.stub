@@ -17,6 +17,18 @@
                  *         required=true,
                  *         type="string"
                  *     ),
+                 *      @SWG\Parameter(
+                 *         name="include[]",
+                 *         in="query",
+                 *         description="list of model relations with limit and offset parameter",
+                 *         default="",
+                 *         required=false,
+                 *         type="array",
+                 *         @SWG\Items(
+                 *             type="string"
+                 *         ),
+                 *         collectionFormat="multi"
+                 *     ),
                  *     @SWG\Parameter(
                  *         name="page",
                  *         in="query",

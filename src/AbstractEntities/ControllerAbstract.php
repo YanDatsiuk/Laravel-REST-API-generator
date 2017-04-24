@@ -10,6 +10,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as IlluminateController;
+use Illuminate\Support\Facades\Log;
 use League\Fractal\TransformerAbstract;
 use TMPHP\RestApiGenerators\Exceptions\WrongTypeException;
 use TMPHP\RestApiGenerators\Helpers\Traits\ErrorFormatable;
@@ -158,7 +159,7 @@ abstract class ControllerAbstract extends IlluminateController
      */
     public function index(Request $request)
     {
-        $this->validate($request, $this->rules[__METHOD__] ?: []);
+        $this->validate($request, $this->rules[__FUNCTION__] ?: []);
         $this->setParams($request);
 
         $paginator = $this->query->with($this->relations)->paginate($this->limit);
@@ -240,7 +241,7 @@ abstract class ControllerAbstract extends IlluminateController
     {
         $requestInputs = $request->all();
 
-        $this->validate($request, $this->rules[__METHOD__] ?: []);
+        $this->validate($request, $this->rules[__FUNCTION__] ?: []);
 
         $model = $this->model->newInstance();
         $model->fill($requestInputs)->save();
@@ -265,10 +266,10 @@ abstract class ControllerAbstract extends IlluminateController
      */
     public function show(Request $request, $id)
     {
-        $this->validate($request, $this->rules[__METHOD__] ?: []);
+        $this->validate($request, $this->rules[__FUNCTION__] ?: []);
         $this->setParams($request);
 
-        $model = $this->query->find($id)->with($this->relations);
+        $model = $this->query->find($id)->with($this->relations);//todo BUG if model === null;
 
         if (!$model) {
             return $this->responseNotFoundModel($model);
@@ -290,7 +291,7 @@ abstract class ControllerAbstract extends IlluminateController
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, $this->rules[__METHOD__] ?: []);
+        $this->validate($request, $this->rules[__FUNCTION__] ?: []);
         $model = $this->query->withoutGlobalScopes()->find($id);
 
         if (!$model) {
@@ -315,7 +316,7 @@ abstract class ControllerAbstract extends IlluminateController
      */
     public function destroy(Request $request, $id)
     {
-        $this->validate($request, $this->rules[__METHOD__] ?: []);
+        $this->validate($request, $this->rules[__FUNCTION__] ?: []);
         $model = $this->query->withoutGlobalScopes()->find($id);
 
         if ($model === null) {

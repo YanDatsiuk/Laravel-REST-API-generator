@@ -5,5 +5,5 @@
      */
     public function {{relatedModelCamelCasePlural}}()
     {
-        return $this->belongsToMany('App\{{relatedModelCamelCaseSingular}}', '{{pivotTableName}}');
+        return $this->belongsToMany('{{modelsNamespace}}\{{relatedModelCamelCaseSingular}}', '{{pivotTableName}}');
     }

@@ -10,6 +10,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as IlluminateController;
+use Illuminate\Support\Facades\Log;
 use League\Fractal\TransformerAbstract;
 use TMPHP\RestApiGenerators\Exceptions\WrongTypeException;
 use TMPHP\RestApiGenerators\Helpers\Traits\ErrorFormatable;

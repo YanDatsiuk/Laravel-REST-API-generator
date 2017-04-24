@@ -139,7 +139,7 @@ class CrudModelCompiler extends StubCompilerAbstract
      */
     private function compileBelongsToRelations(string $tableName)
     {
-        /** @var  $foreignKeys Doctrine\DBAL\Schema\ForeignKeyConstraint[] */
+        /** @var  $foreignKeys \Doctrine\DBAL\Schema\ForeignKeyConstraint[] */
         $foreignKeys = $this->schema->listTableForeignKeys($tableName);
 
         $relationsCompiled = '';
@@ -156,6 +156,7 @@ class CrudModelCompiler extends StubCompilerAbstract
             $relationsCompiled .= $relationCompiler->compile([
                 'relatedModelName' => $relatedModelName,
                 'belongToRelationName' => $belongToRelationName,
+                'modelsNamespace' => $this->modelsNamespace,
             ]);
         }
 
@@ -193,7 +194,8 @@ class CrudModelCompiler extends StubCompilerAbstract
             $relationCompiler = new HasManyRelationCompiler();
             $relationsCompiled .= $relationCompiler->compile([
                 'modelName' => $modelName,
-                'foreignKey' => $foreignKey->getColumns()[0]
+                'foreignKey' => $foreignKey->getColumns()[0],
+                'modelsNamespace' => $this->modelsNamespace,
             ]);
         }
 
@@ -230,6 +232,7 @@ class CrudModelCompiler extends StubCompilerAbstract
                 'relatedModelCamelCasePlural' => $relatedModelCamelCasePlural,
                 'relatedModelCamelCaseSingular' => $relatedModelCamelCaseSingular,
                 'pivotTableName' => $pivotTableName,
+                'modelsNamespace' => $this->modelsNamespace,
             ]);
         }
 

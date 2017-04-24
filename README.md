@@ -32,6 +32,13 @@ Add middleware to App/Http/Kernel.php to the $routeMiddleware array.
 'check.role.access' => CheckAccess::class,
 ```
 
+Swagger configuration
+=====================
+Add '/routes' path in 'config/l5-swagger.php', annotation path.
+```php
+'annotations' => [base_path('app'), base_path('routes')],
+```
+
 Database schema
 =====
 Make sure, that you have created database schema. 

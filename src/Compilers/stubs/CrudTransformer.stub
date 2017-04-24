@@ -3,7 +3,7 @@
 namespace {{transformersNamespace}};
 
 use Illuminate\Database\Eloquent\Model;
-use League\Fractal\TransformerAbstract;
+use TMPHP\RestApiGenerators\AbstractEntities\TransformerAbstract;
 
 
 class {{Model}}Transformer extends TransformerAbstract

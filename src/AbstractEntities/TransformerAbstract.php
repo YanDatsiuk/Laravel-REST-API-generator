@@ -11,12 +11,12 @@ abstract class TransformerAbstract extends \League\Fractal\TransformerAbstract
     /**
      * @var array
      */
-    protected $availableIncludes = ['city', 'questReservations'];
+    protected $availableIncludes = [];
 
     /**
      * @var array
      */
-    private $validParams = ['limit', 'order'];
+    private $validParams = [];
 
     /**
      * Transform model data to array

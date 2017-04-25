@@ -34,6 +34,7 @@ abstract class TransformerAbstract extends \League\Fractal\TransformerAbstract
      * @param $arguments
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\Item|null
      * @throws \Exception
+     * TODO throw exception if function starts not from 'include'
      */
     public function __call($name, $arguments)
     {
@@ -52,6 +53,7 @@ abstract class TransformerAbstract extends \League\Fractal\TransformerAbstract
         $transformerClassName = config('rest-api-generator.namespaces.transformers').'\\'. $relatedModelClassName . 'Transformer';
 
         //calling proper include method, based on relation type
+        //todo add detection for all relations types
         switch (class_basename($relation)) {
             case 'HasMany':
 

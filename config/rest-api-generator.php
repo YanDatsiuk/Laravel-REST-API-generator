@@ -58,4 +58,11 @@ return [
     | when defining the table for the model
     */
     'db_table_prefix' => 'tb_',
+
+    /**
+     * This is a list of tables,
+     * which will not take a part in generation API process.
+     * For them WILL NOT be generated: models, controllers, routes, e.t.c...
+     */
+    'excluded_tables' => ['migrations', 'password_resets']
 ];

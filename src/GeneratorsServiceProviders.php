@@ -9,6 +9,7 @@ use TMPHP\RestApiGenerators\Commands\MakeCrudRoutesCommand;
 use TMPHP\RestApiGenerators\Commands\MakeCrudTranformersCommand;
 use TMPHP\RestApiGenerators\Commands\MakeRestApiProjectCommand;
 use TMPHP\RestApiGenerators\Commands\MakeSwaggerModelsCommand;
+use TMPHP\RestApiGenerators\Commands\MakeSwaggerRootCommand;
 
 class GeneratorsServiceProviders extends ServiceProvider
 {
@@ -51,6 +52,7 @@ class GeneratorsServiceProviders extends ServiceProvider
             MakeCrudControllersCommand::class,
             MakeCrudTranformersCommand::class,
             MakeRestApiProjectCommand::class,
+            MakeSwaggerRootCommand::class,
         ]);
     }
 

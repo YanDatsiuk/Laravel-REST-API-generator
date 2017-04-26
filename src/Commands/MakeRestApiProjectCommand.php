@@ -240,6 +240,9 @@ class MakeRestApiProjectCommand extends Command
         Artisan::call('make:crud-routes', [
             '--models' => $this->modelsInKebabNotaion,
         ]);
+
+        //php artisan make:crud-routes
+        Artisan::call('make:swagger-root');
     }
 
 }

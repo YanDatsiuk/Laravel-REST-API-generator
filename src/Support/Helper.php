@@ -88,4 +88,16 @@ class Helper
 
         return camel_case($columnName);
     }
+
+    /**
+     * Excluding protocol part from URL
+     *
+     * @param string $url
+     * @return string'
+     */
+    public static function trimProtocolFromUrl(string $url): string
+    {
+        $parts = explode('://', $url);
+        return (count($parts) > 1) ? $parts[1] : $parts[0];
+    }
 }

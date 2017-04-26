@@ -197,6 +197,10 @@ class MakeRestApiProjectCommand extends Command
         $this->schema = DB::getDoctrineSchemaManager();
         $this->tables = $this->schema->listTableNames();
 
+        //remove excluded tables from generation process
+        $excludedTables = config('rest-api-generator.excluded_tables');
+        $this->tables = array_diff($this->tables, $excludedTables);
+
         $dbTablePrefix = config('rest-api-generator.db_table_prefix');
         $this->models = Helper::getModelNamesFromTableNames($this->tables, $dbTablePrefix);
 

@@ -51,3 +51,10 @@ Execute command
 ```php
 php artisan make:rest-api-project
 ```
+
+Notes
+===============
+Execute command
+```php
+composer dump-autoload
+```

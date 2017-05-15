@@ -52,6 +52,14 @@ Execute command
 php artisan make:rest-api-project
 ```
 
+Generating swagger documentation
+================================
+
+Execute command
+```php
+php artisan l5-swagger:generate
+```
+
 Notes
 ===============
 Execute command

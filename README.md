@@ -29,10 +29,7 @@ Configurating .env file
 
 - set proper connection to the database
 - add configuration for dingo/api package. See [detailed docs here](https://github.com/dingo/api/wiki/Configuration)
-- required configuration string is 
-```php
-API_DOMAIN=rest-api-generator.dev
-```
+- required configuration string is `API_DOMAIN=rest-api-generator.dev`
 
 Register middleware
 ===================

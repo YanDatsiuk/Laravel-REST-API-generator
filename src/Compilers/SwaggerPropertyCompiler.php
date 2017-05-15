@@ -36,9 +36,6 @@ class SwaggerPropertyCompiler extends StubCompilerAbstract
             $this->stub
         );
 
-        Log::info($params['type']);
-        Log::info('');
-
         //check type and do required transformation
         switch ($params['type']) {
             case 'Boolean':

@@ -26,6 +26,12 @@ class GeneratorsServiceProviders extends ServiceProvider
                 __DIR__ . '/../config/rest-api-generator.php' => config_path('rest-api-generator.php'),
             ]
         );
+
+        //register generated routes
+        $routeFilePath = base_path(config('rest-api-generator.paths.routes'). 'api.php');
+        if (!$this->app->routesAreCached() && file_exists($routeFilePath)) {
+            require $routeFilePath;
+        }
     }
 
     /**

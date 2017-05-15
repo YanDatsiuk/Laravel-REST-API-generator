@@ -1,5 +1,6 @@
 
   *     @SWG\Property(
   *          property="{{name}}",
-  *          type="{{type}}"
+  *          type="{{type}}",
+  *          format="{{format}}"
   *     ),

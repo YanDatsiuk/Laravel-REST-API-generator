@@ -51,15 +51,17 @@ class SwaggerDefinitionCompiler extends StubCompilerAbstract
 
         //
         $compiledProperties = '';
+
+        /** @var \Doctrine\DBAL\Schema\Column[] */
         $columns = $this->schema->listTableColumns($params['tableName']);
 
         //compile swagger properties for table columns
         foreach ($columns as $column) {
-
             $swaggerPropertyCompiler = new SwaggerPropertyCompiler();
             $compiledProperties .= $swaggerPropertyCompiler->compile([
                 'name' => $column->getName(),
                 'type' => $column->getType(),
+                'format' => 'default'
             ]);
         }
 

@@ -6,6 +6,10 @@ namespace TMPHP\RestApiGenerators\Compilers;
 use Illuminate\Support\Facades\Log;
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 
+/**
+ * Class SwaggerPropertyCompiler
+ * @package TMPHP\RestApiGenerators\Compilers
+ */
 class SwaggerPropertyCompiler extends StubCompilerAbstract
 {
 

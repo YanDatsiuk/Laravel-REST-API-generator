@@ -7,6 +7,10 @@ use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Illuminate\Support\Facades\Log;
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 
+/**
+ * Class HasManyRelationCompiler
+ * @package TMPHP\RestApiGenerators\Compilers
+ */
 class HasManyRelationCompiler extends StubCompilerAbstract
 {
 
@@ -30,7 +34,6 @@ class HasManyRelationCompiler extends StubCompilerAbstract
      */
     public function compile(array $params): string
     {
-
         $modelName = $params['modelName'];
 
         //

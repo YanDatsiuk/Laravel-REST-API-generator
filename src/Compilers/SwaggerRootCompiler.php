@@ -5,6 +5,10 @@ namespace TMPHP\RestApiGenerators\Compilers;
 
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 
+/**
+ * Class SwaggerRootCompiler
+ * @package TMPHP\RestApiGenerators\Compilers
+ */
 class SwaggerRootCompiler extends StubCompilerAbstract
 {
 

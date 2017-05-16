@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Log;
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 use TMPHP\RestApiGenerators\Support\SchemaManager;
 
+/**
+ * Class SwaggerDefinitionCompiler
+ * @package TMPHP\RestApiGenerators\Compilers
+ */
 class SwaggerDefinitionCompiler extends StubCompilerAbstract
 {
 

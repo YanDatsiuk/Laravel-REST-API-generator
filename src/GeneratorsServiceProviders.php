@@ -11,6 +11,10 @@ use TMPHP\RestApiGenerators\Commands\MakeRestApiProjectCommand;
 use TMPHP\RestApiGenerators\Commands\MakeSwaggerModelsCommand;
 use TMPHP\RestApiGenerators\Commands\MakeSwaggerRootCommand;
 
+/**
+ * Class GeneratorsServiceProviders
+ * @package TMPHP\RestApiGenerators
+ */
 class GeneratorsServiceProviders extends ServiceProvider
 {
     /**

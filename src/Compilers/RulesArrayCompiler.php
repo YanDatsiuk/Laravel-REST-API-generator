@@ -6,6 +6,10 @@ namespace TMPHP\RestApiGenerators\Compilers;
 use Illuminate\Support\Facades\Log;
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 
+/**
+ * Class RulesArrayCompiler
+ * @package TMPHP\RestApiGenerators\Compilers
+ */
 class RulesArrayCompiler extends StubCompilerAbstract
 {
 

@@ -2,6 +2,10 @@
 
 namespace TMPHP\RestApiGenerators\Support;
 
+/**
+ * Class Helper
+ * @package TMPHP\RestApiGenerators\Support
+ */
 class Helper
 {
     /**

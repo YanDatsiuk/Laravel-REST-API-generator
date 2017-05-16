@@ -5,6 +5,7 @@ namespace TMPHP\RestApiGenerators\AbstractEntities;
 
 use Illuminate\Database\Eloquent\Model;
 use League\Fractal\ParamBag;
+use TMPHP\RestApiGenerators\Exceptions\UnexpectedMagicCall;
 
 abstract class TransformerAbstract extends \League\Fractal\TransformerAbstract
 {
@@ -33,10 +34,24 @@ abstract class TransformerAbstract extends \League\Fractal\TransformerAbstract
      * @param $name
      * @param $arguments
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\Item|null
-     * @throws \Exception
-     * TODO throw exception if function starts not from 'include'
+     * @throws UnexpectedMagicCall
      */
     public function __call($name, $arguments)
+    {
+        if (starts_with($name, 'include')) {
+            return $this->callInclude($name, $arguments);
+        } else {
+            throw new UnexpectedMagicCall();
+        }
+    }
+
+    /**
+     * @param $name
+     * @param $arguments
+     * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\Item|null
+     * @throws \Exception
+     */
+    private function callInclude($name, $arguments)
     {
         //get requested relation name
         $relationName = str_replace_first('include', '', $name);
@@ -49,7 +64,7 @@ abstract class TransformerAbstract extends \League\Fractal\TransformerAbstract
         $relation = $model->$relationName();
 
         $relatedModelClassName = class_basename($relation->getRelated());
-        $transformerClassName = config('rest-api-generator.namespaces.transformers').'\\'. $relatedModelClassName . 'Transformer';
+        $transformerClassName = config('rest-api-generator.namespaces.transformers') . '\\' . $relatedModelClassName . 'Transformer';
 
         //calling proper include method, based on relation type
         switch (class_basename($relation)) {
@@ -87,10 +102,9 @@ abstract class TransformerAbstract extends \League\Fractal\TransformerAbstract
                 break;
 
             default:
-                throw new \Exception(class_basename($relation). ' no behaviour specified in transformer!');
+                throw new \Exception(class_basename($relation) . ' no behaviour specified in transformer!');
                 break;
         }
-
     }
 
     /**
@@ -118,8 +132,12 @@ abstract class TransformerAbstract extends \League\Fractal\TransformerAbstract
      * @return \League\Fractal\Resource\Collection
      * @throws \Exception
      */
-    protected function includeCollection($model, string $relationName, ParamBag $params = null, string $transformerClassName)
-    {
+    protected function includeCollection(
+        $model,
+        string $relationName,
+        ParamBag $params = null,
+        string $transformerClassName
+    ) {
         if ($params === null) {
             return $model->$relationName;
         }

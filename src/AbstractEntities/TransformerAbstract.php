@@ -18,7 +18,7 @@ abstract class TransformerAbstract extends \League\Fractal\TransformerAbstract
     /**
      * @var array
      */
-    protected $validParams = ['limit'];
+    private $validParams = ['limit'];
 
     /**
      * Transform model data to array
@@ -152,8 +152,6 @@ abstract class TransformerAbstract extends \League\Fractal\TransformerAbstract
                 implode(',', $this->validParams)
             ));
         }
-
-        Log::info($usedParams);
 
         //Processing limit parameter
         list($limit, $offset) = $params->get('limit');

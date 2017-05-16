@@ -162,6 +162,8 @@ abstract class ControllerAbstract extends IlluminateController
         $this->validate($request, $this->rules[__FUNCTION__] ?: []);
         $this->setParams($request);
 
+        Log::info($this->relations);
+
         $paginator = $this->query->with($this->relations)->paginate($this->limit);
 
         return $this->response->paginator($paginator, new $this->transformerClass());
@@ -225,9 +227,30 @@ abstract class ControllerAbstract extends IlluminateController
      */
     public function setRelations($relations)
     {
-        $this->relations = (array)$relations;
+        $this->relations = $this->parseRelationNames($relations);
 
         return $this;
+    }
+
+    /**
+     * Get relation name without relation's parameters
+     *
+     * @param array $relations
+     * @return array
+     */
+    protected function parseRelationNames(array $relations)
+    {
+        $relationNames = [];
+
+        //get relation name without relation's parameters
+        foreach ($relations as $relation) {
+            if (str_contains($relation, ':')) {
+                $relation = substr($relation, 0, strpos($relation, ':'));
+            }
+            $relationNames[] = $relation;
+        }
+
+        return $relationNames;
     }
 
     /**

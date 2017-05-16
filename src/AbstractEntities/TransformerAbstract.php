@@ -49,18 +49,40 @@ abstract class TransformerAbstract extends \League\Fractal\TransformerAbstract
         $relation = $model->$relationName();
 
         $relatedModelClassName = class_basename($relation->getRelated());
-
         $transformerClassName = config('rest-api-generator.namespaces.transformers').'\\'. $relatedModelClassName . 'Transformer';
 
         //calling proper include method, based on relation type
-        //todo add detection for all relations types
         switch (class_basename($relation)) {
-            case 'HasMany':
 
+            case 'HasMany':
+                return $this->includeCollection($model, $relationName, $paramBag, $transformerClassName);
+                break;
+
+            case 'MorphMany':
+                return $this->includeCollection($model, $relationName, $paramBag, $transformerClassName);
+                break;
+
+            case 'HasManyThrough':
+                return $this->includeCollection($model, $relationName, $paramBag, $transformerClassName);
+                break;
+
+            case 'BelongsToMany':
                 return $this->includeCollection($model, $relationName, $paramBag, $transformerClassName);
                 break;
 
             case 'BelongsTo':
+                return $this->includeItem($model, $relationName, $transformerClassName);
+                break;
+
+            case 'MorphTo':
+                return $this->includeItem($model, $relationName, $transformerClassName);
+                break;
+
+            case 'MorphOne':
+                return $this->includeItem($model, $relationName, $transformerClassName);
+                break;
+
+            case 'HasOne':
                 return $this->includeItem($model, $relationName, $transformerClassName);
                 break;
 

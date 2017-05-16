@@ -162,8 +162,6 @@ abstract class ControllerAbstract extends IlluminateController
         $this->validate($request, $this->rules[__FUNCTION__] ?: []);
         $this->setParams($request);
 
-        Log::info($this->relations);
-
         $paginator = $this->query->with($this->relations)->paginate($this->limit);
 
         return $this->response->paginator($paginator, new $this->transformerClass());

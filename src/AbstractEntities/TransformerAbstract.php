@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\Log;
 use League\Fractal\ParamBag;
 use TMPHP\RestApiGenerators\Exceptions\UnexpectedMagicCall;
 
+/**
+ * Class TransformerAbstract
+ * @package TMPHP\RestApiGenerators\AbstractEntities
+ */
 abstract class TransformerAbstract extends \League\Fractal\TransformerAbstract
 {
     /**

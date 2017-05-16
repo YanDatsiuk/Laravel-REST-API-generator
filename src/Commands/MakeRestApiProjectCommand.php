@@ -3,12 +3,16 @@
 namespace TMPHP\RestApiGenerators\Commands;
 
 
-use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Artisan;
 use TMPHP\RestApiGenerators\Support\Helper;
+use Doctrine\DBAL\Schema\AbstractSchemaManager;
 
+/**
+ * Class MakeRestApiProjectCommand
+ * @package TMPHP\RestApiGenerators\Commands
+ */
 class MakeRestApiProjectCommand extends Command
 {
     /**
@@ -245,7 +249,7 @@ class MakeRestApiProjectCommand extends Command
         Artisan::call('make:swagger-root');
 
         //php artisan migrate:generate --no-interaction
-        Artisan::call('migrate:generate',['--no-interaction' => true]);
+        Artisan::call('migrate:generate', ['--no-interaction' => true]);
     }
 
 }

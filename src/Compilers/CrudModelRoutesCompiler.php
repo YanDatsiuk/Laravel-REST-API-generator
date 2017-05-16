@@ -5,6 +5,10 @@ namespace TMPHP\RestApiGenerators\Compilers;
 
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 
+/**
+ * Class CrudModelRoutesCompiler
+ * @package TMPHP\RestApiGenerators\Compilers
+ */
 class CrudModelRoutesCompiler extends StubCompilerAbstract
 {
 

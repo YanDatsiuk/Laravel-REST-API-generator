@@ -7,6 +7,10 @@ use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Illuminate\Support\Facades\Log;
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 
+/**
+ * Class BelongsToManyRelationCompiler
+ * @package TMPHP\RestApiGenerators\Compilers
+ */
 class BelongsToManyRelationCompiler extends StubCompilerAbstract
 {
 

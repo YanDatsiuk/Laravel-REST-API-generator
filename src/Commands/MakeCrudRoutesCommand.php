@@ -6,6 +6,10 @@ namespace TMPHP\RestApiGenerators\Commands;
 use Illuminate\Console\Command;
 use TMPHP\RestApiGenerators\Compilers\ApiRoutesCompiler;
 
+/**
+ * Class MakeCrudRoutesCommand
+ * @package TMPHP\RestApiGenerators\Commands
+ */
 class MakeCrudRoutesCommand extends Command
 {
     /**

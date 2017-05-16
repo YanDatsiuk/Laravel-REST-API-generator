@@ -41,7 +41,7 @@ class MakeSwaggerRootCommand extends Command
 
         $swaggerRootCompiler->compile(['Host' => $host]);
 
-        $this->info('make:swagger-root cmd executed '. $host);
+        $this->info('make:swagger-root cmd executed ' . $host);
     }
 
 }

@@ -6,6 +6,10 @@ namespace TMPHP\RestApiGenerators\Commands;
 use Illuminate\Console\Command;
 use TMPHP\RestApiGenerators\Compilers\SwaggerDefinitionCompiler;
 
+/**
+ * Class MakeSwaggerModelsCommand
+ * @package TMPHP\RestApiGenerators\Commands
+ */
 class MakeSwaggerModelsCommand extends Command
 {
     /**
@@ -80,4 +84,6 @@ class MakeSwaggerModelsCommand extends Command
 
         $this->info('make:swagger-models cmd executed');
     }
+
+    //todo add function initAndValidate($inputedModels, $inputedTables)
 }

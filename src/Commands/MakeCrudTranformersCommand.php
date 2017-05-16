@@ -6,6 +6,10 @@ namespace TMPHP\RestApiGenerators\Commands;
 use Illuminate\Console\Command;
 use TMPHP\RestApiGenerators\Compilers\CrudTransformerCompiler;
 
+/**
+ * Class MakeCrudTranformersCommand
+ * @package TMPHP\RestApiGenerators\Commands
+ */
 class MakeCrudTranformersCommand extends Command
 {
     /**
@@ -48,13 +52,9 @@ class MakeCrudTranformersCommand extends Command
         //generate CRUD controllers for all models
         foreach ($this->models as $model) {
 
-            //todo get model relations
-            $modelRelations = null;
-
             $crudTransformerCompiler = new CrudTransformerCompiler();
             $crudTransformerCompiler->compile([
                 'modelNameCamelcase' => $model,
-                'modelRelations' => $modelRelations,
             ]);
         }
 

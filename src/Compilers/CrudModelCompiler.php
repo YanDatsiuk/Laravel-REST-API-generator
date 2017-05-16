@@ -7,6 +7,10 @@ use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 use TMPHP\RestApiGenerators\Support\Helper;
 use TMPHP\RestApiGenerators\Support\SchemaManager;
 
+/**
+ * Class CrudModelCompiler
+ * @package TMPHP\RestApiGenerators\Compilers
+ */
 class CrudModelCompiler extends StubCompilerAbstract
 {
 

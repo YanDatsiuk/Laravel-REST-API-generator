@@ -6,6 +6,10 @@ namespace TMPHP\RestApiGenerators\Commands;
 use Illuminate\Console\Command;
 use TMPHP\RestApiGenerators\Compilers\CrudControllerCompiler;
 
+/**
+ * Class MakeCrudControllersCommand
+ * @package TMPHP\RestApiGenerators\Commands
+ */
 class MakeCrudControllersCommand extends Command
 {
     /**

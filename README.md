@@ -24,6 +24,11 @@ Execute command
 php artisan vendor:publish
 ```
 
+Database schema
+=====
+Make sure, that you have created database schema. 
+For generating relations you should have FOREIGN KEY Constraints.
+
 Configurating .env file
 =======================
 
@@ -45,11 +50,6 @@ Add '/routes' path in 'config/l5-swagger.php', annotation path.
 ```php
 'annotations' => [base_path('app'), base_path('routes')],
 ```
-
-Database schema
-=====
-Make sure, that you have created database schema. 
-For generating relations you should have FOREIGN KEY Constraints.
 
 Generating code
 ===============

@@ -95,7 +95,7 @@ abstract class StubCompilerAbstract
     public function replaceInStub($searchAndReplacements = []): void
     {
         //do replacements in stub
-        foreach ($searchAndReplacements as $key => $value){
+        foreach ($searchAndReplacements as $key => $value) {
             $this->stub = str_replace(
                 $key,
                 $value,

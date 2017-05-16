@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Log;
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 
+/**
+ * Class CrudTransformerCompiler
+ * @package TMPHP\RestApiGenerators\Compilers
+ */
 class CrudTransformerCompiler extends StubCompilerAbstract
 {
 
@@ -69,9 +73,9 @@ class CrudTransformerCompiler extends StubCompilerAbstract
     }
 
     /**
-     * TODO
+     * Get model's relations's names by model name.
      * @param string $modelName
-     * @return array
+     * @return array model's relations' names //todo spellchecking
      */
     private function getModelRelations(string $modelName): array
     {

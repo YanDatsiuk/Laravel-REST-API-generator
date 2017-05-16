@@ -6,6 +6,10 @@ namespace TMPHP\RestApiGenerators\Commands;
 use Illuminate\Console\Command;
 use TMPHP\RestApiGenerators\Compilers\CrudModelCompiler;
 
+/**
+ * Class MakeCrudModelsCommand
+ * @package TMPHP\RestApiGenerators\Commands
+ */
 class MakeCrudModelsCommand extends Command
 {
     /**
@@ -57,7 +61,6 @@ class MakeCrudModelsCommand extends Command
         //check whether model names were submitted
         if (strlen($this->tables[0]) === 0) {
             $this->error('Please specify table names');
-
             return;
         }
 

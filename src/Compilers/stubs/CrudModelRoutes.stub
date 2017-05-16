@@ -20,7 +20,7 @@
                  *      @SWG\Parameter(
                  *         name="include[]",
                  *         in="query",
-                 *         description="list of model relations with limit and offset parameter",
+                 *         description="list of model relations with limit and offset parameter. Example: {relationName}:limit({limit}|{offset})",
                  *         default="",
                  *         required=false,
                  *         type="array",

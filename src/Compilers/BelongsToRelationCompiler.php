@@ -33,26 +33,12 @@ class BelongsToRelationCompiler extends StubCompilerAbstract
 
         $modelName = $params['relatedModelName'];
 
-        //{{relatedModelCamelCaseSingular}}
-        $this->stub = str_replace(
-            '{{belongToRelationName}}',
-            $params['belongToRelationName'],
-            $this->stub
-        );
-
-        //{{relatedModelCamelCaseSingular}}
-        $this->stub = str_replace(
-            '{{relatedModelStudlyCaseSingular}}',
-            studly_case($modelName),
-            $this->stub
-        );
-
-        //{{modelsNamespace}}
-        $this->stub = str_replace(
-            '{{modelsNamespace}}',
-            $params['modelsNamespace'],
-            $this->stub
-        );
+        //
+        $this->replaceInStub([
+            '{{belongToRelationName}}' => $params['belongToRelationName'],
+            '{{relatedModelStudlyCaseSingular}}' => studly_case($modelName),
+            '{{modelsNamespace}}' => $params['modelsNamespace'],
+        ]);
 
         //
         return $this->stub;

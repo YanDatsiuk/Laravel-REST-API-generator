@@ -85,4 +85,22 @@ abstract class StubCompilerAbstract
             $this->stub
         );
     }
+
+    /**
+     * Search and replace strings in stub file.
+     *
+     * @param array $searchAndReplacements keys are values being searched for.
+     * And the values of the array are used to be replacements
+     */
+    public function replaceInStub($searchAndReplacements = []): void
+    {
+        //do replacements in stub
+        foreach ($searchAndReplacements as $key => $value){
+            $this->stub = str_replace(
+                $key,
+                $value,
+                $this->stub
+            );
+        }
+    }
 }

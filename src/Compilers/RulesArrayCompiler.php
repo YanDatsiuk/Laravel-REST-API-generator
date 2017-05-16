@@ -24,7 +24,7 @@ class RulesArrayCompiler extends StubCompilerAbstract
     }
 
     /**
-     * @param array $params
+     * @param array $params //todo send table name in $params for getting more info for generating rules
      * @return bool|mixed|string
      */
     public function compile(array $params): string
@@ -40,7 +40,7 @@ class RulesArrayCompiler extends StubCompilerAbstract
             if (!$column->getAutoincrement()) {
                 switch ($column->getType()) {
                     case 'Boolean':
-                        $fields .= "'{$column->getName()}' => 'boolean', \n\t\t";
+                        $fields .= "'{$column->getName()}' => 'boolean', \n\t\t"; //todo add 'smart' function for rule detection here
                         break;
 
                     case 'Integer':
@@ -73,11 +73,7 @@ class RulesArrayCompiler extends StubCompilerAbstract
         }
 
         //
-        $this->stub = str_replace(
-            '{{fields}}',
-            $fields,
-            $this->stub
-        );
+        $this->replaceInStub(['{{fields}}' => $fields]);
 
         //
         return $this->stub;

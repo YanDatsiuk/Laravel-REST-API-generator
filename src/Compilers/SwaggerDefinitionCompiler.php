@@ -43,13 +43,6 @@ class SwaggerDefinitionCompiler extends StubCompilerAbstract
         $this->saveFileName = $params['modelName'] . '.php';
 
         //
-        $this->stub = str_replace(
-            '{{ModelLowercase}}',
-            $params['modelName'],
-            $this->stub
-        );
-
-        //
         $compiledProperties = '';
 
         /** @var \Doctrine\DBAL\Schema\Column[] */
@@ -66,11 +59,10 @@ class SwaggerDefinitionCompiler extends StubCompilerAbstract
         }
 
         //
-        $this->stub = str_replace(
-            '{{SwaggerProperties}}',
-            $compiledProperties,
-            $this->stub
-        );
+        $this->replaceInStub([
+            '{{ModelLowercase}}' => $params['modelName'],
+            '{{SwaggerProperties}}' => $compiledProperties,
+        ]);
 
         //
         $this->saveStub();

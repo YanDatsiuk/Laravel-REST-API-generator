@@ -30,19 +30,11 @@ class ArrayCompiler extends StubCompilerAbstract
     public function compile(array $params): string
     {
 
-        //{{comment}}
-        $this->stub = str_replace(
-            '{{comment}}',
-            $params['comment'],
-            $this->stub
-        );
-
-        //{{arrayName}}
-        $this->stub = str_replace(
-            '{{name}}',
-            $params['name'],
-            $this->stub
-        );
+        //
+        $this->replaceInStub([
+            '{{comment}}' => $params['comment'],
+            '{{name}}' => $params['name']
+        ]);
 
         $this->compileFields($params['keys'], $params['values']);
 
@@ -70,11 +62,7 @@ class ArrayCompiler extends StubCompilerAbstract
         }
 
         //{{fields}}
-        $this->stub = str_replace(
-            '{{fields}}',
-            $fields,
-            $this->stub
-        );
+        $this->replaceInStub(['{{fields}}' => $fields]);
     }
 
 }

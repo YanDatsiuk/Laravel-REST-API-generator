@@ -3,9 +3,6 @@
 namespace TMPHP\RestApiGenerators\Compilers;
 
 
-use Doctrine\DBAL\Schema\AbstractSchemaManager;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 use TMPHP\RestApiGenerators\Support\Helper;
 use TMPHP\RestApiGenerators\Support\SchemaManager;
@@ -30,6 +27,7 @@ class CrudModelCompiler extends StubCompilerAbstract
 
     /**
      * CrudModelCompiler constructor.
+     *
      * @param null $saveToPath
      * @param null $saveFileName
      * @param null $stub
@@ -76,25 +74,13 @@ class CrudModelCompiler extends StubCompilerAbstract
         //$this->compileBelongsToManyRelations($params['tableName']);
 
 
-        //{{ModelCapitalized}}
-        $this->stub = str_replace(
-            '{{ModelCapitalized}}',
-            ucfirst($params['modelName']),
-            $this->stub
-        );
-
-        //{{table_name}}
-        $this->stub = str_replace(
-            '{{table_name}}',
-            $params['tableName'],
-            $this->stub
-        );
-
-        //{{modelsNamespace}}
-        $this->stub = str_replace(
-            '{{modelsNamespace}}',
-            $this->modelsNamespace,
-            $this->stub
+        //
+        $this->replaceInStub(
+            [
+                '{{ModelCapitalized}}' => ucfirst($params['modelName']),
+                '{{table_name}}' => $params['tableName'],
+                '{{modelsNamespace}}' => $this->modelsNamespace
+            ]
         );
 
         //
@@ -112,11 +98,8 @@ class CrudModelCompiler extends StubCompilerAbstract
         $fillableArrayCompiler = new FillableArrayCompiler();
         $fillableArrayCompiled = $fillableArrayCompiler->compile(['columns' => $columns]);
 
-        $this->stub = str_replace(
-            '{{FillableArray}}',
-            $fillableArrayCompiled,
-            $this->stub
-        );
+        //{{FillableArray}}
+        $this->replaceInStub(['{{FillableArray}}' => $fillableArrayCompiled]);
     }
 
     /**
@@ -127,11 +110,8 @@ class CrudModelCompiler extends StubCompilerAbstract
         $rulesArrayCompiler = new RulesArrayCompiler();
         $rulesArrayCompiled = $rulesArrayCompiler->compile(['columns' => $columns]);
 
-        $this->stub = str_replace(
-            '{{RulesArray}}',
-            $rulesArrayCompiled,
-            $this->stub
-        );
+        //{{RulesArray}}
+        $this->replaceInStub(['{{RulesArray}}' => $rulesArrayCompiled]);
     }
 
     /**
@@ -160,11 +140,8 @@ class CrudModelCompiler extends StubCompilerAbstract
             ]);
         }
 
-        $this->stub = str_replace(
-            '{{BelongsToRelations}}',
-            $relationsCompiled,
-            $this->stub
-        );
+        //{{BelongsToRelations}}
+        $this->replaceInStub(['{{BelongsToRelations}}' => $relationsCompiled]);
     }
 
     /**
@@ -178,14 +155,14 @@ class CrudModelCompiler extends StubCompilerAbstract
         //get all foreign keys, where foreign table is equal to this table
         $filteredForeignKeys = [];
         foreach ($foreignKeys as $foreignKey) {
-            if ($foreignKey->getForeignTableName() === $tableName ){
+            if ($foreignKey->getForeignTableName() === $tableName) {
                 array_push($filteredForeignKeys, $foreignKey);
             }
         }
 
         //get "has many" relations and call compiler for each
         $relationsCompiled = '';
-        foreach ($filteredForeignKeys as $foreignKey){
+        foreach ($filteredForeignKeys as $foreignKey) {
 
             $localTableName = $foreignKey->getLocalTableName();
 
@@ -200,11 +177,7 @@ class CrudModelCompiler extends StubCompilerAbstract
         }
 
         //{{HasManyRelations}}
-        $this->stub = str_replace(
-            '{{HasManyRelations}}',
-            $relationsCompiled,
-            $this->stub
-        );
+        $this->replaceInStub(['{{HasManyRelations}}' => $relationsCompiled]);
     }
 
     /**
@@ -219,7 +192,7 @@ class CrudModelCompiler extends StubCompilerAbstract
 
         //get relations and call compiler for each
         $relationsCompiled = '';
-        foreach ($belongsToManyForeignKeys as $belongsToManyForeignKey){
+        foreach ($belongsToManyForeignKeys as $belongsToManyForeignKey) {
             $relationCompiler = new BelongsToManyRelationCompiler();
 
             $relatedModelStudlyCasePlural = '';//todo
@@ -236,11 +209,8 @@ class CrudModelCompiler extends StubCompilerAbstract
             ]);
         }
 
-        $this->stub = str_replace(
-            '{{BelongsToManyRelations}}',
-            $relationsCompiled,
-            $this->stub
-        );
+        //{{BelongsToManyRelations}}
+        $this->replaceInStub(['{{BelongsToManyRelations}}' => $relationsCompiled]);
     }
 
 

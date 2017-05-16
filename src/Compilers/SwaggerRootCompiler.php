@@ -26,14 +26,12 @@ class SwaggerRootCompiler extends StubCompilerAbstract
      * @param array $params
      * @return string
      */
-    public function compile(array $params):string
+    public function compile(array $params): string
     {
-        //{{Host}}
-        $this->stub = str_replace(
-            '{{Host}}',
-            $params['Host'],
-            $this->stub
-        );
+        //
+        $this->replaceInStub([
+            '{{Host}}' => $params['Host'],
+        ]);
 
         //saving
         $this->saveStub();

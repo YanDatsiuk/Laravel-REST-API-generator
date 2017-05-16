@@ -29,13 +29,6 @@ class SwaggerPropertyCompiler extends StubCompilerAbstract
      */
     public function compile(array $params): string
     {
-        //
-        $this->stub = str_replace(
-            '{{name}}',
-            strtolower($params['name']),
-            $this->stub
-        );
-
         //check type and do required transformation
         switch ($params['type']) {
             case 'Boolean':
@@ -79,18 +72,11 @@ class SwaggerPropertyCompiler extends StubCompilerAbstract
         }
 
         //
-        $this->stub = str_replace(
-            '{{type}}',
-            strtolower($params['type']),
-            $this->stub
-        );
-
-        //
-        $this->stub = str_replace(
-            '{{format}}',
-            strtolower($params['format']),
-            $this->stub
-        );
+        $this->replaceInStub([
+            '{{name}}' => strtolower($params['name']),
+            '{{type}}' => strtolower($params['type']),
+            '{{format}}' => strtolower($params['format']),
+        ]);
 
         //
         return $this->stub;

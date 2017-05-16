@@ -50,39 +50,19 @@ class CrudModelRoutesCompiler extends StubCompilerAbstract
         }
 
         //
-        $this->stub = str_replace(
-            '{{ModelSingularLowercase}}',
-            $modelSingularLowercase,
-            $this->stub
-        );
-
-        //
-        $this->stub = str_replace(
-            '{{ModelPlurarLowercase}}',
-            $modelPlurarLowercase,
-            $this->stub
-        );
-
-        //
-        $this->stub = str_replace(
-            '{{ModelSingularUppercase}}',
-            $modelSingularUppercase,
-            $this->stub
-        );
-
-        //
-        $this->stub = str_replace(
-            '{{controllersNamespace}}',
-            $this->controllersNamespace,
-            $this->stub
-        );
+        $this->replaceInStub([
+            '{{ModelSingularLowercase}}' => $modelSingularLowercase,
+            '{{ModelPlurarLowercase}}' => $modelPlurarLowercase,
+            '{{ModelSingularUppercase}}' => $modelSingularUppercase,
+            '{{controllersNamespace}}' => $this->controllersNamespace,
+        ]);
 
         //
         return $this->stub;
     }
 
     /**
-     * Pluralize string from kebab case.
+     * Pluralize string from kebab case. //todo move to helper and replace all usages
      *
      * @param string $string example: user-role
      * @return string

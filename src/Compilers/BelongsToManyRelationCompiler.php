@@ -28,43 +28,16 @@ class BelongsToManyRelationCompiler extends StubCompilerAbstract
      * @param array $params
      * @return string
      */
-    public function compile(array $params):string
+    public function compile(array $params): string
     {
-
-        //{{relatedModelStudlyCasePlural}}
-        $this->stub = str_replace(
-            '{{relatedModelStudlyCasePlural}}',
-            $params['relatedModelStudlyCasePlural'],
-            $this->stub
-        );
-
-        //{{relatedModelCamelCasePlural}}
-        $this->stub = str_replace(
-            '{{relatedModelCamelCasePlural}}',
-            $params['relatedModelCamelCasePlural'],
-            $this->stub
-        );
-
-        //{{relatedModelCamelCaseSingular}}
-        $this->stub = str_replace(
-            '{{relatedModelCamelCaseSingular}}',
-            $params['relatedModelCamelCaseSingular'],
-            $this->stub
-        );
-
-        //{{pivotTableName}}
-        $this->stub = str_replace(
-            '{{pivotTableName}}',
-            $params['pivotTableName'],
-            $this->stub
-        );
-
-        //{{modelsNamespace}}
-        $this->stub = str_replace(
-            '{{modelsNamespace}}',
-            $params['modelsNamespace'],
-            $this->stub
-        );
+        //
+        $this->replaceInStub([
+            '{{relatedModelStudlyCasePlural}}' => $params['relatedModelStudlyCasePlural'],
+            '{{relatedModelCamelCasePlural}}' => $params['relatedModelCamelCasePlural'],
+            '{{relatedModelCamelCaseSingular}}' => $params['relatedModelCamelCaseSingular'],
+            '{{pivotTableName}}' => $params['pivotTableName'],
+            '{{modelsNamespace}}' => $params['modelsNamespace']
+        ]);
 
         //
         return $this->stub;

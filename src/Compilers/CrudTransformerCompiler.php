@@ -45,20 +45,6 @@ class CrudTransformerCompiler extends StubCompilerAbstract
         //
         $this->saveFileName = ucfirst($params['modelNameCamelcase']) . 'Transformer.php';
 
-        //modelNameCamelcase
-        $this->stub = str_replace(
-            '{{Model}}',
-            ucfirst($params['modelNameCamelcase']),
-            $this->stub
-        );
-
-        //transformersNamespace
-        $this->stub = str_replace(
-            '{{transformersNamespace}}',
-            $this->transformersNamespace,
-            $this->stub
-        );
-
         $availableIncludesArray = new ArrayCompiler();
         $arrayValues = $this->getModelRelations($params['modelNameCamelcase']);
         $availableIncludesArrayCompiled = $availableIncludesArray->compile([
@@ -68,13 +54,12 @@ class CrudTransformerCompiler extends StubCompilerAbstract
             'name' => 'availableIncludes',
         ]);
 
-        //{{modelRelations}}
-        $this->stub = str_replace(
-            '{{AvailableIncludesArray}}',
-            $availableIncludesArrayCompiled,
-            $this->stub
-        );
-
+        //
+        $this->replaceInStub([
+            '{{Model}}' => ucfirst($params['modelNameCamelcase']),
+            '{{transformersNamespace}}' => $this->transformersNamespace,
+            '{{AvailableIncludesArray}}' => $availableIncludesArrayCompiled,
+        ]);
 
         //
         $this->saveStub();
@@ -92,7 +77,7 @@ class CrudTransformerCompiler extends StubCompilerAbstract
     {
         $relations = [];
 
-        $modelFullClassName = $this->modelsNamespace. '\\'. studly_case($modelName);
+        $modelFullClassName = $this->modelsNamespace . '\\' . studly_case($modelName);
 
         $model = new $modelFullClassName();
 
@@ -107,10 +92,10 @@ class CrudTransformerCompiler extends StubCompilerAbstract
         }
 
         //check methods, whether they are relations and add their names if yes
-        foreach ($methods as $method){
+        foreach ($methods as $method) {
             $methodResult = $model->$method();
 
-            if ($methodResult instanceof Relation){
+            if ($methodResult instanceof Relation) {
                 $relations[] = "'$method'";
             }
         }

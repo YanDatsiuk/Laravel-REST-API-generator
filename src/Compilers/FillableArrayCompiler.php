@@ -27,7 +27,7 @@ class FillableArrayCompiler extends StubCompilerAbstract
      * @param array $params
      * @return bool|mixed|string
      */
-    public function compile(array $params):string
+    public function compile(array $params): string
     {
         /**
          * @var \Doctrine\DBAL\Schema\Column[]
@@ -36,18 +36,14 @@ class FillableArrayCompiler extends StubCompilerAbstract
 
         //get list of fields for fillable array
         $fields = '';
-        foreach ($columns as $column){
-            if (!$column->getAutoincrement()){
+        foreach ($columns as $column) {
+            if (!$column->getAutoincrement()) {
                 $fields .= "'{$column->getName()}', \n\t\t";
             }
         }
 
         //
-        $this->stub = str_replace(
-            '{{fields}}',
-            $fields,
-            $this->stub
-        );
+        $this->replaceInStub(['{{fields}}' => $fields]);
 
         //
         return $this->stub;

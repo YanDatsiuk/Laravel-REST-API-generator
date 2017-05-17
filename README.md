@@ -63,6 +63,7 @@ php artisan l5-swagger:generate
 ```
 
 * Execute command
+
 ```php
 composer dump-autoload
 ```

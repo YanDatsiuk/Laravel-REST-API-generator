@@ -264,6 +264,8 @@ abstract class ControllerAbstract extends IlluminateController
 
         $this->validate($request, $this->rules[__FUNCTION__] ?: []);
 
+        Log::info('valid');//todo remove
+
         $model = $this->model->newInstance();
         $model->fill($requestInputs)->save();
 

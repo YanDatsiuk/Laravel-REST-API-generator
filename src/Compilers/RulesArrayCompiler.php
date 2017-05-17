@@ -3,6 +3,7 @@
 namespace TMPHP\RestApiGenerators\Compilers;
 
 
+use Doctrine\DBAL\Schema\Column;
 use Illuminate\Support\Facades\Log;
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 
@@ -12,6 +13,11 @@ use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
  */
 class RulesArrayCompiler extends StubCompilerAbstract
 {
+
+    /**
+     * @var string
+     */
+    private $tableName;
 
     /**
      * RulesArrayCompiler constructor.
@@ -28,7 +34,7 @@ class RulesArrayCompiler extends StubCompilerAbstract
     }
 
     /**
-     * @param array $params //todo send table name in $params for getting more info for generating rules
+     * @param array $params
      * @return bool|mixed|string
      */
     public function compile(array $params): string
@@ -37,6 +43,7 @@ class RulesArrayCompiler extends StubCompilerAbstract
          * @var \Doctrine\DBAL\Schema\Column[]
          */
         $columns = $params['columns'];
+        $this->tableName = $params['tableName'];
 
         //get list of fields for fillable array
         $fields = '';
@@ -44,31 +51,31 @@ class RulesArrayCompiler extends StubCompilerAbstract
             if (!$column->getAutoincrement()) {
                 switch ($column->getType()) {
                     case 'Boolean':
-                        $fields .= "'{$column->getName()}' => 'boolean', \n\t\t"; //todo add 'smart' function for rule detection here
+                        $fields .= "'{$column->getName()}' => '{$this->getRulesForColumn($column, 'boolean')}', \n\t\t\t";
                         break;
 
                     case 'Integer':
-                        $fields .= "'{$column->getName()}' => 'integer', \n\t\t";
+                        $fields .= "'{$column->getName()}' => '{$this->getRulesForColumn($column, 'integer')}', \n\t\t\t";
                         break;
 
-                    case 'SmallInt'://todo specify ranges
-                        $fields .= "'{$column->getName()}' => 'integer', \n\t\t";
+                    case 'SmallInt':
+                        $fields .= "'{$column->getName()}' => '{$this->getRulesForColumn($column, 'integer')}', \n\t\t\t";
                         break;
 
                     case 'Float':
-                        $fields .= "'{$column->getName()}' => 'numeric', \n\t\t";
+                        $fields .= "'{$column->getName()}' => '{$this->getRulesForColumn($column, 'numeric')}', \n\t\t\t";
                         break;
 
                     case 'Decimal':
-                        $fields .= "'{$column->getName()}' => 'numeric', \n\t\t";
+                        $fields .= "'{$column->getName()}' => '{$this->getRulesForColumn($column, 'numeric')}', \n\t\t\t";
                         break;
 
                     case 'BigInt':
-                        $fields .= "'{$column->getName()}' => 'numeric', \n\t\t";
+                        $fields .= "'{$column->getName()}' => '{$this->getRulesForColumn($column, 'numeric')}', \n\t\t\t";
                         break;
 
                     case 'String':
-                        $fields .= "'{$column->getName()}' => 'string', \n\t\t";
+                        $fields .= "'{$column->getName()}' => '{$this->getRulesForColumn($column, 'string')}', \n\t\t\t";
                         break;
                     default:
                         break;
@@ -77,10 +84,59 @@ class RulesArrayCompiler extends StubCompilerAbstract
         }
 
         //
-        $this->replaceInStub(['{{fields}}' => $fields]);
+        $this->replaceInStub([
+            '{{storeRules}}' => $fields,
+            '{{updateRules}}' => $fields,
+            '{{indexRules}}' => '',//todo add some validation fields
+            '{{showRules}}' => '',//todo add some validation fields
+            '{{destroyRules}}' => '',//todo add some validation fields
+        ]);
+
 
         //
         return $this->stub;
+    }
+
+    /**
+     * Get rules for column in table
+     *
+     * @param Column $column
+     * @param string $firstRule
+     * @return string
+     */
+    private function getRulesForColumn(Column $column, string $firstRule = 'string'): string
+    {
+        $rules = $firstRule;
+        $columnName = $column->getName();
+        $columnType = $column->getType(); //$column->getUnsigned()
+
+        //todo write algo
+
+        //v- date_time
+
+        //
+        if ($columnType == 'SmallInt') {
+            $rules .= $column->getUnsigned() ? '|between:0,65535' : '|between:-32768,32767';
+        }
+
+        //
+        if ($columnType == 'Integer') {
+            $rules .= $column->getUnsigned() ? '|between:0,4294967295' : '|between:-2147483648,2147483647';
+        }
+
+        //
+        if ($columnType == 'BigInt') {
+            $rules .= $column->getUnsigned() ? '|between:0,18446744073709551615' : '|between:-9223372036854775808,9223372036854775807';
+        }
+
+        //v- email
+        if (str_contains($columnName, 'mail')) {
+            $rules .= '|email';
+        }
+
+        //v- numeric
+
+        return $rules;
     }
 
 }

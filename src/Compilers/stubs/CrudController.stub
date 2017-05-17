@@ -8,18 +8,7 @@ use {{transformersNamespace}}\{{Model}}Transformer;
 
 class {{Model}}Controller extends ControllerAbstract
 {
-    /**
-     * Validation rules for request parameters
-     *
-     * @var array $rules
-     */
-     protected $rules = [
-       'index'   => [],
-       'store'   => [],
-       'update'  => [],
-       'show'    => [],
-       'destroy' => [],
-     ];
+    {{rulesArray}}
 
     /**
      * {{Model}}Controller constructor

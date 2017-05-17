@@ -73,9 +73,9 @@ class CrudTransformerCompiler extends StubCompilerAbstract
     }
 
     /**
-     * Get model's relations's names by model name.
+     * Get the names of model's relations by model name.
      * @param string $modelName
-     * @return array model's relations' names //todo spellchecking
+     * @return array the names of model's relations
      */
     private function getModelRelations(string $modelName): array
     {

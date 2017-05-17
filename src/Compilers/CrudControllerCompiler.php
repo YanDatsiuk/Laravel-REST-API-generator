@@ -2,7 +2,11 @@
 
 namespace TMPHP\RestApiGenerators\Compilers;
 
+use Doctrine\DBAL\Schema\Column;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
+use TMPHP\RestApiGenerators\Support\SchemaManager;
 
 /**
  * Class CrudControllerCompiler
@@ -19,6 +23,20 @@ class CrudControllerCompiler extends StubCompilerAbstract
     /** @var string $transformersNamespace */
     private $transformersNamespace;
 
+    /** @var  string */
+    private $tableName;
+
+    /** @var  Model */
+    private $model;
+
+    /** @var Column[] */
+    private $columns;
+
+    /**
+     * @var SchemaManager
+     */
+    private $schema;
+
     /**
      * CrudControllerCompiler constructor.
      *
@@ -31,6 +49,7 @@ class CrudControllerCompiler extends StubCompilerAbstract
         $saveToPath = base_path(config('rest-api-generator.paths.controllers'));
         $saveFileName = '';
 
+        $this->schema = new SchemaManager();
         $this->controllersNamespace = config('rest-api-generator.namespaces.controllers');
         $this->modelsNamespace = config('rest-api-generator.namespaces.models');
         $this->transformersNamespace = config('rest-api-generator.namespaces.transformers');
@@ -47,8 +66,6 @@ class CrudControllerCompiler extends StubCompilerAbstract
      */
     public function compile(array $params): string
     {
-        $this->saveFileName = ucfirst($params['modelNameCamelcase']) . 'Controller.php';
-
         //
         $this->replaceInStub([
             '{{Model}}' => ucfirst($params['modelNameCamelcase']),
@@ -57,8 +74,33 @@ class CrudControllerCompiler extends StubCompilerAbstract
             '{{transformersNamespace}}' => $this->transformersNamespace,
         ]);
 
+        $this->saveFileName = ucfirst($params['modelNameCamelcase']) . 'Controller.php';
+        $modelClassWithNamespace = $this->modelsNamespace. '\\'. ucfirst($params['modelNameCamelcase']);
+        $this->model = new $modelClassWithNamespace();
+        $this->tableName = $this->model->getTable();
+        $this->columns = $this->schema->listTableColumns($this->tableName);
+
+        //{{RulesArray}}
+        $this->compileRulesArray($this->columns, $this->tableName);
+
         $this->saveStub();
 
         return $this->stub;
+    }
+
+    /**
+     * @param array $columns
+     * @param string $tableName
+     */
+    private function compileRulesArray(array $columns, string $tableName)
+    {
+        $rulesArrayCompiler = new RulesArrayCompiler();
+        $rulesArrayCompiled = $rulesArrayCompiler->compile([
+            'columns' => $columns,
+            'tableName' => $tableName,
+        ]);
+
+        //{{rulesArray}}
+        $this->replaceInStub(['{{rulesArray}}' => $rulesArrayCompiled]);
     }
 }

@@ -1,8 +1,22 @@
 /**
-      * Validation rules for model
-      *
-      * @var array
-      */
-    protected $rules = [
-        {{fields}}
-    ];
+     * Validation rules for request parameters
+     *
+     * @var array $rules
+     */
+     protected $rules = [
+       'index'   => [
+            {{indexRules}}
+       ],
+       'store'   => [
+            {{storeRules}}
+       ],
+       'update'  => [
+            {{updateRules}}
+       ],
+       'show'    => [
+            {{showRules}}
+       ],
+       'destroy' => [
+            {{destroyRules}}
+       ],
+     ];

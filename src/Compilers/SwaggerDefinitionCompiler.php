@@ -31,6 +31,7 @@ class SwaggerDefinitionCompiler extends StubCompilerAbstract
     {
         $saveToPath = base_path(config('rest-api-generator.paths.documentations'));
         $saveFileName = '';
+
         $this->schema = new SchemaManager();
 
         parent::__construct($saveToPath, $saveFileName, $stub);

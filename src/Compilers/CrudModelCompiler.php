@@ -40,8 +40,8 @@ class CrudModelCompiler extends StubCompilerAbstract
     {
         $saveToPath = base_path(config('rest-api-generator.paths.models'));
         $saveFileName = '';
-        $this->schema = new SchemaManager();
 
+        $this->schema = new SchemaManager();
         $this->modelsNamespace = config('rest-api-generator.namespaces.models');
         $this->dbTablePrefix = config('rest-api-generator.db_table_prefix');
 
@@ -64,9 +64,6 @@ class CrudModelCompiler extends StubCompilerAbstract
 
         //{{FillableArray}}
         $this->compileFillableArray($columns);
-
-        //{{RulesArray}}
-        $this->compileRulesArray($columns);
 
         //{{BelongsToRelations}}
         $this->compileBelongsToRelations($params['tableName']);
@@ -104,18 +101,6 @@ class CrudModelCompiler extends StubCompilerAbstract
 
         //{{FillableArray}}
         $this->replaceInStub(['{{FillableArray}}' => $fillableArrayCompiled]);
-    }
-
-    /**
-     * @param array $columns
-     */
-    private function compileRulesArray(array $columns)
-    {
-        $rulesArrayCompiler = new RulesArrayCompiler();
-        $rulesArrayCompiled = $rulesArrayCompiler->compile(['columns' => $columns]);
-
-        //{{RulesArray}}
-        $this->replaceInStub(['{{RulesArray}}' => $rulesArrayCompiled]);
     }
 
     /**

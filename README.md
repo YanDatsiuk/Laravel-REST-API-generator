@@ -5,6 +5,13 @@ Code scaffolding for REST API project.
 
 ## Installation
 
+### Package installation
+
+* add `"tmphp/rest-api-generators": "dev-master"` to your composer.json (node `"require-dev"`)
+* run `php artisan composer update`
+
+### Configuration
+
 Open your `config/app.php` and add this line in `providers` section
 ```php
     TMPHP\RestApiGenerators\GeneratorsServiceProviders::class,
@@ -67,3 +74,5 @@ php artisan l5-swagger:generate
 ```php
 composer dump-autoload
 ```
+
+* :elephant: :boom: :+1:

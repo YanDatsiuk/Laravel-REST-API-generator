@@ -110,9 +110,7 @@ class RulesArrayCompiler extends StubCompilerAbstract
         $columnName = $column->getName();
         $columnType = $column->getType(); //$column->getUnsigned()
 
-        //todo write algo
-
-        //v- date_time
+        //v- date_time //todo add validation rules for different sql date time column types
 
         //
         if ($columnType == 'SmallInt') {

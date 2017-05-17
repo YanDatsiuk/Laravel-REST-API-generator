@@ -58,7 +58,7 @@ class MakeCrudControllersCommand extends Command
             ]);
         }
 
-        $this->info('make:crud-controllers  cmd executed');
+        $this->info('make:crud-controllers cmd executed');
     }
 
 }

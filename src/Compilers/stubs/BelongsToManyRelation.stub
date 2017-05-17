@@ -1,0 +1,9 @@
+/**
+     * {{relatedModelStudlyCasePlural}}
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function {{relatedModelCamelCasePlural}}()
+    {
+        return $this->belongsToMany('{{modelsNamespace}}\{{relatedModelCamelCaseSingular}}', '{{pivotTableName}}');
+    }

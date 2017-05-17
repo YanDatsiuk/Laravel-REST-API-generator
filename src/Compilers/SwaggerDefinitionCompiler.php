@@ -6,13 +6,18 @@ namespace TMPHP\RestApiGenerators\Compilers;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use TMPHP\RestApiGenerators\Core\StubCompiler;
+use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
+use TMPHP\RestApiGenerators\Support\SchemaManager;
 
-class SwaggerDefinitionCompiler extends StubCompiler
+/**
+ * Class SwaggerDefinitionCompiler
+ * @package TMPHP\RestApiGenerators\Compilers
+ */
+class SwaggerDefinitionCompiler extends StubCompilerAbstract
 {
 
     /**
-     * @var AbstractSchemaManager
+     * @var SchemaManager
      */
     private $schema;
 
@@ -24,9 +29,10 @@ class SwaggerDefinitionCompiler extends StubCompiler
      */
     public function __construct($saveToPath = null, $saveFileName = null, $stub = null)
     {
-        $saveToPath = storage_path('CRUD/Swagger/');
+        $saveToPath = base_path(config('rest-api-generator.paths.documentations'));
         $saveFileName = '';
-        $this->schema= DB::getDoctrineSchemaManager();
+
+        $this->schema = new SchemaManager();
 
         parent::__construct($saveToPath, $saveFileName, $stub);
     }
@@ -35,39 +41,33 @@ class SwaggerDefinitionCompiler extends StubCompiler
      * @param array $params
      * @return bool|mixed|string
      */
-    public function compile(array $params):string
+    public function compile(array $params): string
     {
 
         //
-        $this->saveFileName = $params['modelName'].'.php';
-
-        //
-        $this->stub = str_replace(
-            '{{ModelLowercase}}',
-            $params['modelName'],
-            $this->stub
-        );
+        $this->saveFileName = $params['modelName'] . '.php';
 
         //
         $compiledProperties = '';
+
+        /** @var \Doctrine\DBAL\Schema\Column[] */
         $columns = $this->schema->listTableColumns($params['tableName']);
 
         //compile swagger properties for table columns
-        foreach ($columns as $column){
-
+        foreach ($columns as $column) {
             $swaggerPropertyCompiler = new SwaggerPropertyCompiler();
             $compiledProperties .= $swaggerPropertyCompiler->compile([
-               'name' => $column->getName(),
+                'name' => $column->getName(),
                 'type' => $column->getType(),
+                'format' => 'default'
             ]);
         }
 
         //
-        $this->stub = str_replace(
-            '{{SwaggerProperties}}',
-            $compiledProperties,
-            $this->stub
-        );
+        $this->replaceInStub([
+            '{{ModelLowercase}}' => $params['modelName'],
+            '{{SwaggerProperties}}' => $compiledProperties,
+        ]);
 
         //
         $this->saveStub();

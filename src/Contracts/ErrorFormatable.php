@@ -2,8 +2,7 @@
 
 namespace TMPHP\RestApiGenerators\Contracts;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Validation\Validator;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Contract for realization return formatted errors
@@ -14,11 +13,11 @@ use Illuminate\Validation\Validator;
  */
 interface ErrorFormatable
 {
-    public function responseWithValidatorErrors(Validator $validator);
+    public function responseNotFoundModel($model, int $status_code = 422);
 
-    public function responseNotFoundModel(Model $model = null, int $status_code = 422);
-
-    public function responseCouldNotCreate(Model $model = null);
+    public function responseCouldNotCreate($nameOfEntity);
 
     public function responseErrorMessage(string $message, int $status_code, array $errors = []);
+
+    public function response($content, $status_code = 200, array $headers): Response;
 }

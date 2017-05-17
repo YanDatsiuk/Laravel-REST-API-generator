@@ -2,89 +2,105 @@
 
 namespace TMPHP\RestApiGenerators\Compilers;
 
+use Doctrine\DBAL\Schema\Column;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
+use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
+use TMPHP\RestApiGenerators\Support\SchemaManager;
 
-use Doctrine\DBAL\Schema\AbstractSchemaManager;
-use Illuminate\Support\Facades\DB;
-use TMPHP\RestApiGenerators\Core\StubCompiler;
-
-class CrudControllerCompiler extends StubCompiler
+/**
+ * Class CrudControllerCompiler
+ * @package TMPHP\RestApiGenerators\Compilers
+ */
+class CrudControllerCompiler extends StubCompilerAbstract
 {
-
-    /**
-     * @var string
-     */
+    /** @var string $controllersNamespace */
     private $controllersNamespace;
 
-    /**
-     * @var string
-     */
+    /** @var string $modelsNamespace */
     private $modelsNamespace;
 
-    /**
-     * @var string
-     */
+    /** @var string $transformersNamespace */
     private $transformersNamespace;
+
+    /** @var  string */
+    private $tableName;
+
+    /** @var  Model */
+    private $model;
+
+    /** @var Column[] */
+    private $columns;
+
+    /**
+     * @var SchemaManager
+     */
+    private $schema;
 
     /**
      * CrudControllerCompiler constructor.
+     *
      * @param null $saveToPath
      * @param null $saveFileName
      * @param null $stub
      */
     public function __construct($saveToPath = null, $saveFileName = null, $stub = null)
     {
-        $saveToPath = storage_path('CRUD/Controllers/');
+        $saveToPath = base_path(config('rest-api-generator.paths.controllers'));
         $saveFileName = '';
 
-        $this->controllersNamespace = config('rest-api-generator.controllers-namespace');
-        $this->modelsNamespace = config('rest-api-generator.models-namespace');
-        $this->transformersNamespace = config('rest-api-generator.transformers-namespace');
+        $this->schema = new SchemaManager();
+        $this->controllersNamespace = config('rest-api-generator.namespaces.controllers');
+        $this->modelsNamespace = config('rest-api-generator.namespaces.models');
+        $this->transformersNamespace = config('rest-api-generator.namespaces.transformers');
 
         parent::__construct($saveToPath, $saveFileName, $stub);
     }
 
     /**
+     * Run compile process
+     *
      * @param array $params
+     *
      * @return bool|mixed|string
      */
-    public function compile(array $params):string
+    public function compile(array $params): string
     {
         //
-        $this->saveFileName = ucfirst($params['modelNameCamelcase']).'Controller.php';
+        $this->replaceInStub([
+            '{{Model}}' => ucfirst($params['modelNameCamelcase']),
+            '{{controllersNamespace}}' => $this->controllersNamespace,
+            '{{modelsNamespace}}' => $this->modelsNamespace,
+            '{{transformersNamespace}}' => $this->transformersNamespace,
+        ]);
 
-        //
-        $this->stub = str_replace(
-            '{{Model}}',
-            ucfirst($params['modelNameCamelcase']),
-            $this->stub
-        );
+        $this->saveFileName = ucfirst($params['modelNameCamelcase']) . 'Controller.php';
+        $modelClassWithNamespace = $this->modelsNamespace. '\\'. ucfirst($params['modelNameCamelcase']);
+        $this->model = new $modelClassWithNamespace();
+        $this->tableName = $this->model->getTable();
+        $this->columns = $this->schema->listTableColumns($this->tableName);
 
-        //
-        $this->stub = str_replace(
-            '{{controllersNamespace}}',
-            $this->controllersNamespace,
-            $this->stub
-        );
+        //{{RulesArray}}
+        $this->compileRulesArray($this->columns, $this->tableName);
 
-        //
-        $this->stub = str_replace(
-            '{{modelsNamespace}}',
-            $this->modelsNamespace,
-            $this->stub
-        );
-
-        //
-        $this->stub = str_replace(
-            '{{transformersNamespace}}',
-            $this->transformersNamespace,
-            $this->stub
-        );
-
-        //
         $this->saveStub();
 
-        //
         return $this->stub;
     }
 
+    /**
+     * @param array $columns
+     * @param string $tableName
+     */
+    private function compileRulesArray(array $columns, string $tableName)
+    {
+        $rulesArrayCompiler = new RulesArrayCompiler();
+        $rulesArrayCompiled = $rulesArrayCompiler->compile([
+            'columns' => $columns,
+            'tableName' => $tableName,
+        ]);
+
+        //{{rulesArray}}
+        $this->replaceInStub(['{{rulesArray}}' => $rulesArrayCompiled]);
+    }
 }

@@ -7,10 +7,10 @@ use Illuminate\Support\Facades\Log;
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 
 /**
- * Class FillableArrayCompiler
+ * Class ArrayCompiler
  * @package TMPHP\RestApiGenerators\Compilers
  */
-class FillableArrayCompiler extends StubCompilerAbstract
+class ArrayCompiler extends StubCompilerAbstract
 {
 
     /**
@@ -33,24 +33,40 @@ class FillableArrayCompiler extends StubCompilerAbstract
      */
     public function compile(array $params): string
     {
-        /**
-         * @var \Doctrine\DBAL\Schema\Column[]
-         */
-        $columns = $params['columns'];
-
-        //get list of fields for fillable array
-        $fields = '';
-        foreach ($columns as $column) {
-            if (!$column->getAutoincrement()) {
-                $fields .= "'{$column->getName()}', \n\t\t";
-            }
-        }
 
         //
-        $this->replaceInStub(['{{fields}}' => $fields]);
+        $this->replaceInStub([
+            '{{comment}}' => $params['comment'],
+            '{{name}}' => $params['name']
+        ]);
+
+        $this->compileFields($params['keys'], $params['values']);
 
         //
         return $this->stub;
+    }
+
+    /**
+     * Compile list of fields for array
+     *
+     * @param array $keys
+     * @param array $values
+     */
+    private function compileFields(array $keys, array $values)
+    {
+        $fields = '';
+
+        if ($keys) {
+
+        } else {
+
+            foreach ($values as $value) {
+                $fields .= $value . ', ';
+            }
+        }
+
+        //{{fields}}
+        $this->replaceInStub(['{{fields}}' => $fields]);
     }
 
 }

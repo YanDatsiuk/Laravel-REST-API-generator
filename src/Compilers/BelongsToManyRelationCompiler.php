@@ -3,18 +3,19 @@
 namespace TMPHP\RestApiGenerators\Compilers;
 
 
+use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Illuminate\Support\Facades\Log;
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 
 /**
- * Class FillableArrayCompiler
+ * Class BelongsToManyRelationCompiler
  * @package TMPHP\RestApiGenerators\Compilers
  */
-class FillableArrayCompiler extends StubCompilerAbstract
+class BelongsToManyRelationCompiler extends StubCompilerAbstract
 {
 
     /**
-     * FillableArrayCompiler constructor.
+     * HasManyRelationCompiler constructor.
      * @param null $saveToPath
      * @param null $saveFileName
      * @param null $stub
@@ -29,25 +30,18 @@ class FillableArrayCompiler extends StubCompilerAbstract
 
     /**
      * @param array $params
-     * @return bool|mixed|string
+     * @return string
      */
     public function compile(array $params): string
     {
-        /**
-         * @var \Doctrine\DBAL\Schema\Column[]
-         */
-        $columns = $params['columns'];
-
-        //get list of fields for fillable array
-        $fields = '';
-        foreach ($columns as $column) {
-            if (!$column->getAutoincrement()) {
-                $fields .= "'{$column->getName()}', \n\t\t";
-            }
-        }
-
         //
-        $this->replaceInStub(['{{fields}}' => $fields]);
+        $this->replaceInStub([
+            '{{relatedModelStudlyCasePlural}}' => $params['relatedModelStudlyCasePlural'],
+            '{{relatedModelCamelCasePlural}}' => $params['relatedModelCamelCasePlural'],
+            '{{relatedModelCamelCaseSingular}}' => $params['relatedModelCamelCaseSingular'],
+            '{{pivotTableName}}' => $params['pivotTableName'],
+            '{{modelsNamespace}}' => $params['modelsNamespace']
+        ]);
 
         //
         return $this->stub;

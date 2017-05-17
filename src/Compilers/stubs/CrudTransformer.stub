@@ -3,11 +3,18 @@
 namespace {{transformersNamespace}};
 
 use Illuminate\Database\Eloquent\Model;
-use League\Fractal\TransformerAbstract;
+use TMPHP\RestApiGenerators\AbstractEntities\TransformerAbstract;
 
 
 class {{Model}}Transformer extends TransformerAbstract
 {
+
+    {{AvailableIncludesArray}}
+
+    /**
+     *
+     */
+    private $validParams = ['limit', 'order'];
 
     /**
      * Transform model data to array

@@ -3,9 +3,13 @@
 namespace TMPHP\RestApiGenerators\Compilers;
 
 
-use TMPHP\RestApiGenerators\Core\StubCompiler;
+use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 
-class CrudModelRoutesCompiler extends StubCompiler
+/**
+ * Class CrudModelRoutesCompiler
+ * @package TMPHP\RestApiGenerators\Compilers
+ */
+class CrudModelRoutesCompiler extends StubCompilerAbstract
 {
 
     /**
@@ -22,10 +26,10 @@ class CrudModelRoutesCompiler extends StubCompiler
      */
     public function __construct($saveToPath = null, $saveFileName = null, $stub = null)
     {
-        $saveToPath = storage_path('CRUD/Routes/');
+        $saveToPath = base_path(config('rest-api-generator.paths.routes'));
         $saveFileName = '';
 
-        $this->controllersNamespace = config('rest-api-generator.controllers-namespace');
+        $this->controllersNamespace = config('rest-api-generator.namespaces.controllers');
 
         parent::__construct($saveToPath, $saveFileName, $stub);
     }
@@ -50,51 +54,31 @@ class CrudModelRoutesCompiler extends StubCompiler
         }
 
         //
-        $this->stub = str_replace(
-            '{{ModelSingularLowercase}}',
-            $modelSingularLowercase,
-            $this->stub
-        );
-
-        //
-        $this->stub = str_replace(
-            '{{ModelPlurarLowercase}}',
-            $modelPlurarLowercase,
-            $this->stub
-        );
-
-        //
-        $this->stub = str_replace(
-            '{{ModelSingularUppercase}}',
-            $modelSingularUppercase,
-            $this->stub
-        );
-
-        //
-        $this->stub = str_replace(
-            '{{controllersNamespace}}',
-            $this->controllersNamespace,
-            $this->stub
-        );
+        $this->replaceInStub([
+            '{{ModelSingularLowercase}}' => $modelSingularLowercase,
+            '{{ModelPlurarLowercase}}' => $modelPlurarLowercase,
+            '{{ModelSingularUppercase}}' => $modelSingularUppercase,
+            '{{controllersNamespace}}' => $this->controllersNamespace,
+        ]);
 
         //
         return $this->stub;
     }
 
     /**
-     * Pluralize string from kebab case.
+     * Pluralize string from kebab case. //todo move to helper and replace all usages
      *
      * @param string $string example: user-role
      * @return string
      */
-    private function pluralizeKebabCase(string $string):string
+    private function pluralizeKebabCase(string $string): string
     {
         //
         $subStrings = explode('-', $string);
 
         //
         $pluralizedSubStrings = [];
-        foreach ($subStrings as $subString){
+        foreach ($subStrings as $subString) {
             array_push($pluralizedSubStrings, str_plural($subString));
         }
 

@@ -45,7 +45,7 @@ trait ErrorFormatable
      */
     public function responseNotFoundModel(IlluminateModel $model, int $status_code = 422)
     {
-        $this->message = 'Not found this' . get_class($model);
+        $this->message = 'Not found this ' . get_class($model);
         $this->errors = [$model->getKey() => 'Not found this' . get_class($model)];
         $this->status_code = $status_code;
 

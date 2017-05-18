@@ -19,19 +19,28 @@ class RestAuth
         $api = app('Dingo\Api\Routing\Router');
 
         // Authentication Routes...
-        $api->group(['middleware' => 'check.role.access', 'version' => env('APP_ENV', 'v1')], function ($api) {
+        $api->group([
+            'middleware' => 'check.role.access',
+            'version' => env('API_VERSION', 'v1'),
+            'prefix' => env('API_VERSION', 'v1'),
+        ], function ($api) {
             //Login Routes
-            $api->post('/login', 'App\REST\Http\Controllers\Api\v1\Auth\AuthController@login')->name('login');
-            $api->post('/logout', 'App\REST\Http\Controllers\Api\v1\Auth\AuthController@logout')->name('logout');
+            $api->post('/login', 'App\REST\Http\Controllers\Api\v1\AuthController@login')
+                ->name('login');
+            $api->post('/logout', 'App\REST\Http\Controllers\Api\v1\AuthController@logout')
+                ->name('logout');
 
             // Registration Routes...
-            $api->post('/register', 'App\REST\Http\Controllers\Api\v1\Auth\AuthController@register')->name('register');
+            $api->post('/register', 'App\REST\Http\Controllers\Api\v1\AuthController@register')
+                ->name('register');
 
             // Reset password Routes
             $api->post('/password/email',
-                'App\REST\Http\Controllers\Api\v1\Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
+                'App\REST\Http\Controllers\Api\v1\ForgotPasswordController@sendResetLinkEmail')
+                ->name('password.email');
             $api->post('/password/reset',
-                'App\REST\Http\Controllers\Api\v1\Auth\ResetPasswordController@reset')->name('password.reset');
+                'App\REST\Http\Controllers\Api\v1\ResetPasswordController@reset')
+                ->name('password.reset');
         });
     }
 }

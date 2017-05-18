@@ -45,15 +45,15 @@ class GeneratorsServiceProviders extends ServiceProvider
      */
     public function register()
     {
-        $this->registerInstallCommand();
+        $this->registerCommands();
     }
 
     /**
-     * Register the 'eternaltree:install' command.
+     * Register commands.
      *
      * @return void
      */
-    protected function registerInstallCommand()
+    protected function registerCommands()
     {
         $this->commands([
             MakeCrudRoutesCommand::class,

@@ -1,7 +1,8 @@
 Laravel REST API Generator
 ==========================
 
-Code scaffolding for REST API project.
+Code scaffolding for REST API project. 
+This package is available also on [packagist](https://packagist.org/packages/tmphp/rest-api-generators). And installation via packagist is preferred way.
 
 ## Installation
 

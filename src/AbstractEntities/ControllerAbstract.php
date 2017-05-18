@@ -11,6 +11,7 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as IlluminateController;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 use League\Fractal\TransformerAbstract;
 use TMPHP\RestApiGenerators\Exceptions\WrongTypeException;
 use TMPHP\RestApiGenerators\Helpers\Traits\ErrorFormatable;
@@ -262,9 +263,11 @@ abstract class ControllerAbstract extends IlluminateController
     {
         $requestInputs = $request->all();
 
-        $this->validate($request, $this->rules[__FUNCTION__] ?: []);
-
-        Log::info('valid');//todo remove
+        try {
+            $this->validate($request, $this->rules[__FUNCTION__] ?: []);
+        } catch (ValidationException $exception) {
+            return $exception->getResponse();
+        }
 
         $model = $this->model->newInstance();
         $model->fill($requestInputs)->save();
@@ -292,10 +295,10 @@ abstract class ControllerAbstract extends IlluminateController
         $this->validate($request, $this->rules[__FUNCTION__] ?: []);
         $this->setParams($request);
 
-        $model = $this->query->find($id)->with($this->relations);//todo BUG if model === null;
+        $model = $this->query->find($id);
 
         if (!$model) {
-            return $this->responseNotFoundModel($model);
+            return $this->responseNotFoundModel($this->model);
         }
 
         return $this->response->item(

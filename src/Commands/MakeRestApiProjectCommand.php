@@ -248,6 +248,9 @@ class MakeRestApiProjectCommand extends Command
         //php artisan make:crud-routes
         Artisan::call('make:swagger-root');
 
+        //php artisan make:rest-auth
+        Artisan::call('make:rest-auth');
+
         //php artisan migrate:generate --no-interaction
         Artisan::call('migrate:generate', ['--no-interaction' => true]);
     }

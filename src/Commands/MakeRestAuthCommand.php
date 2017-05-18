@@ -6,6 +6,9 @@ namespace TMPHP\RestApiGenerators\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Artisan;
+use TMPHP\RestApiGenerators\Compilers\AuthControllerCompiler;
+use TMPHP\RestApiGenerators\Compilers\ForgotPasswordControllerCompiler;
+use TMPHP\RestApiGenerators\Compilers\ResetPasswordControllerCompiler;
 use TMPHP\RestApiGenerators\Support\Helper;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 
@@ -43,6 +46,16 @@ class MakeRestAuthCommand extends Command
     public function fire()
     {
         $this->schema = DB::getDoctrineSchemaManager();
+
+        $authControllerComipler = new AuthControllerCompiler();
+        $authControllerComipler->compile([]);
+
+        $forgotPasswordControllerCompiler = new ForgotPasswordControllerCompiler();
+        $forgotPasswordControllerCompiler->compile([]);
+
+
+        $resetPasswordControllerCompiler = new ResetPasswordControllerCompiler();
+        $resetPasswordControllerCompiler->compile([]);
 
         $this->info('All files for REST API authentication code were generated!');
     }

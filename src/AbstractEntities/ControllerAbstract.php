@@ -295,7 +295,7 @@ abstract class ControllerAbstract extends IlluminateController
         $this->validate($request, $this->rules[__FUNCTION__] ?: []);
         $this->setParams($request);
 
-        $model = $this->query->find($id);//todo BUG if model === null;
+        $model = $this->query->find($id);
 
         if (!$model) {
             return $this->responseNotFoundModel($this->model);

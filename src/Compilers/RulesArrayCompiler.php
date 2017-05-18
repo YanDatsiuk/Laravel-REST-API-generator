@@ -4,8 +4,11 @@ namespace TMPHP\RestApiGenerators\Compilers;
 
 
 use Doctrine\DBAL\Schema\Column;
+use Doctrine\DBAL\Schema\ForeignKeyConstraint;
+use Doctrine\DBAL\Schema\Table;
 use Illuminate\Support\Facades\Log;
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
+use TMPHP\RestApiGenerators\Support\SchemaManager;
 
 /**
  * Class RulesArrayCompiler
@@ -20,6 +23,21 @@ class RulesArrayCompiler extends StubCompilerAbstract
     private $tableName;
 
     /**
+     * @var SchemaManager
+     */
+    private $schema;
+
+    /**
+     * @var Table
+     */
+    private $table;
+
+    /**
+     * @var ForeignKeyConstraint[]
+     */
+    private $foreignKeys;
+
+    /**
      * RulesArrayCompiler constructor.
      * @param null $saveToPath
      * @param null $saveFileName
@@ -29,6 +47,8 @@ class RulesArrayCompiler extends StubCompilerAbstract
     {
         $saveToPath = base_path(config('rest-api-generator.paths.models'));
         $saveFileName = '';
+
+        $this->schema = new SchemaManager();
 
         parent::__construct($saveToPath, $saveFileName, $stub);
     }
@@ -44,6 +64,8 @@ class RulesArrayCompiler extends StubCompilerAbstract
          */
         $columns = $params['columns'];
         $this->tableName = $params['tableName'];
+        $this->table = $this->schema->listTableDetails($this->tableName);
+        $this->foreignKeys = $this->table->getForeignKeys();
 
         //get list of fields for fillable array
         $fields = '';
@@ -110,9 +132,7 @@ class RulesArrayCompiler extends StubCompilerAbstract
         $columnName = $column->getName();
         $columnType = $column->getType(); //$column->getUnsigned()
 
-        //todo write algo
-
-        //v- date_time
+        //v- date_time //todo add validation rules for different sql date time column types
 
         //
         if ($columnType == 'SmallInt') {
@@ -134,9 +154,33 @@ class RulesArrayCompiler extends StubCompilerAbstract
             $rules .= '|email';
         }
 
+        //
+        $foreignRule = $this->makeForeignKeyRule($columnName);
+        $rules .= $foreignRule ? $foreignRule : '';
+
         //v- numeric
 
         return $rules;
+    }
+
+    /**
+     * Make validation "exists" rule. It depends on $this->foreignKeys and $columnName.
+     *
+     * @param string $columnName
+     * @return null|string laravel validation rule or null.
+     */
+    private function makeForeignKeyRule(string $columnName)
+    {
+        $foreignRule = null;
+        foreach ($this->foreignKeys as $foreignKey) {
+            foreach ($foreignKey->getLocalColumns() as $localColumn) {
+
+                if ($localColumn === $columnName) {
+                    $foreignRule = '|exists:' . $foreignKey->getForeignTableName() . ',' . $foreignKey->getForeignColumns()[0];
+                }
+            }
+        }
+        return $foreignRule;
     }
 
 }

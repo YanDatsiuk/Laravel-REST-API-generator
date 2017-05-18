@@ -47,8 +47,8 @@ class MakeRestAuthCommand extends Command
     {
         $this->schema = DB::getDoctrineSchemaManager();
 
-        $authControllerComipler = new AuthControllerCompiler();
-        $authControllerComipler->compile([]);
+        $authControllerCompiler = new AuthControllerCompiler();
+        $authControllerCompiler->compile([]);
 
         $forgotPasswordControllerCompiler = new ForgotPasswordControllerCompiler();
         $forgotPasswordControllerCompiler->compile([]);

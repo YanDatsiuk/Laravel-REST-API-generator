@@ -14,9 +14,7 @@ use TMPHP\RestApiGenerators\Helpers\Traits\ErrorFormatable;
  */
 class AuthController extends IlluminateController
 {
-    use Helpers,
-        ErrorFormatable,
-        AuthorizesRequests,
+    use AuthorizesRequests,
         DispatchesJobs,
         ValidatesRequests;
 

@@ -2,6 +2,7 @@
 
 namespace TMPHP\RestApiGenerators\Contracts;
 
+use Illuminate\Database\Eloquent\Model;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -13,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 interface ErrorFormatable
 {
-    public function responseNotFoundModel($model, int $status_code = 422);
+    public function responseNotFoundModel(Model $model, int $status_code = 422);
 
     public function responseCouldNotCreate($nameOfEntity);
 

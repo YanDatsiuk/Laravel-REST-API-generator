@@ -58,7 +58,7 @@
                  *         response="default",
                  *         description="unexpected error",
                  *         @SWG\Schema(
-                 *             ref="#/definitions/Error"
+                 *             ref="#/definitions/error"
                  *         )
                  *     )
                  * )
@@ -101,7 +101,7 @@
                  *         response="default",
                  *         description="unexpected error",
                  *         @SWG\Schema(
-                 *             ref="#/definitions/Error"
+                 *             ref="#/definitions/error"
                  *         )
                  *     )
                  * )
@@ -150,7 +150,7 @@
                  *         response="default",
                  *         description="unexpected error",
                  *         @SWG\Schema(
-                 *             ref="#/definitions/Error"
+                 *             ref="#/definitions/error"
                  *         )
                  *     )
                  * )
@@ -206,7 +206,7 @@
                  *         response="default",
                  *         description="unexpected error",
                  *         @SWG\Schema(
-                 *             ref="#/definitions/Error"
+                 *             ref="#/definitions/error"
                  *         )
                  *     )
                  * )
@@ -249,7 +249,7 @@
                  *         response="default",
                  *         description="unexpected error",
                  *         @SWG\Schema(
-                 *             ref="#/definitions/Error"
+                 *             ref="#/definitions/error"
                  *         )
                  *     )
                  * )

@@ -11,6 +11,8 @@ use TMPHP\RestApiGenerators\Compilers\AuthRoutesCompiler;
 use TMPHP\RestApiGenerators\Compilers\ForgotPasswordControllerCompiler;
 use TMPHP\RestApiGenerators\Compilers\LoginDefinitionCompiler;
 use TMPHP\RestApiGenerators\Compilers\RegisterDefinitionCompiler;
+use TMPHP\RestApiGenerators\Compilers\ResetDefinitionCompiler;
+use TMPHP\RestApiGenerators\Compilers\ResetLinkRequestDefinitionCompiler;
 use TMPHP\RestApiGenerators\Compilers\ResetPasswordControllerCompiler;
 
 /**
@@ -88,6 +90,15 @@ class MakeRestAuthCommand extends Command
         //compile register definition
         $registerDefinitionCompiler = new RegisterDefinitionCompiler();
         $registerDefinitionCompiler->compile([]);
+
+        //compile reset link request definition
+        $resetLinkRequestDefinitionCompiler = new ResetLinkRequestDefinitionCompiler();
+        $resetLinkRequestDefinitionCompiler->compile([]);
+
+        //compile reset definition
+        $resetDefinitionCompiler = new ResetDefinitionCompiler();
+        $resetDefinitionCompiler->compile([]);
+
     }
 
     /**

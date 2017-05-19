@@ -15,7 +15,7 @@ $api->group([
     /**
      * @SWG\Post(
      *     path="/login",
-     *     tags={"Authentication"},
+     *     tags={"authentication"},
      *     description="Login Request",
      *     produces= {"application/json"},
      *
@@ -37,7 +37,7 @@ $api->group([
      *         response="default",
      *         description="unexpected error",
      *         @SWG\Schema(
-     *             ref="#/definitions/Error"
+     *             ref="#/definitions/error"
      *         )
      *     )
      * )
@@ -48,7 +48,7 @@ $api->group([
     /**
      * @SWG\Post(
      *     path="/logout",
-     *     tags={"Authentication"},
+     *     tags={"authentication"},
      *     description="Logout",
      *     produces= {"application/json"},
      *
@@ -72,7 +72,7 @@ $api->group([
      *         response="default",
      *         description="unexpected error",
      *         @SWG\Schema(
-     *             ref="#/definitions/Error"
+     *             ref="#/definitions/error"
      *         )
      *     )
      * )
@@ -83,7 +83,7 @@ $api->group([
     /**
      * @SWG\Post(
      *     path="/register",
-     *     tags={"Authentication"},
+     *     tags={"authentication"},
      *     description="Register request",
      *     produces= {"application/json"},
      *
@@ -110,7 +110,7 @@ $api->group([
      *         response="default",
      *         description="unexpected error",
      *         @SWG\Schema(
-     *             ref="#/definitions/Error"
+     *             ref="#/definitions/error"
      *         )
      *     )
      * )
@@ -118,11 +118,80 @@ $api->group([
     $api->post('/register', 'App\REST\Http\Controllers\Api\v1\AuthController@register')
         ->name('register');
 
-    // Reset password Routes
+    /**
+     * @SWG\Post(
+     *     path="/password/email",
+     *     tags={"authentication"},
+     *     description="Request a password reset link into email",
+     *     produces= {"application/json"},
+     *
+     *     @SWG\Parameter(
+     *         name="",
+     *         in="body",
+     *         description="",
+     *         required=true,
+     *         @SWG\Schema(
+     *             ref="#/definitions/reset-link-request"
+     *         )
+     *     ),
+     *
+     *     @SWG\Response(
+     *         response="200",
+     *         description=""
+     *     ),
+     *
+     *     @SWG\Response(
+     *         response="403",
+     *         description="Access forbidden"
+     *     ),
+     *     @SWG\Response(
+     *         response="default",
+     *         description="unexpected error",
+     *         @SWG\Schema(
+     *             ref="#/definitions/error"
+     *         )
+     *     )
+     * )
+     */
     $api->post('/password/email',
         'App\REST\Http\Controllers\Api\v1\ForgotPasswordController@sendResetLinkEmail')
         ->name('password.email');
 
+    /**
+     * @SWG\Post(
+     *     path="/password/reset",
+     *     tags={"authentication"},
+     *     description="Reset password using token from email",
+     *     produces= {"application/json"},
+     *
+     *     @SWG\Parameter(
+     *         name="",
+     *         in="body",
+     *         description="",
+     *         required=true,
+     *         @SWG\Schema(
+     *             ref="#/definitions/reset"
+     *         )
+     *     ),
+     *
+     *     @SWG\Response(
+     *         response="200",
+     *         description=""
+     *     ),
+     *
+     *     @SWG\Response(
+     *         response="403",
+     *         description="Access forbidden"
+     *     ),
+     *     @SWG\Response(
+     *         response="default",
+     *         description="unexpected error",
+     *         @SWG\Schema(
+     *             ref="#/definitions/error"
+     *         )
+     *     )
+     * )
+     */
     $api->post('/password/reset',
         'App\REST\Http\Controllers\Api\v1\ResetPasswordController@reset')
         ->name('password.reset');

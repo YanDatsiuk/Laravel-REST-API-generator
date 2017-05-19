@@ -14,6 +14,7 @@ use TMPHP\RestApiGenerators\Compilers\RegisterDefinitionCompiler;
 use TMPHP\RestApiGenerators\Compilers\ResetDefinitionCompiler;
 use TMPHP\RestApiGenerators\Compilers\ResetLinkRequestDefinitionCompiler;
 use TMPHP\RestApiGenerators\Compilers\ResetPasswordControllerCompiler;
+use TMPHP\RestApiGenerators\Support\SchemaManager;
 
 /**
  * Class MakeRestAuthCommand
@@ -36,7 +37,7 @@ class MakeRestAuthCommand extends Command
     protected $description = 'Create REST API authentication code.';
 
     /**
-     * @var AbstractSchemaManager
+     * @var SchemaManager
      */
     private $schema;
 
@@ -49,16 +50,32 @@ class MakeRestAuthCommand extends Command
     public function fire()
     {
         //
-        $this->schema = DB::getDoctrineSchemaManager();
+        $this->schema = new SchemaManager();
 
+        //check default tables existence
+        if ($this->existsDefaultAuthTables()) {
+
+            //make REST API authentication
+            $this->makeRestAuth();
+        } else {
+
+            $this->alert('No auth tables exist. Please migrate default laravel users and password_resets tables');
+        }
+    }
+
+    /**
+     * Make REST API authentication
+     */
+    private function makeRestAuth()
+    {
         //compile auth controllers and save them in the controllers path
         $this->compileAuthControllers();
 
-        //append auth routes to routes/api.php
-        $this->appendAuthRoutes();
-
         //compile auth swagger definitions
         $this->compileAuthSwaggerDefinitions();
+
+        //append auth routes to routes/api.php
+        $this->appendAuthRoutes();
 
         $this->info('All files for REST API authentication code were generated!');
     }
@@ -121,6 +138,16 @@ class MakeRestAuthCommand extends Command
         } else {
             file_put_contents($apiRoutesFileName, "\n\n" . $authRoutes . PHP_EOL, FILE_APPEND | LOCK_EX);
         }
+    }
+
+    /**
+     * Check default tables ("users" and "password_resets") existence.
+     *
+     * @return bool
+     */
+    private function existsDefaultAuthTables()
+    {
+        return $this->schema->existsTables(['users', 'password_resets']);
     }
 
 }

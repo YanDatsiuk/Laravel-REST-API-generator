@@ -97,12 +97,27 @@ class SchemaManager
 
         //removing foreign keys, which points to $tableName
         $result = [];
-        foreach ($belongsToManyForeignKeys as $belongsToManyForeignKey){
+        foreach ($belongsToManyForeignKeys as $belongsToManyForeignKey) {
             if ($belongsToManyForeignKey->getForeignTableName() !== $tableName) {
                 array_push($result, $belongsToManyForeignKey);
             }
         }
 
         return $result;
+    }
+
+
+    /**
+     * Check whether all table from $tableNames exists in db schema
+     *
+     * @param array $tableNames Names of tables, which need to check on existance in
+     * @return bool
+     */
+    public function existsTables(array $tableNames)
+    {
+        //get all tables names
+        $allTableNames = $this->schema->listTableNames();
+
+        return empty(array_diff($tableNames, $allTableNames));
     }
 }

@@ -21,6 +21,7 @@ Open your `config/app.php` and add this line in `providers` section
     Xethron\MigrationsGenerator\MigrationsGeneratorServiceProvider::class,
     Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
     L5Swagger\L5SwaggerServiceProvider::class,
+    Abhijitghogre\LaravelDbClearCommand\LaravelDbClearCommandServiceProvider::class,
 ```
 
 ### Publishing configuration files
@@ -76,4 +77,4 @@ php artisan l5-swagger:generate
 composer dump-autoload
 ```
 
-* :elephant: :boom: :+1:
+* :elephant: :boom: :+1: :+1:

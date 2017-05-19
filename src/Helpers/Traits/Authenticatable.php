@@ -4,6 +4,7 @@ namespace TMPHP\RestApiGenerators\Helpers\Traits;
 
 use Dingo\Api\Http\Request;
 use Dingo\Api\Routing\Helpers;
+use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 /**
@@ -42,5 +43,44 @@ trait Authenticatable
             'x-app-authorization',
             $token
         );
+    }
+
+    /**
+     * Logging in user
+     *
+     * @param Request $request
+     * @return $this|\Dingo\Api\Http\Response
+     */
+    public function login(Request $request)
+    {
+
+        $this->validate($request, [
+            'email' => 'required',
+            'password' => 'required'
+        ]);
+
+        $token = JWTAuth::attempt($request->only(['email', 'password']));
+
+        if ($token){
+            //return token in response header
+            return $this->response->noContent()->header(
+                'x-app-authorization',
+                $token
+            );
+        }else{
+            return 'f off';
+        }
+    }
+
+    /**
+     * Logging out user
+     *
+     * @param Request $request
+     */
+    public function logout(Request $request){
+
+        //todo delete token
+
+        //todo return response
     }
 }

@@ -1,11 +1,12 @@
 <?php
 
-namespace TMPHP\RestApiGenerators\Helpers\Traits;
+namespace TMPHP\RestApiGenerators\Helpers\Traits\Auth;
 
 use Dingo\Api\Http\Request;
 use Dingo\Api\Http\Response;
 use Dingo\Api\Routing\Helpers;
 use Illuminate\Support\Facades\Password;
+use TMPHP\RestApiGenerators\Helpers\Traits\ErrorFormatable;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 /**

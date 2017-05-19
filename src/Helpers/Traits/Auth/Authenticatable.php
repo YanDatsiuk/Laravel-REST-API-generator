@@ -1,10 +1,10 @@
 <?php
 
-namespace TMPHP\RestApiGenerators\Helpers\Traits;
+namespace TMPHP\RestApiGenerators\Helpers\Traits\Auth;
 
 use Dingo\Api\Http\Request;
 use Dingo\Api\Routing\Helpers;
-use Tymon\JWTAuth\Exceptions\JWTException;
+use TMPHP\RestApiGenerators\Helpers\Traits\ErrorFormatable;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 /**
@@ -61,13 +61,13 @@ trait Authenticatable
 
         $token = JWTAuth::attempt($request->only(['email', 'password']));
 
-        if ($token){
+        if ($token) {
             //return token in response header
             return $this->response->noContent()->header(
                 'x-app-authorization',
                 $token
             );
-        }else{
+        } else {
             return 'f off';
         }
     }
@@ -77,8 +77,8 @@ trait Authenticatable
      *
      * @param Request $request
      */
-    public function logout(Request $request){
-
+    public function logout(Request $request)
+    {
         //todo delete token
 
         //todo return response

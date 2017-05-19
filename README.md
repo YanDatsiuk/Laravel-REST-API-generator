@@ -77,4 +77,4 @@ php artisan l5-swagger:generate
 composer dump-autoload
 ```
 
-* :elephant: :boom: :+1:
+* :elephant: :boom: :+1: :+1:

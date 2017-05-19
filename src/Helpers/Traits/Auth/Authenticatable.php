@@ -40,7 +40,7 @@ trait Authenticatable
 
         //return token in response header
         return $this->response->noContent()->header(
-            'x-app-authorization',
+            'authorization',
             $token
         );
     }
@@ -64,7 +64,7 @@ trait Authenticatable
         if ($token) {
             //return token in response header
             return $this->response->noContent()->header(
-                'x-app-authorization',
+                'authorization',
                 $token
             );
         } else {

@@ -108,12 +108,14 @@ class SchemaManager
 
 
     /**
+     * Check whether all table from $tableNames exists in db schema
      *
      * @param array $tableNames Names of tables, which need to check on existance in
      * @return bool
      */
     public function existsTables(array $tableNames)
     {
+        //get all tables names
         $allTableNames = $this->schema->listTableNames();
 
         return empty(array_diff($tableNames, $allTableNames));

@@ -29,7 +29,7 @@ return [
         'models' => '/app/REST/',
         'transformers' => '/app/REST/Transformers/',
         'documentations' => '/app/REST/Documentations/',
-        'routes' => '/app/REST/routes/'
+        'routes' => '/app/REST/routes/',
     ],
 
     /*

@@ -4,6 +4,7 @@ namespace TMPHP\RestApiGenerators\Commands;
 
 
 use Illuminate\Console\Command;
+use Illuminate\Console\OutputStyle;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
@@ -47,7 +48,7 @@ class MakeRestAuthCommand extends Command
      * MakeRestAuthCommand constructor.
      * @param \Illuminate\Console\OutputStyle|null $output
      */
-    public function __construct(\Illuminate\Console\OutputStyle $output = null)
+    public function __construct(OutputStyle $output = null)
     {
         if ($output !== null){
             $this->output = $output;
@@ -122,6 +123,10 @@ class MakeRestAuthCommand extends Command
 
         //append auth routes to routes/api.php
         $this->appendAuthRoutes();
+
+        //scaffold AUTH groups and actions code
+        $makeAuthGroupsAndActionsCommand = new MakeAuthGroupsAndActionsCommand($this->output);
+        $makeAuthGroupsAndActionsCommand->fire();
 
         $this->info('All files for REST API authentication code were generated!');
     }

@@ -3,6 +3,7 @@
 namespace TMPHP\RestApiGenerators;
 
 use Illuminate\Support\ServiceProvider;
+use TMPHP\RestApiGenerators\Commands\MakeAuthGroupsAndActionsCommand;
 use TMPHP\RestApiGenerators\Commands\MakeCrudControllersCommand;
 use TMPHP\RestApiGenerators\Commands\MakeCrudModelsCommand;
 use TMPHP\RestApiGenerators\Commands\MakeCrudRoutesCommand;
@@ -65,6 +66,7 @@ class GeneratorsServiceProviders extends ServiceProvider
             MakeRestApiProjectCommand::class,
             MakeSwaggerRootCommand::class,
             MakeRestAuthCommand::class,
+            MakeAuthGroupsAndActionsCommand::class,
         ]);
     }
 

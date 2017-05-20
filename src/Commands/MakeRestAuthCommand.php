@@ -6,6 +6,7 @@ namespace TMPHP\RestApiGenerators\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use TMPHP\RestApiGenerators\Compilers\ApiRoutesCompiler;
 use TMPHP\RestApiGenerators\Compilers\AuthControllerCompiler;
 use TMPHP\RestApiGenerators\Compilers\AuthRoutesCompiler;
 use TMPHP\RestApiGenerators\Compilers\ForgotPasswordControllerCompiler;
@@ -154,25 +155,22 @@ class MakeRestAuthCommand extends Command
      */
     private function appendAuthRoutes(): void
     {
-        //todo add validation whether rotes/api.php file exists
-        /**
-         * todo this problem need more discussion.
-         * todo What if this command is calling before REST API project is generated?
-         * todo Main suggestion: write function: checkRequirements() and alert error message to programmer.
-         */
-
-        $apiRoutesPath = base_path(config('rest-api-generator.paths.routes'));
-        $apiRoutesFileName = $apiRoutesPath . 'api.php';
-        $apiRoutesFile = file_get_contents($apiRoutesFileName);
-
         //compile auth routes
         $authRoutesCompiler = new AuthRoutesCompiler();
         $authRoutes = $authRoutesCompiler->compile([]);
 
-        if (str_contains($apiRoutesFile, 'Auth Routes')) {
+        //get saved previously api routes
+        $apiRoutesCompiler = new ApiRoutesCompiler();
+        $apiRotesStub = $apiRoutesCompiler->getSavedStub();
+
+        //append auth routes to api routes
+        if (str_contains($apiRotesStub, 'Auth Routes')) {
             $this->alert('There is already auth routes in your routes file');
         } else {
-            file_put_contents($apiRoutesFileName, "\n\n" . $authRoutes . PHP_EOL, FILE_APPEND | LOCK_EX);
+            $apiRoutesCompiler
+                ->setStub($apiRotesStub)
+                ->appendToStub($authRoutes)
+                ->saveStub();
         }
     }
 

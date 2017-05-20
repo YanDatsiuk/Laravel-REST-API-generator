@@ -75,7 +75,7 @@ abstract class StubCompilerAbstract
     /**
      * Save generated stub into the file
      *
-     * @return void
+     * @return $this
      */
     public function saveStub()
     {
@@ -84,6 +84,8 @@ abstract class StubCompilerAbstract
             $this->saveToPath . $this->saveFileName,
             $this->stub
         );
+
+        return $this;
     }
 
     /**
@@ -108,13 +110,25 @@ abstract class StubCompilerAbstract
     }
 
     /**
-     * Get saved before generated stub file.
+     * Get generated stub file.
+     * If there is no saved file - get default stub.
      *
      * @return bool|string
      */
     public function getSavedStub()
     {
-        $savedStub = file_get_contents($this->saveToPath. $this->saveFileName);
+        if (file_exists($this->saveToPath. $this->saveFileName)){
+            $savedStub = file_get_contents($this->saveToPath. $this->saveFileName);
+        }else{
+
+            //load default stub
+            $defaultStub = file_get_contents($this->getClassDirectory() . '/stubs/' . $this->stubFileName);
+
+            //save default stub
+            file_put_contents($this->saveToPath. $this->saveFileName, $defaultStub);
+
+            $savedStub = $defaultStub;
+        }
 
         return $savedStub;
     }
@@ -134,6 +148,7 @@ abstract class StubCompilerAbstract
 
     /**
      * Appending $stub string to the existing stub
+     *
      * @param string $stub
      * @return $this
      */

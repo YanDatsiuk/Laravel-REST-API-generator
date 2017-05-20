@@ -155,13 +155,6 @@ class MakeRestAuthCommand extends Command
      */
     private function appendAuthRoutes(): void
     {
-        //todo add validation whether rotes/api.php file exists
-        /**
-         * todo this problem need more discussion.
-         * todo What if this command is calling before REST API project is generated?
-         * todo Main suggestion: write function: checkRequirements() and alert error message to programmer.
-         */
-
         //compile auth routes
         $authRoutesCompiler = new AuthRoutesCompiler();
         $authRoutes = $authRoutesCompiler->compile([]);

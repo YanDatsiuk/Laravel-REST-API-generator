@@ -78,33 +78,7 @@ class MakeRestApiProjectCommand extends Command
 
             $this->warn('You do not pass --models and --tables parameters');
 
-            $choice = $this->choice('What to do next?', [
-                '0. Take models and tables list from configuration file.',
-                '1. Use default convention and take info from db schema.',
-            ]);
-            $choice = substr($choice, 0, 1);
-
-            switch ($choice) {
-                case "0":
-                    $isValidConfig = $this->loadParametersFromConfigFile();
-                    if (!$isValidConfig) {
-                        $this->error('wrong config');
-
-                        return;
-                    }
-                    break;
-                case "1":
-                    $isValidConfig = $this->loadParametersFromDatabaseSchema();
-                    if (!$isValidConfig) {
-                        $this->error('wrong config');
-
-                        return;
-                    }
-                    break;
-                default:
-                    return;
-                    break;
-            }
+            $this->choicesOnAbsentOptions();
         }
 
         //call artisan commands for generating models, transformers, controllers, swagger-docs and routes
@@ -112,6 +86,42 @@ class MakeRestApiProjectCommand extends Command
 
         $this->info('All files for REST API project were generated!');
         $this->info('Please see all files in /storage/CRUD directory');
+    }
+
+    /**
+     * Show choices to programmer,
+     * if there are not any options ("models" and "tables") provided with this command.
+     */
+    private function choicesOnAbsentOptions()
+    {
+
+        $choice = $this->choice('What to do next?', [
+            '0. Take models and tables list from configuration file.',
+            '1. Use default convention and take info from db schema.',
+        ]);
+        $choice = substr($choice, 0, 1);
+
+        switch ($choice) {
+            case "0":
+                $isValidConfig = $this->loadParametersFromConfigFile();
+                if (!$isValidConfig) {
+                    $this->error('wrong config');
+
+                    return;
+                }
+                break;
+            case "1":
+                $isValidConfig = $this->loadParametersFromDatabaseSchema();
+                if (!$isValidConfig) {
+                    $this->error('wrong config');
+
+                    return;
+                }
+                break;
+            default:
+                return;
+                break;
+        }
     }
 
     /** Initialize submitted parameters or read them from configuration file */
@@ -245,11 +255,14 @@ class MakeRestApiProjectCommand extends Command
             '--models' => $this->modelsInKebabNotaion,
         ]);
 
-        //php artisan make:crud-routes
+        //php artisan make:swagger-root
         Artisan::call('make:swagger-root');
 
-        //php artisan make:rest-auth
-        Artisan::call('make:rest-auth');
+        //
+        //previous code: Artisan::call('make:rest-auth');
+        //We changed calling method, because we need here logic from MakeRestAuthCommand
+        $cmd = new MakeRestAuthCommand($this->output);
+        $cmd->fire();
 
         //php artisan migrate:generate --no-interaction
         Artisan::call('migrate:generate', ['--no-interaction' => true]);

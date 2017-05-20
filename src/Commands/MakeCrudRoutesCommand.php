@@ -50,7 +50,12 @@ class MakeCrudRoutesCommand extends Command
             return;
         }
 
-        $apiRoutesCompiler = new ApiRoutesCompiler();
+        //compile api routes and load saved before stub
+        $apiRoutesCompiler = new ApiRoutesCompiler(
+            null,
+            null,
+            (new ApiRoutesCompiler())->getSavedStub());
+
 
         //generate CRUD routes for all models
         $apiRoutesCompiler->compile(['models' => $this->models]);

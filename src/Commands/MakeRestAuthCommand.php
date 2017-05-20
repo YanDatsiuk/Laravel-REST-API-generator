@@ -3,9 +3,12 @@
 namespace TMPHP\RestApiGenerators\Commands;
 
 
-use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Console\OutputStyle;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
+use TMPHP\RestApiGenerators\Compilers\ApiRoutesCompiler;
 use TMPHP\RestApiGenerators\Compilers\AuthControllerCompiler;
 use TMPHP\RestApiGenerators\Compilers\AuthRoutesCompiler;
 use TMPHP\RestApiGenerators\Compilers\ForgotPasswordControllerCompiler;
@@ -41,6 +44,19 @@ class MakeRestAuthCommand extends Command
      */
     private $schema;
 
+    /**
+     * MakeRestAuthCommand constructor.
+     * @param \Illuminate\Console\OutputStyle|null $output
+     */
+    public function __construct(OutputStyle $output = null)
+    {
+        if ($output !== null){
+            $this->output = $output;
+        }
+
+        parent::__construct();
+    }
+
 
     /**
      * Execute the console command.
@@ -55,11 +71,42 @@ class MakeRestAuthCommand extends Command
         //check default tables existence
         if ($this->existsDefaultAuthTables()) {
 
-            //make REST API authentication
             $this->makeRestAuth();
         } else {
 
-            $this->alert('No auth tables exist. Please migrate default laravel users and password_resets tables');
+            $this->alert('No auth tables exist.');
+
+            $this->choicesOnAbsentAuthTables();
+        }
+    }
+
+    /**
+     * Show choices to programmer,
+     * if there are not any AUTH tables in database schema.
+     */
+    private function choicesOnAbsentAuthTables()
+    {
+        $choice = $this->choice('Migrate auth tables into database schema?', [
+            '0. Yes.',
+            '1. No.',
+        ]);
+        $choice = substr($choice, 0, 1);
+
+        switch ($choice) {
+
+            case "0":
+                $this->migrateAuthTables();
+                $this->makeRestAuth();
+                $this->info('Auth code was generated.');
+                break;
+
+            case "1":
+                $this->alert('No auth code was generated.');
+                break;
+
+            default:
+                $this->alert('No auth code was generated.');
+                break;
         }
     }
 
@@ -76,6 +123,10 @@ class MakeRestAuthCommand extends Command
 
         //append auth routes to routes/api.php
         $this->appendAuthRoutes();
+
+        //scaffold AUTH groups and actions code
+        $makeAuthGroupsAndActionsCommand = new MakeAuthGroupsAndActionsCommand($this->output);
+        $makeAuthGroupsAndActionsCommand->fire();
 
         $this->info('All files for REST API authentication code were generated!');
     }
@@ -123,20 +174,22 @@ class MakeRestAuthCommand extends Command
      */
     private function appendAuthRoutes(): void
     {
-        //todo add validation whether rotes/api.php file exists
-
-        $apiRoutesPath = base_path(config('rest-api-generator.paths.routes'));
-        $apiRoutesFileName = $apiRoutesPath . 'api.php';
-        $apiRoutesFile = file_get_contents($apiRoutesFileName);
-
         //compile auth routes
         $authRoutesCompiler = new AuthRoutesCompiler();
         $authRoutes = $authRoutesCompiler->compile([]);
 
-        if (str_contains($apiRoutesFile, 'Auth Routes')) {
+        //get saved previously api routes
+        $apiRoutesCompiler = new ApiRoutesCompiler();
+        $apiRotesStub = $apiRoutesCompiler->getSavedStub();
+
+        //append auth routes to api routes
+        if (str_contains($apiRotesStub, 'Auth Routes')) {
             $this->alert('There is already auth routes in your routes file');
         } else {
-            file_put_contents($apiRoutesFileName, "\n\n" . $authRoutes . PHP_EOL, FILE_APPEND | LOCK_EX);
+            $apiRoutesCompiler
+                ->setStub($apiRotesStub)
+                ->appendToStub($authRoutes)
+                ->saveStub();
         }
     }
 
@@ -148,6 +201,31 @@ class MakeRestAuthCommand extends Command
     private function existsDefaultAuthTables()
     {
         return $this->schema->existsTables(['users', 'password_resets']);
+    }
+
+    /**
+     * Create missed "users" and "password_resets" tables in the database schema.
+     */
+    private function migrateAuthTables()
+    {
+        if (!Schema::hasTable('users')) {
+            Schema::create('users', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('name');
+                $table->string('email')->unique();
+                $table->string('password');
+                $table->string('remember_token', 100)->nullable();
+                $table->timestamps();
+            });
+        }
+
+        if (!Schema::hasTable('password_resets')) {
+            Schema::create('password_resets', function (Blueprint $table) {
+                $table->string('email')->index();
+                $table->string('token');
+                $table->dateTime('created_at')->nullable();
+            });
+        }
     }
 
 }

@@ -5,6 +5,7 @@ namespace TMPHP\RestApiGenerators\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use TMPHP\RestApiGenerators\Compilers\ApiRoutesCompiler;
 use TMPHP\RestApiGenerators\Compilers\AuthControllerCompiler;
@@ -41,6 +42,19 @@ class MakeRestAuthCommand extends Command
      * @var SchemaManager
      */
     private $schema;
+
+    /**
+     * MakeRestAuthCommand constructor.
+     * @param \Illuminate\Console\OutputStyle|null $output
+     */
+    public function __construct(\Illuminate\Console\OutputStyle $output = null)
+    {
+        if ($output !== null){
+            $this->output = $output;
+        }
+
+        parent::__construct();
+    }
 
 
     /**

@@ -255,11 +255,14 @@ class MakeRestApiProjectCommand extends Command
             '--models' => $this->modelsInKebabNotaion,
         ]);
 
-        //php artisan make:crud-routes
+        //php artisan make:swagger-root
         Artisan::call('make:swagger-root');
 
-        //php artisan make:rest-auth
-        Artisan::call('make:rest-auth');
+        //
+        //previous code: Artisan::call('make:rest-auth');
+        //We changed calling method, because we need here logic from MakeRestAuthCommand
+        $cmd = new MakeRestAuthCommand($this->output);
+        $cmd->fire();
 
         //php artisan migrate:generate --no-interaction
         Artisan::call('migrate:generate', ['--no-interaction' => true]);

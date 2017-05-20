@@ -34,9 +34,15 @@ class GeneratorsServiceProviders extends ServiceProvider
         );
 
         //register generated routes
-        $routeFilePath = base_path(config('rest-api-generator.paths.routes'). 'api.php');
-        if (!$this->app->routesAreCached() && file_exists($routeFilePath)) {
-            require $routeFilePath;
+        $apiRouteFilePath = base_path(config('rest-api-generator.paths.routes'). 'api.php');
+        if (!$this->app->routesAreCached() && file_exists($apiRouteFilePath)) {
+            require $apiRouteFilePath;
+        }
+
+        //register generated auth routes
+        $authRouteFilePath = base_path(config('rest-api-generator.paths.routes'). 'auth.php');
+        if (!$this->app->routesAreCached() && file_exists($authRouteFilePath)) {
+            require $authRouteFilePath;
         }
     }
 

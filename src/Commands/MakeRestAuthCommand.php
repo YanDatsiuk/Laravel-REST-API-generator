@@ -121,12 +121,12 @@ class MakeRestAuthCommand extends Command
         //compile auth swagger definitions
         $this->compileAuthSwaggerDefinitions();
 
-        //append auth routes to routes/api.php
-        $this->appendAuthRoutes();
-
         //scaffold AUTH groups and actions code
         $makeAuthGroupsAndActionsCommand = new MakeAuthGroupsAndActionsCommand($this->output);
         $makeAuthGroupsAndActionsCommand->fire();
+
+        //append auth routes to routes/api.php
+        $this->appendAuthRoutes();
 
         $this->info('All files for REST API authentication code were generated!');
     }
@@ -176,21 +176,7 @@ class MakeRestAuthCommand extends Command
     {
         //compile auth routes
         $authRoutesCompiler = new AuthRoutesCompiler();
-        $authRoutes = $authRoutesCompiler->compile([]);
-
-        //get saved previously api routes
-        $apiRoutesCompiler = new ApiRoutesCompiler();
-        $apiRotesStub = $apiRoutesCompiler->getSavedStub();
-
-        //append auth routes to api routes
-        if (str_contains($apiRotesStub, 'Auth Routes')) {
-            $this->alert('There is already auth routes in your routes file');
-        } else {
-            $apiRoutesCompiler
-                ->setStub($apiRotesStub)
-                ->appendToStub($authRoutes)
-                ->saveStub();
-        }
+        $authRoutesCompiler->compile([]);
     }
 
     /**

@@ -122,12 +122,10 @@ abstract class StubCompilerAbstract
         }else{
 
             //load default stub
-            $defaultStub = file_get_contents($this->getClassDirectory() . '/stubs/' . $this->stubFileName);
+            $savedStub = file_get_contents($this->getClassDirectory() . '/stubs/' . $this->stubFileName);
 
             //save default stub
-            file_put_contents($this->saveToPath. $this->saveFileName, $defaultStub);
-
-            $savedStub = $defaultStub;
+            file_put_contents($this->saveToPath. $this->saveFileName, $savedStub);
         }
 
         return $savedStub;

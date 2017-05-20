@@ -91,8 +91,9 @@ abstract class StubCompilerAbstract
      *
      * @param array $searchAndReplacements keys are values being searched for.
      * And the values of the array are used to be replacements
+     * @return $this
      */
-    public function replaceInStub($searchAndReplacements = []): void
+    public function replaceInStub($searchAndReplacements = [])
     {
         //do replacements in stub
         foreach ($searchAndReplacements as $key => $value) {
@@ -102,5 +103,44 @@ abstract class StubCompilerAbstract
                 $this->stub
             );
         }
+
+        return $this;
+    }
+
+    /**
+     * Get saved before generated stub file.
+     *
+     * @return bool|string
+     */
+    public function getSavedStub()
+    {
+        $savedStub = file_get_contents($this->saveToPath. $this->saveFileName);
+
+        return $savedStub;
+    }
+
+    /**
+     * Stub file setter.
+     *
+     * @param string $stub
+     * @return $this
+     */
+    public function setStub(string $stub)
+    {
+        $this->stub = $stub;
+
+        return $this;
+    }
+
+    /**
+     * Appending $stub string to the existing stub
+     * @param string $stub
+     * @return $this
+     */
+    public function appendToStub(string $stub)
+    {
+        $this->stub .= "\n" . $stub;
+
+        return $this;
     }
 }

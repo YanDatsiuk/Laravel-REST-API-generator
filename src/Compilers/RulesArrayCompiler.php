@@ -215,10 +215,12 @@ class RulesArrayCompiler extends StubCompilerAbstract
                     if (count($indexColumns) === 1) {
 
                         //set a unique rule
-                        $uniqueRule = "|unique:{$this->table->getName()},{$column->getName()}";
+                        $uniqueRule .= "|unique:{$this->table->getName()},{$column->getName()}";
                     } else {
 
-                        //todo add uniquewith rule
+                        //set uniquewith rule
+                        $indexColumnsWithoutCurrent = implode(',', array_diff($indexColumns, [$column->getName()]));
+                        $uniqueRule .= "|unique_with:{$this->table->getName()},{$indexColumnsWithoutCurrent}";
                     }
                 }
             }

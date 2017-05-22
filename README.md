@@ -22,6 +22,7 @@ Open your `config/app.php` and add this line in `providers` section
     Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
     L5Swagger\L5SwaggerServiceProvider::class,
     Abhijitghogre\LaravelDbClearCommand\LaravelDbClearCommandServiceProvider::class,
+    Felixkiss\UniqueWithValidator\ServiceProvider::class,
 ```
 
 ### Publishing configuration files

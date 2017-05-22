@@ -7,6 +7,7 @@ use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\ForeignKeyConstraint;
 use Doctrine\DBAL\Schema\Table;
 use Illuminate\Support\Facades\Log;
+use Psy\Exception\Exception;
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 use TMPHP\RestApiGenerators\Support\SchemaManager;
 
@@ -100,6 +101,7 @@ class RulesArrayCompiler extends StubCompilerAbstract
                         $fields .= "'{$column->getName()}' => '{$this->getRulesForColumn($column, 'string')}', \n\t\t\t";
                         break;
                     default:
+                        //throw new \Exception('Unexpected Doctrine mapping type: '. $column->getType());
                         break;
                 }
             }
@@ -158,7 +160,9 @@ class RulesArrayCompiler extends StubCompilerAbstract
         $foreignRule = $this->makeForeignKeyRule($columnName);
         $rules .= $foreignRule ? $foreignRule : '';
 
-        //v- numeric
+        //
+        $uniqueRule = $this->makeUniqueRule($column);
+        $rules .= $uniqueRule ? $uniqueRule : '';
 
         return $rules;
     }
@@ -181,6 +185,48 @@ class RulesArrayCompiler extends StubCompilerAbstract
             }
         }
         return $foreignRule;
+    }
+
+    /**
+     * Make validation "unique" rule.
+     *
+     * @param Column $column
+     * @return string
+     */
+    private function makeUniqueRule(Column $column)
+    {
+        $uniqueRule = '';
+
+        //get indexes from table
+        $tableIndexes = $this->table->getIndexes();
+
+        foreach ($tableIndexes as $tableIndex) {
+
+            //check whether a index is unique
+            if ($tableIndex->isUnique()) {
+
+                //get columns for this unique index
+                $indexColumns = $tableIndex->getColumns();
+
+                //check, if current column is in unique index columns
+                if (in_array($column->getName(), $indexColumns)) {
+
+                    //select what rule to generate: for single, or for combined columns
+                    if (count($indexColumns) === 1) {
+
+                        //set a unique rule
+                        $uniqueRule .= "|unique:{$this->table->getName()},{$column->getName()}";
+                    } else {
+
+                        //set uniquewith rule
+                        $indexColumnsWithoutCurrent = implode(',', array_diff($indexColumns, [$column->getName()]));
+                        $uniqueRule .= "|unique_with:{$this->table->getName()},{$indexColumnsWithoutCurrent}";
+                    }
+                }
+            }
+        }
+
+        return $uniqueRule;
     }
 
 }

@@ -125,8 +125,8 @@ class MakeRestAuthCommand extends Command
         $makeAuthGroupsAndActionsCommand = new MakeAuthGroupsAndActionsCommand($this->output);
         $makeAuthGroupsAndActionsCommand->fire();
 
-        //append auth routes to routes/api.php
-        $this->appendAuthRoutes();
+        //compile auth routes
+        $this->compileAuthRoutes();
 
         $this->info('All files for REST API authentication code were generated!');
     }
@@ -170,9 +170,9 @@ class MakeRestAuthCommand extends Command
     }
 
     /**
-     * Append auth routes to routes/api.php
+     * Compile auth routes to routes/auth.php
      */
-    private function appendAuthRoutes(): void
+    private function compileAuthRoutes(): void
     {
         //compile auth routes
         $authRoutesCompiler = new AuthRoutesCompiler();

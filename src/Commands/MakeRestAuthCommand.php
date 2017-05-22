@@ -6,9 +6,7 @@ namespace TMPHP\RestApiGenerators\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Console\OutputStyle;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
-use TMPHP\RestApiGenerators\Compilers\ApiRoutesCompiler;
 use TMPHP\RestApiGenerators\Compilers\AuthControllerCompiler;
 use TMPHP\RestApiGenerators\Compilers\AuthRoutesCompiler;
 use TMPHP\RestApiGenerators\Compilers\ForgotPasswordControllerCompiler;
@@ -17,6 +15,7 @@ use TMPHP\RestApiGenerators\Compilers\RegisterDefinitionCompiler;
 use TMPHP\RestApiGenerators\Compilers\ResetDefinitionCompiler;
 use TMPHP\RestApiGenerators\Compilers\ResetLinkRequestDefinitionCompiler;
 use TMPHP\RestApiGenerators\Compilers\ResetPasswordControllerCompiler;
+use TMPHP\RestApiGenerators\Support\Helper;
 use TMPHP\RestApiGenerators\Support\SchemaManager;
 
 /**
@@ -50,7 +49,7 @@ class MakeRestAuthCommand extends Command
      */
     public function __construct(OutputStyle $output = null)
     {
-        if ($output !== null){
+        if ($output !== null) {
             $this->output = $output;
         }
 
@@ -65,19 +64,24 @@ class MakeRestAuthCommand extends Command
      */
     public function fire()
     {
-        //
-        $this->schema = new SchemaManager();
+        if (Helper::isRestProjectGenerated()) {
+            //
+            $this->schema = new SchemaManager();
 
-        //check default tables existence
-        if ($this->existsDefaultAuthTables()) {
+            //check default tables existence
+            if ($this->existsDefaultAuthTables()) {
 
-            $this->makeRestAuth();
+                $this->makeRestAuth();
+            } else {
+
+                $this->alert('No auth tables exist.');
+                $this->choicesOnAbsentAuthTables();
+            }
         } else {
-
-            $this->alert('No auth tables exist.');
-
-            $this->choicesOnAbsentAuthTables();
+            $this->warn('REST API project is not exists yet.');
+            $this->warn('Please execute command "php artisan make:rest-api-project"');
         }
+
     }
 
     /**
@@ -125,8 +129,8 @@ class MakeRestAuthCommand extends Command
         $makeAuthGroupsAndActionsCommand = new MakeAuthGroupsAndActionsCommand($this->output);
         $makeAuthGroupsAndActionsCommand->fire();
 
-        //append auth routes to routes/api.php
-        $this->appendAuthRoutes();
+        //compile auth routes
+        $this->compileAuthRoutes();
 
         $this->info('All files for REST API authentication code were generated!');
     }
@@ -170,9 +174,9 @@ class MakeRestAuthCommand extends Command
     }
 
     /**
-     * Append auth routes to routes/api.php
+     * Compile auth routes to routes/auth.php
      */
-    private function appendAuthRoutes(): void
+    private function compileAuthRoutes(): void
     {
         //compile auth routes
         $authRoutesCompiler = new AuthRoutesCompiler();

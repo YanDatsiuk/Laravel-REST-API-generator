@@ -104,4 +104,16 @@ class Helper
         $parts = explode('://', $url);
         return (count($parts) > 1) ? $parts[1] : $parts[0];
     }
+
+    /**
+     * Check whether REST API project was generated.
+     *
+     * @return bool
+     */
+    public static function isRestProjectGenerated()
+    {
+        $modelPath = base_path(config('rest-api-generator.paths.models'));
+
+        return file_exists($modelPath);
+    }
 }

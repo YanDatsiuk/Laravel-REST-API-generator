@@ -98,11 +98,10 @@ class RulesArrayCompiler extends StubCompilerAbstract
                         break;
 
                     case 'String':
-                        Log::info('in case string');
                         $fields .= "'{$column->getName()}' => '{$this->getRulesForColumn($column, 'string')}', \n\t\t\t";
                         break;
                     default:
-                        throw new \Exception('Unexpected Doctrine mapping type');
+                        //throw new \Exception('Unexpected Doctrine mapping type: '. $column->getType());
                         break;
                 }
             }
@@ -131,8 +130,6 @@ class RulesArrayCompiler extends StubCompilerAbstract
      */
     private function getRulesForColumn(Column $column, string $firstRule = 'string'): string
     {
-        Log::info('getRulesForColumn');
-
         $rules = $firstRule;
         $columnName = $column->getName();
         $columnType = $column->getType(); //$column->getUnsigned()
@@ -162,8 +159,6 @@ class RulesArrayCompiler extends StubCompilerAbstract
         //
         $foreignRule = $this->makeForeignKeyRule($columnName);
         $rules .= $foreignRule ? $foreignRule : '';
-
-        Log::info('makeUniqueRule before');
 
         //
         $uniqueRule = $this->makeUniqueRule($column);
@@ -202,10 +197,6 @@ class RulesArrayCompiler extends StubCompilerAbstract
     {
         $uniqueRule = '';
 
-        //todo write algo
-
-        Log::info('makeUniqueRule');
-
         //get indexes from table
         $tableIndexes = $this->table->getIndexes();
 
@@ -214,13 +205,11 @@ class RulesArrayCompiler extends StubCompilerAbstract
             //check whether a index is unique
             if ($tableIndex->isUnique()) {
 
-                Log::info('isUnique() :: index :: '. $tableIndex->getName());
-
                 //get columns for this unique index
                 $indexColumns = $tableIndex->getColumns();
 
                 //check, if current column is in unique index columns
-                if (in_array($column, $indexColumns)) {
+                if (in_array($column->getName(), $indexColumns)) {
 
                     //select what rule to generate: for single, or for combined columns
                     if (count($indexColumns) === 1) {

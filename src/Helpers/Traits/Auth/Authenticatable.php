@@ -4,6 +4,7 @@ namespace TMPHP\RestApiGenerators\Helpers\Traits\Auth;
 
 use Dingo\Api\Http\Request;
 use Dingo\Api\Routing\Helpers;
+use Illuminate\Support\Facades\Log;
 use TMPHP\RestApiGenerators\Helpers\Traits\ErrorFormatable;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -32,8 +33,16 @@ trait Authenticatable
             'password' => 'required|string|between:6,255'
         ]);
 
-        //create user in database
-        $this->userModel->fill($request->all())->save();
+        //create user instance
+        $this->userModel
+            ->fill(
+                [
+                    'name' => $request->input('name'),
+                    'email' => $request->input('email'),
+                    'password' => bcrypt($request->input('password')),
+                ]
+            )
+            ->save();
 
         //get token
         $token = 'Bearer ' . JWTAuth::fromUser($this->userModel);
@@ -55,8 +64,8 @@ trait Authenticatable
     {
 
         $this->validate($request, [
-            'email' => 'required',
-            'password' => 'required'
+            'email' => 'required|string',
+            'password' => 'required|string'
         ]);
 
         $token = JWTAuth::attempt($request->only(['email', 'password']));
@@ -65,10 +74,10 @@ trait Authenticatable
             //return token in response header
             return $this->response->noContent()->header(
                 'authorization',
-                $token
+                'Bearer ' . $token
             );
         } else {
-            return 'f off';
+            return $this->response->errorForbidden('Access Forbidden');
         }
     }
 

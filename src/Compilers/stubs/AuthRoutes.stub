@@ -35,6 +35,10 @@ $api->group([
      *         description="Set authorization token type(JWT) in header and return AuthUser"
      *     ),
      *     @SWG\Response(
+     *         response="403",
+     *         description="Access Forbidden"
+     *     ),
+     *     @SWG\Response(
      *         response="default",
      *         description="unexpected error",
      *         @SWG\Schema(

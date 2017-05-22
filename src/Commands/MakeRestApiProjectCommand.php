@@ -6,8 +6,11 @@ namespace TMPHP\RestApiGenerators\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
 use TMPHP\RestApiGenerators\Support\Helper;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
+use TMPHP\RestApiGenerators\Support\SchemaManager;
+use Xethron\MigrationsGenerator\MigrateGenerateCommand;
 
 /**
  * Class MakeRestApiProjectCommand
@@ -36,7 +39,7 @@ class MakeRestApiProjectCommand extends Command
      *
      * @var array
      */
-    private $models = [];
+    private $modelNames = [];
 
     /**
      * CSV - models in kebab notation
@@ -57,10 +60,18 @@ class MakeRestApiProjectCommand extends Command
      *
      * @var array
      */
-    private $tables = [];
+    private $tableNames = [];
 
     /** @var AbstractSchemaManager */
     private $schema;
+
+    /**
+     * Set a list of tables,
+     * for which require to generate migrations.
+     *
+     * @var array list of the table names.
+     */
+    private $tablesForMigrationGeneration = [];
 
 
     /**
@@ -70,6 +81,8 @@ class MakeRestApiProjectCommand extends Command
      */
     public function fire()
     {
+        //
+        $this->schema = new SchemaManager();
 
         //initialize submitted parameters and stop execution if there are any errors
         $isValidInput = $this->initInputParams();
@@ -79,13 +92,52 @@ class MakeRestApiProjectCommand extends Command
             $this->warn('You do not pass --models and --tables parameters');
 
             $this->choicesOnAbsentOptions();
+
+            //transform model array to string variables with different required notations
+            $this->transformModelsToRequiredNotations();
         }
+
+        //set a list of required migrations for tables
+        $this->setListOfRequiredMigrations();
 
         //call artisan commands for generating models, transformers, controllers, swagger-docs and routes
         $this->callGenerators();
 
         $this->info('All files for REST API project were generated!');
         $this->info('Please see all files in /storage/CRUD directory');
+    }
+
+    /** Initialize submitted parameters or read them from configuration file */
+    private function initInputParams()
+    {
+        //get list of models
+        $this->modelNames = explode(',', $this->option('models'));
+
+        //get list of database tables
+        $this->tableNames = explode(',', $this->option('tables'));
+
+        //check whether model names were submitted
+        if (strlen($this->modelNames[0]) === 0) {
+            $this->warn('Please specify model names in kebab notation');
+
+            return false;
+        }
+
+        //check whether model names were submitted
+        if (strlen($this->tableNames[0]) === 0) {
+            $this->warn('Please specify table names');
+
+            return false;
+        }
+
+        //check whether table quantity are equal to model names quantity
+        if (count($this->modelNames) !== count($this->tableNames)) {
+            $this->error('table names quantity are not equal to model names quantity');
+
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -124,38 +176,28 @@ class MakeRestApiProjectCommand extends Command
         }
     }
 
-    /** Initialize submitted parameters or read them from configuration file */
-    private function initInputParams()
+    /** Load parameters from configuration file. */
+    private function loadParametersFromConfigFile()
     {
+        $modelNamesTables = config('rest-api-generator.models');
+        $this->modelNames = array_keys($modelNamesTables);
+        $this->tableNames = array_values($modelNamesTables);
 
-        //get list of models
-        $this->models = explode(',', $this->option('models'));
+        return true;
+    }
 
-        //get list of database tables
-        $this->tables = explode(',', $this->option('tables'));
+    /** Load parameters from database schema, using Doctrine Schema Manager */
+    private function loadParametersFromDatabaseSchema()
+    {
+        //get all tables from database schema
+        $this->tableNames = $this->schema->listTableNames();
 
-        //check whether model names were submitted
-        if (strlen($this->models[0]) === 0) {
-            $this->warn('Please specify model names in kebab notation');
+        //remove excluded tables from generation process
+        $excludedTables = config('rest-api-generator.excluded_tables');
+        $this->tableNames = array_diff($this->tableNames, $excludedTables);
 
-            return false;
-        }
-
-        //check whether model names were submitted
-        if (strlen($this->tables[0]) === 0) {
-            $this->warn('Please specify table names');
-
-            return false;
-        }
-
-        //check whether table quantity are equal to model names quantity
-        if (count($this->models) !== count($this->tables)) {
-            $this->error('table names quantity are not equal to model names quantity');
-
-            return false;
-        }
-
-        $this->transformModelsToRequiredNotations();
+        $dbTablePrefix = config('rest-api-generator.db_table_prefix');
+        $this->modelNames = Helper::getModelNamesFromTableNames($this->tableNames, $dbTablePrefix);
 
         return true;
     }
@@ -163,12 +205,12 @@ class MakeRestApiProjectCommand extends Command
     /** Transform model array to string variables with different notations */
     private function transformModelsToRequiredNotations()
     {
-        $this->modelsInKebabNotaion = implode(',', $this->models);
+        $this->modelsInKebabNotaion = implode(',', $this->modelNames);
 
         //transform model names from kebab to camelCase notation
         $_modelsInCamelCaseNotation = [];
 
-        foreach ($this->models as $model) {
+        foreach ($this->modelNames as $model) {
             array_push($_modelsInCamelCaseNotation, $this->kebabToCamelCase($model));
         }
 
@@ -193,34 +235,26 @@ class MakeRestApiProjectCommand extends Command
         return $_modelInCamelCaseNotation;
     }
 
-    /** Load parameters from configuration file. */
-    private function loadParametersFromConfigFile()
+    /**
+     * Set list of tables with missed migration files.
+     */
+    private function setListOfRequiredMigrations()
     {
-        $modelNamesTables = config('rest-api-generator.models');
-        $this->models = array_keys($modelNamesTables);
-        $this->tables = array_values($modelNamesTables);
+        //get list of all table names
+        $allTableNames = $this->schema->listTableNames();
 
-        $this->transformModelsToRequiredNotations();
+        //get list of all existing migrations
+        $migrationFiles = scandir(database_path('migrations'));
 
-        return true;
-    }
-
-    /** Load parameters from database schema, using Doctrine Schema Manager */
-    private function loadParametersFromDatabaseSchema()
-    {
-        $this->schema = DB::getDoctrineSchemaManager();
-        $this->tables = $this->schema->listTableNames();
-
-        //remove excluded tables from generation process
-        $excludedTables = config('rest-api-generator.excluded_tables');
-        $this->tables = array_diff($this->tables, $excludedTables);
-
-        $dbTablePrefix = config('rest-api-generator.db_table_prefix');
-        $this->models = Helper::getModelNamesFromTableNames($this->tables, $dbTablePrefix);
-
-        $this->transformModelsToRequiredNotations();
-
-        return true;
+        //set list of tables with missed migration files
+        $this->tablesForMigrationGeneration = array_filter($allTableNames, function ($tableName) use ($migrationFiles) {
+            foreach ($migrationFiles as $migrationFile) {
+                if (str_contains($migrationFile, $tableName)) {
+                    return false;
+                }
+            }
+            return true;
+        });
     }
 
     /**
@@ -231,7 +265,7 @@ class MakeRestApiProjectCommand extends Command
         //create CRUD models.
         Artisan::call('make:crud-models', [
             '--models' => $this->modelsInCamelCaseNotation,
-            '--tables' => implode(',', $this->tables),
+            '--tables' => implode(',', $this->tableNames),
         ]);
 
         //create transformers for CRUD REST API.
@@ -247,7 +281,7 @@ class MakeRestApiProjectCommand extends Command
         //php artisan make:swagger-models
         Artisan::call('make:swagger-models', [
             '--models' => $this->modelsInKebabNotaion,
-            '--tables' => implode(',', $this->tables),
+            '--tables' => implode(',', $this->tableNames),
         ]);
 
         //php artisan make:crud-routes
@@ -265,7 +299,14 @@ class MakeRestApiProjectCommand extends Command
         $cmd->fire();
 
         //php artisan migrate:generate --no-interaction
-        Artisan::call('migrate:generate', ['--no-interaction' => true]);
+        if ($this->tablesForMigrationGeneration) {
+            Artisan::call('migrate:generate',
+                [
+                    'tables' => implode(',', $this->tablesForMigrationGeneration),
+                    '--no-interaction' => true
+                ]);
+        }
+
     }
 
 }

@@ -57,7 +57,7 @@ class ArrayCompiler extends StubCompilerAbstract
         $fields = '';
 
         if ($keys) {
-
+            //todo write algo if $keys is passed
         } else {
 
             foreach ($values as $value) {

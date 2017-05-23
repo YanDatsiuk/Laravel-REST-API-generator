@@ -45,9 +45,10 @@ abstract class TransformerAbstract extends \League\Fractal\TransformerAbstract
     {
         if (starts_with($name, 'include')) {
             return $this->callInclude($name, $arguments);
-        } else {
-            throw new UnexpectedMagicCall();
         }
+
+        //unexpected function is calling
+        throw new UnexpectedMagicCall();
     }
 
     /**

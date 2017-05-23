@@ -286,16 +286,16 @@ abstract class ControllerAbstract extends IlluminateController
      * Get specific model item
      *
      * @param Request $request
-     * @param $id
+     * @param $modelId
      *
      * @return \Dingo\Api\Http\Response
      */
-    public function show(Request $request, $id)
+    public function show(Request $request, $modelId)
     {
         $this->validate($request, $this->rules[__FUNCTION__] ?: []);
         $this->setParams($request);
 
-        $model = $this->query->find($id);
+        $model = $this->query->find($modelId);
 
         if (!$model) {
             return $this->responseNotFoundModel($this->model);
@@ -311,14 +311,20 @@ abstract class ControllerAbstract extends IlluminateController
      * Update model by Id
      *
      * @param Request $request
-     * @param $id
+     * @param $modelId
      *
      * @return \Dingo\Api\Http\Response|
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $modelId)
     {
-        $this->validate($request, $this->rules[__FUNCTION__] ?: []);
-        $model = $this->query->withoutGlobalScopes()->find($id);
+
+        try {
+            $this->validate($request, $this->rules[__FUNCTION__] ?: []);
+        } catch (ValidationException $exception) {
+            return $exception->getResponse();
+        }
+
+        $model = $this->query->withoutGlobalScopes()->find($modelId);
 
         if (!$model) {
             return $this->responseNotFoundModel($this->model);
@@ -335,15 +341,15 @@ abstract class ControllerAbstract extends IlluminateController
     /**
      * Remove from DB by id
      *
-     * @param $id
+     * @param $modelId
      * @param $request
      *
      * @return \Dingo\Api\Http\Response
      */
-    public function destroy(Request $request, $id)
+    public function destroy(Request $request, $modelId)
     {
         $this->validate($request, $this->rules[__FUNCTION__] ?: []);
-        $model = $this->query->withoutGlobalScopes()->find($id);
+        $model = $this->query->withoutGlobalScopes()->find($modelId);
 
         if ($model === null) {
             return $this->responseNotFoundModel($this->model);

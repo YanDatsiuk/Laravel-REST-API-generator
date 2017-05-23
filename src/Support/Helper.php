@@ -77,6 +77,47 @@ class Helper
     }
 
     /**
+     * Pluralize string from kebab case.
+     *
+     * @param string $string example: user-role
+     * @return string
+     */
+    public static function pluralizeKebabCase(string $string): string
+    {
+        //
+        $subStrings = explode('-', $string);
+
+        //
+        $pluralizedSubStrings = [];
+        foreach ($subStrings as $subString) {
+            array_push($pluralizedSubStrings, str_plural($subString));
+        }
+
+        //
+        $result = implode('-', $pluralizedSubStrings);
+
+        return $result;
+    }
+
+    /**
+     * Convert string in kebab notation to camelCase notation
+     *
+     * @param string $string
+     *
+     * @return string
+     */
+    public static function kebabToCamelCase(string $string): string
+    {
+        $_modelInCamelCaseNotation = '';
+
+        foreach (explode('-', $string) as $kebabStringPart) {
+            $_modelInCamelCaseNotation .= ucfirst($kebabStringPart);
+        }
+
+        return $_modelInCamelCaseNotation;
+    }
+
+    /**
      * Get name for the "belongTo" relation based on column name
      *
      * @param string $columnName

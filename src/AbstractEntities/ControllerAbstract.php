@@ -317,7 +317,13 @@ abstract class ControllerAbstract extends IlluminateController
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, $this->rules[__FUNCTION__] ?: []);
+
+        try {
+            $this->validate($request, $this->rules[__FUNCTION__] ?: []);
+        } catch (ValidationException $exception) {
+            return $exception->getResponse();
+        }
+
         $model = $this->query->withoutGlobalScopes()->find($id);
 
         if (!$model) {

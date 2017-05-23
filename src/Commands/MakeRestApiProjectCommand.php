@@ -211,28 +211,10 @@ class MakeRestApiProjectCommand extends Command
         $_modelsInCamelCaseNotation = [];
 
         foreach ($this->modelNames as $model) {
-            array_push($_modelsInCamelCaseNotation, $this->kebabToCamelCase($model));
+            array_push($_modelsInCamelCaseNotation, Helper::kebabToCamelCase($model));
         }
 
         $this->modelsInCamelCaseNotation = implode(',', $_modelsInCamelCaseNotation);
-    }
-
-    /**
-     * Convert string in kebab notation to camelCase notation
-     *
-     * @param string $string
-     *
-     * @return string
-     */
-    private function kebabToCamelCase(string $string): string
-    {
-        $_modelInCamelCaseNotation = '';
-
-        foreach (explode('-', $string) as $kebabStringPart) {
-            $_modelInCamelCaseNotation .= ucfirst($kebabStringPart);
-        }
-
-        return $_modelInCamelCaseNotation;
     }
 
     /**

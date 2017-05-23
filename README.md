@@ -1,3 +1,5 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/bdc684fc4dc84708a4cd201ae70499a6)](https://www.codacy.com/app/YanDatsyuk/Laravel-REST-API-generator?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=YanDatsyuk/Laravel-REST-API-generator&amp;utm_campaign=Badge_Grade)
+
 Laravel REST API Generator
 ==========================
 

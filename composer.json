@@ -5,7 +5,7 @@
   "license": "MIT",
   "require": {
     "php": ">=5.6.4",
-    "dingo/api": "v1.0.0-beta8",
+    "dingo/api": "1.0.0-beta8",
     "darkaonline/l5-swagger": "~4.0",
     "laravel/framework": "5.4.*",
     "laravel/tinker": "~1.0",

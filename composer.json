@@ -1,7 +1,7 @@
 {
   "name": "tmphp/rest-api-generators",
   "description": "Laravel REST API scaffolding.",
-  "minimum-stability": "stable",
+  "minimum-stability": "dev",
   "license": "MIT",
   "require": {
     "php": ">=5.6.4",

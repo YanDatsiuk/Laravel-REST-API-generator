@@ -3,6 +3,7 @@
 namespace TMPHP\RestApiGenerators\Middleware;
 
 use Dingo\Api\Facade\Route;
+use Illuminate\Support\Facades\Log;
 use TMPHP\RestApiGenerators\Helpers\Traits\ErrorFormatable;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -60,13 +61,14 @@ class CheckAccess
         foreach ($groups as $group){
             $authActionGroups->push($group->authActionGroups);
         }
-        $authActionGroups->flatten();
+        $authActionGroups = $authActionGroups->flatten();
 
         $actions = collect([]);
         foreach ($authActionGroups as $authActionGroup){
             $actions->push($authActionGroup->action);
         }
-        $actionNames = array_unique($actions->pluck('actions')->flatten()->pluck('name')->toArray());
+
+        $actionNames = array_unique($actions->pluck('name')->toArray());
 
         return in_array($this->route()->currentRouteName(), $actionNames, true);
     }

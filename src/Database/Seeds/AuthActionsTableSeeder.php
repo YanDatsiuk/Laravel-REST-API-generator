@@ -14,6 +14,25 @@ class AuthActionsTableSeeder extends Seeder
      */
     public function run()
     {
-        Log::info('AuthActionsTableSeeder');
+        /**@var $api \Dingo\Api\Routing\Router* */
+        $router = app('Dingo\Api\Routing\Router');
+
+        //getting list of all routes
+        $routeNames = [];
+        foreach ($router->getRoutes() as $collection) {
+            /**@var $collection \Dingo\Api\Routing\RouteCollection* */
+            /**@var $route \Dingo\Api\Routing\Route* */
+            foreach ($collection->getRoutes() as $route) {
+                $routeNames[] = $route->getName();
+            }
+        }
+
+        $modelsNamespace = config('rest-api-generator.namespaces.models');
+        $authActionModel = $modelsNamespace.'\AuthAction';
+
+        //saving actions
+        foreach ($routeNames as $routeName) {
+            $authActionModel::firstOrCreate(['name' => $routeName]);
+        }
     }
 }

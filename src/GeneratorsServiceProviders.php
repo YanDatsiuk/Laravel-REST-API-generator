@@ -2,6 +2,7 @@
 
 namespace TMPHP\RestApiGenerators;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 use TMPHP\RestApiGenerators\Commands\MakeAuthGroupsAndActionsCommand;
 use TMPHP\RestApiGenerators\Commands\MakeCrudControllersCommand;

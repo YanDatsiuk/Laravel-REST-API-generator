@@ -157,4 +157,23 @@ class Helper
 
         return file_exists($modelPath);
     }
+
+    /**
+     * Append a code to method's beginning.
+     *
+     * @param string $fileContent
+     * @param string $codeToAppend
+     * @param string $methodPayload
+     * @return string
+     */
+    public static function appendCodeToMethod(string $fileContent, string $codeToAppend, string $methodPayload): string
+    {
+        $methodStartIndex = strpos($fileContent, $methodPayload);
+
+        $firstCurlyBracketIndex = strpos($fileContent, '{', $methodStartIndex);
+
+        $newFileContent = substr_replace($fileContent, $codeToAppend, $firstCurlyBracketIndex + 1, 0);
+
+        return $newFileContent;
+    }
 }

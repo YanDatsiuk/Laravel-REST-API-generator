@@ -2,6 +2,7 @@
 
 namespace TMPHP\RestApiGenerators;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 use TMPHP\RestApiGenerators\Commands\MakeAuthGroupsAndActionsCommand;
 use TMPHP\RestApiGenerators\Commands\MakeCrudControllersCommand;
@@ -54,6 +55,10 @@ class GeneratorsServiceProviders extends ServiceProvider
     public function register()
     {
         $this->registerCommands();
+
+        if ($this->app->environment() !== 'production') {
+            $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
+        }
     }
 
     /**

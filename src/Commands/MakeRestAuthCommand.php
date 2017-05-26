@@ -6,6 +6,7 @@ namespace TMPHP\RestApiGenerators\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Console\OutputStyle;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use TMPHP\RestApiGenerators\Compilers\AuthControllerCompiler;
 use TMPHP\RestApiGenerators\Compilers\AuthRoutesCompiler;
@@ -132,6 +133,9 @@ class MakeRestAuthCommand extends Command
         //compile auth routes
         $this->compileAuthRoutes();
 
+        //add auth seeds calls to DatabaseSeeder run() method
+        $this->addAuthSeeds();
+
         $this->info('All files for REST API authentication code were generated!');
     }
 
@@ -216,6 +220,30 @@ class MakeRestAuthCommand extends Command
                 $table->dateTime('created_at')->nullable();
             });
         }
+    }
+
+    /**
+     * Add auth seeds calls to DatabaseSeeder run() method
+     */
+    private function addAuthSeeds()
+    {
+        $dbSeederContent = file_get_contents(database_path('seeds/DatabaseSeeder.php'));
+
+        if (strpos($dbSeederContent, 'AuthActionsTableSeeder')) {
+            return;
+        }
+
+        //prepare replacement code
+        $replacement = "\n\n\t\t" . '$this->call(\TMPHP\RestApiGenerators\Database\Seeds\AuthActionsTableSeeder::class);';
+        $replacement .= "\n\t\t" . '$this->call(\TMPHP\RestApiGenerators\Database\Seeds\AuthGroupsTableSeeder::class);';
+        $replacement .= "\n\t\t" . '$this->call(\TMPHP\RestApiGenerators\Database\Seeds\AuthActionGroupsTableSeeder::class);';
+        $replacement .= "\n\t\t" . '$this->call(\TMPHP\RestApiGenerators\Database\Seeds\AuthGroupUsersTableSeeder::class);';
+        $replacement .= "\n";
+
+        $newDbSeederContent = Helper::appendCodeToMethod($dbSeederContent, $replacement, ' run()');
+
+        //rewrite DatabaseSeeder file
+        file_put_contents(database_path('seeds/DatabaseSeeder.php'), $newDbSeederContent);
     }
 
 }

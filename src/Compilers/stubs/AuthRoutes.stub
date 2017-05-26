@@ -8,7 +8,6 @@
 */
 
 $api->group([
-    'middleware' => 'check.role.access',
     'version' => env('API_VERSION', 'v1'),
     'prefix' => env('API_VERSION', 'v1'),
 ], function ($api) {

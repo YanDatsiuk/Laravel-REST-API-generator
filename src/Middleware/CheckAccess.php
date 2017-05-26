@@ -5,6 +5,7 @@ namespace TMPHP\RestApiGenerators\Middleware;
 use Dingo\Api\Facade\Route;
 use Illuminate\Support\Facades\Log;
 use TMPHP\RestApiGenerators\Helpers\Traits\ErrorFormatable;
+use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 /**
@@ -30,8 +31,10 @@ class CheckAccess
             return $next($request);
         }
 
-        if ($user = JWTAuth::toUser(JWTAuth::getToken())) {
-
+        try {
+            $user = JWTAuth::toUser(JWTAuth::getToken());
+        } catch (JWTException $exception) {
+            $user = null;
         }
 
         //Checking access in user/guest actions to the current endpoint
@@ -50,21 +53,29 @@ class CheckAccess
      */
     private function checkAccessToAction($user)
     {
-        $authGroupUsers = $user->authGroupUsers;
+        if ($user) {
+            $authGroupUsers = $user->authGroupUsers;
 
-        $groups = collect([]);
-        foreach ($authGroupUsers as $authGroupUser){
-            $groups->push($authGroupUser->group);
+            $groups = collect([]);
+            foreach ($authGroupUsers as $authGroupUser) {
+                $groups->push($authGroupUser->group);
+            }
+        } else {
+            $groups = collect([]);
+            $modelsNamespace = config('rest-api-generator.namespaces.models');
+            $authGroupModel = $modelsNamespace.'\AuthGroup';
+            $guestGroup = $authGroupModel::firstOrCreate(['name' => 'guest']);
+            $groups->push($guestGroup);
         }
 
         $authActionGroups = collect([]);
-        foreach ($groups as $group){
+        foreach ($groups as $group) {
             $authActionGroups->push($group->authActionGroups);
         }
         $authActionGroups = $authActionGroups->flatten();
 
         $actions = collect([]);
-        foreach ($authActionGroups as $authActionGroup){
+        foreach ($authActionGroups as $authActionGroup) {
             $actions->push($authActionGroup->action);
         }
 
@@ -84,13 +95,13 @@ class CheckAccess
     }
 
     /**
-     * Define class of Roles
+     * Define class of Groupa
      *
-     * @return \App\REST\Role
+     * @return \App\REST\Group
      */
-    public function role()
+    public function group()
     {
-        return new \App\REST\Role();
+        return new \App\REST\Group();
     }
 
     /**

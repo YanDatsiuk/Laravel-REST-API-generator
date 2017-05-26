@@ -82,6 +82,12 @@ class CheckAccess
         $actionNames = array_unique($actions->pluck('name')->toArray());
 
         return in_array($this->route()->currentRouteName(), $actionNames, true);
+
+        //todo refactor - proper flow:
+        //check whether user provided
+        //else use "guest" group actions
+        //get user's actions (unique between all user's groups)
+        //return true or false
     }
 
     /**

@@ -43,7 +43,7 @@ class CheckAccess
 
     /**
      * Check whether a current user have access to endpoint (action)
-     *
+     * todo refactor: if we generate relation User->actions... we don't have to do all these cycles.
      * @param $user
      * @return bool
      */

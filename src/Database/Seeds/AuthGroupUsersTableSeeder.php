@@ -20,14 +20,16 @@ class AuthGroupUsersTableSeeder extends Seeder
 
         //create user admin
 
-        $admin = (new $userModel())->where(['email' => 'admin@gmail.com'])->first();//todo take from to config
+        $admin = (new $userModel())
+            ->where(['email' => config('est-api-generator.admin_credentials.email')])
+            ->first();
 
         if (!$admin) {
             $admin = $userModel::firstOrCreate(
                 [
-                    'name' => 'John ADMIN',
-                    'email' => 'admin@gmail.com',//todo take from to config
-                    'password' => bcrypt('secret'),//todo take from to config
+                    'name' => config('rest-api-generator.admin_credentials.name'),
+                    'email' => config('rest-api-generator.admin_credentials.email'),
+                    'password' => bcrypt(config('rest-api-generator.admin_credentials.password')),
                 ]);
         }
 

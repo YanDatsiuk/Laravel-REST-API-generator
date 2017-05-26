@@ -29,16 +29,12 @@ class CheckAccess
             return $next($request);
         }
 
-        $roles = $this->role()->with('actions')->whereName('subscriber')->get();
+        if ($user = JWTAuth::toUser(JWTAuth::getToken())) {
 
-        if (JWTAuth::getToken()) {
-            if ($user = JWTAuth::toUser()) {
-                $roles = $user->roles;
-            }
         }
 
         //Checking access in user/guest actions to the current endpoint
-        if ($this->checkAccessToAction($roles)) {
+        if ($this->checkAccessToAction($user)) {
             return $next($request);
         }
 
@@ -46,27 +42,33 @@ class CheckAccess
     }
 
     /**
-     * Define class of Roles
+     * Check whether a current user have access to endpoint (action)
      *
-     * @return \App\REST\Role
+     * @param $user
+     * @return bool
      */
-    public function role()
+    private function checkAccessToAction($user)
     {
-        return new \App\REST\Role();
-    }
+        $authGroupUsers = $user->authGroupUsers;
 
-    /**
-     * Access checker
-     *
-     * @param $roles
-     *
-     * @return bool Check access in actions to current route name
-     */
-    private function checkAccessToAction($roles)
-    {
-        $actions = array_unique($roles->pluck('actions')->flatten()->pluck('name')->toArray());
+        $groups = collect([]);
+        foreach ($authGroupUsers as $authGroupUser){
+            $groups->push($authGroupUser->group);
+        }
 
-        return in_array($this->route()->currentRouteName(), $actions, true);
+        $authActionGroups = collect([]);
+        foreach ($groups as $group){
+            $authActionGroups->push($group->authActionGroups);
+        }
+        $authActionGroups->flatten();
+
+        $actions = collect([]);
+        foreach ($authActionGroups as $authActionGroup){
+            $actions->push($authActionGroup->action);
+        }
+        $actionNames = array_unique($actions->pluck('actions')->flatten()->pluck('name')->toArray());
+
+        return in_array($this->route()->currentRouteName(), $actionNames, true);
     }
 
     /**
@@ -77,6 +79,16 @@ class CheckAccess
     public function route()
     {
         return Route::getFacadeRoot();
+    }
+
+    /**
+     * Define class of Roles
+     *
+     * @return \App\REST\Role
+     */
+    public function role()
+    {
+        return new \App\REST\Role();
     }
 
     /**

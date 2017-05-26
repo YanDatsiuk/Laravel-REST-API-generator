@@ -3,7 +3,9 @@
 namespace TMPHP\RestApiGenerators\Middleware;
 
 use Dingo\Api\Facade\Route;
+use Illuminate\Support\Facades\Log;
 use TMPHP\RestApiGenerators\Helpers\Traits\ErrorFormatable;
+use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 /**
@@ -29,16 +31,14 @@ class CheckAccess
             return $next($request);
         }
 
-        $roles = $this->role()->with('actions')->whereName('subscriber')->get();
-
-        if (JWTAuth::getToken()) {
-            if ($user = JWTAuth::toUser()) {
-                $roles = $user->roles;
-            }
+        try {
+            $user = JWTAuth::toUser(JWTAuth::getToken());
+        } catch (JWTException $exception) {
+            $user = null;
         }
 
         //Checking access in user/guest actions to the current endpoint
-        if ($this->checkAccessToAction($roles)) {
+        if ($this->checkAccessToAction($user)) {
             return $next($request);
         }
 
@@ -46,27 +46,48 @@ class CheckAccess
     }
 
     /**
-     * Define class of Roles
-     *
-     * @return \App\REST\Role
+     * Check whether a current user have access to endpoint (action)
+     * todo refactor: if we generate relation User->actions... we don't have to do all these cycles.
+     * @param $user
+     * @return bool
      */
-    public function role()
+    private function checkAccessToAction($user)
     {
-        return new \App\REST\Role();
-    }
+        if ($user) {
+            $authGroupUsers = $user->authGroupUsers;
 
-    /**
-     * Access checker
-     *
-     * @param $roles
-     *
-     * @return bool Check access in actions to current route name
-     */
-    private function checkAccessToAction($roles)
-    {
-        $actions = array_unique($roles->pluck('actions')->flatten()->pluck('name')->toArray());
+            $groups = collect([]);
+            foreach ($authGroupUsers as $authGroupUser) {
+                $groups->push($authGroupUser->group);
+            }
+        } else {
+            $groups = collect([]);
+            $modelsNamespace = config('rest-api-generator.namespaces.models');
+            $authGroupModel = $modelsNamespace.'\AuthGroup';
+            $guestGroup = $authGroupModel::firstOrCreate(['name' => 'guest']);
+            $groups->push($guestGroup);
+        }
 
-        return in_array($this->route()->currentRouteName(), $actions, true);
+        $authActionGroups = collect([]);
+        foreach ($groups as $group) {
+            $authActionGroups->push($group->authActionGroups);
+        }
+        $authActionGroups = $authActionGroups->flatten();
+
+        $actions = collect([]);
+        foreach ($authActionGroups as $authActionGroup) {
+            $actions->push($authActionGroup->action);
+        }
+
+        $actionNames = array_unique($actions->pluck('name')->toArray());
+
+        return in_array($this->route()->currentRouteName(), $actionNames, true);
+
+        //todo refactor - proper flow:
+        //check whether user provided
+        //else use "guest" group actions
+        //get user's actions (unique between all user's groups)
+        //return true or false
     }
 
     /**
@@ -77,6 +98,16 @@ class CheckAccess
     public function route()
     {
         return Route::getFacadeRoot();
+    }
+
+    /**
+     * Define class of Groupa
+     *
+     * @return \App\REST\Group
+     */
+    public function group()
+    {
+        return new \App\REST\Group();
     }
 
     /**

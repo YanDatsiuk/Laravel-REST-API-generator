@@ -12,7 +12,8 @@
     "tymon/jwt-auth": "0.5.*",
     "xethron/migrations-generator": "^2.0",
     "abhijitghogre/laravel-db-clear-command": "^1.0",
-    "felixkiss/uniquewith-validator": "^3.1"
+    "felixkiss/uniquewith-validator": "^3.1",
+    "barryvdh/laravel-ide-helper": "^2.3@dev"
   },
   "require-dev": {
     "mockery/mockery": "0.9.*",

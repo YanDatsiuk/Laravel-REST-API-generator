@@ -15,16 +15,21 @@ class AuthGroupUsersTableSeeder extends Seeder
     {
         $modelsNamespace = config('rest-api-generator.namespaces.models');
         $authAuthGroupUserModel = $modelsNamespace . '\AuthGroupUser';
-        $authGroupModel = $modelsNamespace.'\AuthGroup';
+        $authGroupModel = $modelsNamespace . '\AuthGroup';
         $userModel = $modelsNamespace . '\User';
 
         //create user admin
-        $admin = $userModel::firstOrCreate(
-            [
-                'name' => 'John ADMIN',
-                'email' => 'admin@gmail.com',//todo take from to config
-                'password' => bcrypt('secret'),//todo take from to config
-            ]);
+
+        $admin = (new $userModel())->where(['email' => 'admin@gmail.com'])->first();//todo take from to config
+
+        if (!$admin) {
+            $admin = $userModel::firstOrCreate(
+                [
+                    'name' => 'John ADMIN',
+                    'email' => 'admin@gmail.com',//todo take from to config
+                    'password' => bcrypt('secret'),//todo take from to config
+                ]);
+        }
 
         //create group "admin"
         $adminGroup = $authGroupModel::firstOrCreate(['name' => 'admin']);

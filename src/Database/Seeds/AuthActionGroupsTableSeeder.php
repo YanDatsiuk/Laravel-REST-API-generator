@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\DB;
 
 class AuthActionGroupsTableSeeder extends Seeder
 {
+
+    private $authActionGroupModel;
+
     /**
      * Run the database seeds.
      *
@@ -17,9 +20,9 @@ class AuthActionGroupsTableSeeder extends Seeder
     public function run()
     {
         $modelsNamespace = config('rest-api-generator.namespaces.models');
-        $authActionModel = $modelsNamespace.'\AuthAction';
-        $authGroupModel = $modelsNamespace.'\AuthGroup';
-        $authActionGroupModel = $modelsNamespace.'\AuthActionGroup';
+        $authActionModel = $modelsNamespace . '\AuthAction';
+        $authGroupModel = $modelsNamespace . '\AuthGroup';
+        $this->authActionGroupModel = $modelsNamespace . '\AuthActionGroup';
 
         //get all actions
         $allActions = $authActionModel::all();
@@ -39,16 +42,37 @@ class AuthActionGroupsTableSeeder extends Seeder
         $this->assignActionsToGroup($readActions, $registeredGroup);
     }
 
-    private function onlyReadActions(Collection $allActions){
+    /**
+     * Filter actions to get only show and index endpoints.
+     *
+     * @param Collection $actions
+     * @return Collection
+     */
+    private function onlyReadActions(Collection $actions)
+    {
+        //filter all action to get only show and index endpoints
+        $readActions = collect([]);
+        foreach ($actions as $action) {
+            if (str_contains($action->name, ['create', 'update', 'delete'])) {
+                continue;
+            } else {
+                $readActions->push($action);
+            }
+        }
 
-        //todo filter
-        return $allActions;
+        return $readActions;
     }
 
-    private function assignActionsToGroup(Collection $actions, Model $group){
-
-        foreach ($actions as $action){
-            DB::table('auth_action_group')->insert([
+    /**
+     * Assign actions to group.
+     *
+     * @param Collection $actions
+     * @param Model $group
+     */
+    private function assignActionsToGroup(Collection $actions, Model $group)
+    {
+        foreach ($actions as $action) {
+            $this->authActionGroupModel::firstOrCreate([
                 'action_id' => $action->id,
                 'group_id' => $group->id,
             ]);

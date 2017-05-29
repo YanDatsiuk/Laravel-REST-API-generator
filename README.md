@@ -3,7 +3,7 @@
 Laravel REST API Generator
 ==========================
 
-Code scaffolding for REST API project. 
+Code scaffolding for REST API project by database schema. 
 This package is available also on [packagist](https://packagist.org/packages/tmphp/rest-api-generators). And installation via packagist is preferred way.
 
 ## Installation
@@ -18,14 +18,14 @@ This package is available also on [packagist](https://packagist.org/packages/tmp
 
 Open your `config/app.php` and add this line in `providers` section
 ```php
-    TMPHP\RestApiGenerators\GeneratorsServiceProviders::class,
-    Dingo\Api\Provider\LaravelServiceProvider::class,
-    Way\Generators\GeneratorsServiceProvider::class,
-    Xethron\MigrationsGenerator\MigrationsGeneratorServiceProvider::class,
-    Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
-    L5Swagger\L5SwaggerServiceProvider::class,
-    Abhijitghogre\LaravelDbClearCommand\LaravelDbClearCommandServiceProvider::class,
-    Felixkiss\UniqueWithValidator\ServiceProvider::class,
+TMPHP\RestApiGenerators\GeneratorsServiceProviders::class,
+Dingo\Api\Provider\LaravelServiceProvider::class,
+Way\Generators\GeneratorsServiceProvider::class,
+Xethron\MigrationsGenerator\MigrationsGeneratorServiceProvider::class,
+Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
+L5Swagger\L5SwaggerServiceProvider::class,
+Abhijitghogre\LaravelDbClearCommand\LaravelDbClearCommandServiceProvider::class,
+Felixkiss\UniqueWithValidator\ServiceProvider::class,
 ```
 
 ### Publishing configuration files
@@ -35,10 +35,10 @@ Execute command
 php artisan vendor:publish
 ```
 
-### Database schema
-
-Make sure, that you have created database schema. 
-For generating relations you should have FOREIGN KEY Constraints.
+Open your `config/jwt.php` and change line with a user's model namespace.
+```php
+'user' => 'App\REST\User',
+```
 
 ### Configurating .env file
 
@@ -60,6 +60,11 @@ Add '/routes' path in 'config/l5-swagger.php', annotation path.
 ```php
 'annotations' => [base_path('app'), base_path('routes')],
 ```
+
+### Database schema
+
+Make sure, that you have created database schema. 
+For generating relations you should have FOREIGN KEY Constraints.
 
 # Generating code for REST API project
 

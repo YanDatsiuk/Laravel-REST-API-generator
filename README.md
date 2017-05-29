@@ -12,7 +12,7 @@ This package is available also on [packagist](https://packagist.org/packages/tmp
 
 * add `"tmphp/rest-api-generators": "dev-master"` to your composer.json (node `"require"`)
 * set `"minimum-stability": "dev"` in your composer.json
-* run `php artisan composer update`
+* run `composer update`
 
 ### Configuration
 

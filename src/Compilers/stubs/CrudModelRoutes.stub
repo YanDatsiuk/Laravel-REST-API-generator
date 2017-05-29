@@ -1,4 +1,5 @@
-//{{ModelPlurarLowercase}} CRUD
+
+        //{{ModelPlurarLowercase}} CRUD
         $api->group(
             ['prefix' => '/{{ModelPlurarLowercase}}'],
             function ($api) {

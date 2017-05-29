@@ -51,7 +51,7 @@ Open your `config/jwt.php` and change line with a user's model namespace.
 Add middleware to App/Http/Kernel.php to the $routeMiddleware array.
 
 ```php
-'check.role.access' => CheckAccess::class,
+'check.role.access' => \TMPHP\RestApiGenerators\Middleware\CheckAccess::class,
 ```
 
 ### Swagger configuration

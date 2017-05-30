@@ -3,7 +3,7 @@
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function {{relatedModelCamelCasePlural}}()
+    public function {{relationName}}()
     {
         return $this->belongsToMany(
             '{{modelsNamespace}}\{{relatedModelStudlyCaseSingular}}',

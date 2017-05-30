@@ -1,5 +1,5 @@
 /**
-     * {{belongToRelationName}}
+     * {{belongToRelationName}}.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

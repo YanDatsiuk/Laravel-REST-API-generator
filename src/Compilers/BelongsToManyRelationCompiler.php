@@ -38,7 +38,7 @@ class BelongsToManyRelationCompiler extends StubCompilerAbstract
         $this->replaceInStub([
             '{{relatedModelStudlyCasePlural}}' => $params['relatedModelStudlyCasePlural'],
             '{{relatedModelStudlyCaseSingular}}' => $params['relatedModelStudlyCaseSingular'],
-            '{{relatedModelCamelCasePlural}}' => $params['relatedModelCamelCasePlural'],
+            '{{relationName}}' => $params['relationName'],//todo change to relationName
             '{{relatedModelCamelCaseSingular}}' => $params['relatedModelCamelCaseSingular'],
             '{{pivotTableName}}' => $params['pivotTableName'],
             '{{modelsNamespace}}' => $params['modelsNamespace'],

@@ -4,6 +4,7 @@ namespace TMPHP\RestApiGenerators\Support;
 
 
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
+use Doctrine\DBAL\Schema\ForeignKeyConstraint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -61,7 +62,7 @@ class SchemaManager
      * List of foreign keys, which have foreign table equal to $tableName
      *
      * @param string $tableName
-     * @return array
+     * @return ForeignKeyConstraint[]
      */
     public function listForeignKeysOnTable(string $tableName)
     {
@@ -79,35 +80,6 @@ class SchemaManager
     }
 
     /**
-     * @param string $tableName
-     * @return array
-     */
-    public function listBelongsToManyForeignKeys(string $tableName): array
-    {
-        $foreignKeysOnTable = $this->listForeignKeysOnTable($tableName);
-
-        $belongsToManyForeignKeys = [];
-
-        foreach ($foreignKeysOnTable as $foreignKeyOnTable) {
-
-            $belongsToManyForeignKeys = array_merge(
-                $belongsToManyForeignKeys,
-                $this->schema->listTableForeignKeys($foreignKeyOnTable->getLocalTableName()));
-        }
-
-        //removing foreign keys, which points to $tableName
-        $result = [];
-        foreach ($belongsToManyForeignKeys as $belongsToManyForeignKey) {
-            if ($belongsToManyForeignKey->getForeignTableName() !== $tableName) {
-                array_push($result, $belongsToManyForeignKey);
-            }
-        }
-
-        return $result;
-    }
-
-
-    /**
      * Check whether all table from $tableNames exists in db schema
      *
      * @param array $tableNames Names of tables, which need to check on existence in
@@ -119,5 +91,73 @@ class SchemaManager
         $allTableNames = $this->schema->listTableNames();
 
         return empty(array_diff($tableNames, $allTableNames));
+    }
+
+    /**
+     * Get all foreign keys, which have "belongs to many" nature
+     *
+     * @param string $tableName
+     * @return ForeignKeyConstraint[]
+     */
+    public function listBelongsToManyForeignKeys(string $tableName)
+    {
+        //get all foreign keys
+        $tables = $this->schema->listTables();
+        $foreignKeys = [];
+        foreach ($tables as $table) {
+            if (count($table->getForeignKeys()) > 1 && $this->hasTableKeysToForeignTable($table->getName(),
+                    $tableName)
+            ) {
+                foreach ($table->getForeignKeys() as $foreignKey) {
+                    $foreignKey->setLocalTable($table);
+                    if ($foreignKey->getForeignTableName() !== $tableName) {
+                        array_push($foreignKeys, $foreignKey);
+                    }
+                }
+            }
+        }
+
+        return $foreignKeys;
+    }
+
+    /**
+     * Check whether $localTableName has foreign keys to $foreignTableName
+     *
+     * @param string $localTableName
+     * @param string $foreignTableName
+     * @return bool
+     */
+    private function hasTableKeysToForeignTable(string $localTableName, string $foreignTableName)
+    {
+        $foreignKeys = $this->schema->listTableForeignKeys($localTableName);
+
+        foreach ($foreignKeys as $foreignKey) {
+            if ($foreignKey->getForeignTableName() === $foreignTableName) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Get a foreign key in $inTable, which leads to $toTable
+     *
+     * @param string $inTable
+     * @param string $toTable
+     * @return ForeignKeyConstraint
+     * @throws \Exception
+     */
+    public function getKeyInTableWhichPointsToTable(string $inTable, string $toTable)
+    {
+        $foreignKeys = $this->schema->listTableForeignKeys($inTable);
+
+        foreach ($foreignKeys as $foreignKey){
+            if ($foreignKey->getForeignTableName() === $toTable){
+                return $foreignKey;
+            }
+        }
+
+        throw new \Exception('No foreign key exists in table, which points to table');
     }
 }

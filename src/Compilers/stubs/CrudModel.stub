@@ -26,7 +26,5 @@ class {{ModelCapitalized}} extends Model
 
     {{HasManyRelations}}
 
-    /**
-     *{{BelongsToManyRelations}}
-     */
+    {{BelongsToManyRelations}}
 }

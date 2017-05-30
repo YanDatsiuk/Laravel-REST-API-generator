@@ -135,7 +135,7 @@ class CrudModelCompiler extends StubCompilerAbstract
             $belongToRelationName = Helper::columnNameToBelongToRelationName($foreignKey->getColumns()[0]);//todo
 
             $relationCompiler = new BelongsToRelationCompiler();
-            $relationsCompiled .= $relationCompiler->compile([
+            $relationsCompiled .= "\n\n\t".$relationCompiler->compile([
                 'relatedModelName' => $relatedModelName,
                 'belongToRelationName' => $belongToRelationName,
                 'modelsNamespace' => $this->modelsNamespace,
@@ -171,7 +171,7 @@ class CrudModelCompiler extends StubCompilerAbstract
             $modelName = Helper::tableNameToModelName($localTableName, $this->dbTablePrefix);
 
             $relationCompiler = new HasManyRelationCompiler();
-            $relationsCompiled .= $relationCompiler->compile([
+            $relationsCompiled .= "\n\n\t".$relationCompiler->compile([
                 'modelName' => $modelName,
                 'foreignKey' => $foreignKey->getColumns()[0],
                 'modelsNamespace' => $this->modelsNamespace,
@@ -192,24 +192,22 @@ class CrudModelCompiler extends StubCompilerAbstract
 
         //compile all "belongs to many" relations
         $relationsCompiled = '';
-        foreach ($belongsToManyForeignKeys as $belongsToManyForeignKey){
+        foreach ($belongsToManyForeignKeys as $belongsToManyForeignKey) {
 
             //init related model in the "belongs to many" relation
             $relatedModel = Helper::tableNameToModelName($belongsToManyForeignKey->getForeignTableName());
             $relatedModelStudlyCasePlural = studly_case(str_plural($relatedModel));
             $relatedModelStudlyCaseSingular = studly_case($relatedModel);
-            $relatedModelCamelCasePlural = camel_case(str_plural($relatedModel));
             $relatedModelCamelCaseSingular = camel_case($relatedModel);
-
             $pivotTableName = $belongsToManyForeignKey->getLocalTableName();
-
             $foreignKey = $this->schema->getKeyInTableWhichPointsToTable($pivotTableName, $tableName);
+            $relationName = $this->guessBelongsToManyRelationName($relatedModel, $pivotTableName, $relationsCompiled);
 
             $relationCompiler = new BelongsToManyRelationCompiler();
-            $relationsCompiled .= $relationCompiler->compile([
+            $relationsCompiled .= "\n\n\t".$relationCompiler->compile([
                 'relatedModelStudlyCasePlural' => $relatedModelStudlyCasePlural,
                 'relatedModelStudlyCaseSingular' => $relatedModelStudlyCaseSingular,
-                'relatedModelCamelCasePlural' => $relatedModelCamelCasePlural,
+                'relationName' => $relationName,
                 'relatedModelCamelCaseSingular' => $relatedModelCamelCaseSingular,
                 'pivotTableName' => $pivotTableName,
                 'modelsNamespace' => $this->modelsNamespace,
@@ -220,6 +218,28 @@ class CrudModelCompiler extends StubCompilerAbstract
 
         //{{BelongsToManyRelations}}
         $this->replaceInStub(['{{BelongsToManyRelations}}' => $relationsCompiled]);
+    }
+
+    /**
+     * Get name for a "belongs to many" relation.
+     * Check whether relation name is already generated in stub, or in $relationsCompiled.
+     *
+     * @param string $relatedModel
+     * @param string $pivotTableName
+     * @param string $relationsCompiled
+     * @return string
+     */
+    private function guessBelongsToManyRelationName(string $relatedModel, string $pivotTableName, string $relationsCompiled)
+    {
+        //set relation name
+        $relationName = camel_case(str_plural($relatedModel));
+
+        //check whether relation name is already generated in stub, or in $relationsCompiled.
+        if (str_contains($this->stub. $relationsCompiled, $relationName.'()')){
+            $relationName = $pivotTableName. '_'. $relationName;
+        }
+
+        return $relationName;
     }
 
 }

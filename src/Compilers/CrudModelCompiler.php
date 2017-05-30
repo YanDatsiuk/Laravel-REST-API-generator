@@ -3,6 +3,7 @@
 namespace TMPHP\RestApiGenerators\Compilers;
 
 
+use Illuminate\Support\Facades\Log;
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 use TMPHP\RestApiGenerators\Support\Helper;
 use TMPHP\RestApiGenerators\Support\SchemaManager;
@@ -28,6 +29,16 @@ class CrudModelCompiler extends StubCompilerAbstract
      * @var string
      */
     private $dbTablePrefix;
+
+    /**
+     * @var string
+     */
+    private $tableName;
+
+    /**
+     * @var string
+     */
+    private $modelName;
 
     /**
      * CrudModelCompiler constructor.
@@ -56,30 +67,32 @@ class CrudModelCompiler extends StubCompilerAbstract
     {
         //
         $this->saveFileName = ucfirst($params['modelName']) . '.php';
+        $this->tableName = $params['tableName'];
+        $this->modelName = ucfirst($params['modelName']);
 
         /**
          * @var \Doctrine\DBAL\Schema\Column[]
          */
-        $columns = $this->schema->listTableColumns($params['tableName']);
+        $columns = $this->schema->listTableColumns($this->tableName);
 
         //{{FillableArray}}
         $this->compileFillableArray($columns);
 
         //{{BelongsToRelations}}
-        $this->compileBelongsToRelations($params['tableName']);
+        $this->compileBelongsToRelations($this->tableName);
 
         //{{HasManyRelations}}
-        $this->compileHasManyRelations($params['tableName']);
+        $this->compileHasManyRelations($this->tableName);
 
         //{{BelongsToManyRelations}}
-        //$this->compileBelongsToManyRelations($params['tableName']);
+        $this->compileBelongsToManyRelations($this->tableName);
 
 
         //
         $this->replaceInStub(
             [
-                '{{ModelCapitalized}}' => ucfirst($params['modelName']),
-                '{{table_name}}' => $params['tableName'],
+                '{{ModelCapitalized}}' => $this->modelName,
+                '{{table_name}}' => $this->tableName,
                 '{{modelsNamespace}}' => $this->modelsNamespace
             ]
         );
@@ -171,36 +184,42 @@ class CrudModelCompiler extends StubCompilerAbstract
 
     /**
      * @param string $tableName
-     * TODO CHECK IT - this function is not tested yet
-     * TODO Change this belongsToMany relation detection algorithm
      */
     private function compileBelongsToManyRelations(string $tableName)
     {
-        //
+        //get all foreign keys, which have "belongs to many" nature
         $belongsToManyForeignKeys = $this->schema->listBelongsToManyForeignKeys($tableName);
 
-        //get relations and call compiler for each
+        //compile all "belongs to many" relations
         $relationsCompiled = '';
-        foreach ($belongsToManyForeignKeys as $belongsToManyForeignKey) {
+        foreach ($belongsToManyForeignKeys as $belongsToManyForeignKey){
+
+            //init related model in the "belongs to many" relation
+            $relatedModel = Helper::tableNameToModelName($belongsToManyForeignKey->getForeignTableName());
+            $relatedModelStudlyCasePlural = studly_case(str_plural($relatedModel));
+            $relatedModelStudlyCaseSingular = studly_case($relatedModel);
+            $relatedModelCamelCasePlural = camel_case(str_plural($relatedModel));
+            $relatedModelCamelCaseSingular = camel_case($relatedModel);
+
+            $pivotTableName = $belongsToManyForeignKey->getLocalTableName();
+
+            $foreignKey = $this->schema->getKeyInTableWhichPointsToTable($pivotTableName, $tableName);
+
             $relationCompiler = new BelongsToManyRelationCompiler();
-
-            $relatedModelStudlyCasePlural = '';//todo
-            $relatedModelCamelCasePlural = '';//todo
-            $relatedModelCamelCaseSingular = '';//todo
-            $pivotTableName = '';//todo
-
             $relationsCompiled .= $relationCompiler->compile([
                 'relatedModelStudlyCasePlural' => $relatedModelStudlyCasePlural,
+                'relatedModelStudlyCaseSingular' => $relatedModelStudlyCaseSingular,
                 'relatedModelCamelCasePlural' => $relatedModelCamelCasePlural,
                 'relatedModelCamelCaseSingular' => $relatedModelCamelCaseSingular,
                 'pivotTableName' => $pivotTableName,
                 'modelsNamespace' => $this->modelsNamespace,
+                'foreignKey' => $foreignKey->getLocalColumns()[0],
+                'relatedKey' => $belongsToManyForeignKey->getLocalColumns()[0]
             ]);
         }
 
         //{{BelongsToManyRelations}}
         $this->replaceInStub(['{{BelongsToManyRelations}}' => $relationsCompiled]);
     }
-
 
 }

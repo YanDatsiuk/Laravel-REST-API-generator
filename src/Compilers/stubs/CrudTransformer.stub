@@ -17,7 +17,7 @@ class {{Model}}Transformer extends TransformerAbstract
     private $validParams = ['limit', 'order'];
 
     /**
-     * Transform model data to array
+     * Transform model data to array.
      *
      * @param Model $model
      * @return array

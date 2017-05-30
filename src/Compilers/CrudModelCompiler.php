@@ -222,6 +222,7 @@ class CrudModelCompiler extends StubCompilerAbstract
 
     /**
      * Get name for a "belongs to many" relation.
+     * Check whether relation name is already generated in stub, or in $relationsCompiled.
      *
      * @param string $relatedModel
      * @param string $pivotTableName
@@ -230,10 +231,11 @@ class CrudModelCompiler extends StubCompilerAbstract
      */
     private function guessBelongsToManyRelationName(string $relatedModel, string $pivotTableName, string $relationsCompiled)
     {
+        //set relation name
         $relationName = camel_case(str_plural($relatedModel));
 
+        //check whether relation name is already generated in stub, or in $relationsCompiled.
         if (str_contains($this->stub. $relationsCompiled, $relationName.'()')){
-
             $relationName = $pivotTableName. '_'. $relationName;
         }
 

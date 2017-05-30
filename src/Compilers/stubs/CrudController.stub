@@ -11,7 +11,7 @@ class {{Model}}Controller extends ControllerAbstract
     {{rulesArray}}
 
     /**
-     * {{Model}}Controller constructor
+     * {{Model}}Controller constructor.
      */
     public function __construct()
     {

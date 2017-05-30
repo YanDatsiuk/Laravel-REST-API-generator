@@ -1,5 +1,5 @@
 /**
-     * {{relatedModelCamelCasePlural}}
+     * {{relatedModelCamelCasePlural}}.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */

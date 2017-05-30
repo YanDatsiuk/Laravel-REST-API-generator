@@ -14,7 +14,7 @@ class {{ModelCapitalized}} extends Model
     public $timestamps = false;
 
     /**
-     * Table Name
+     * Table Name.
      *
      * @var string
      */

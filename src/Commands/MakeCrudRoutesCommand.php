@@ -25,11 +25,11 @@ class MakeCrudRoutesCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Create a routes with CRUD endpoints. Routes will be swagger documented.';
+    protected $description = 'Scaffold a routes with REST API endpoints. Routes will be swagger documented.';
 
 
     /**
-     * @var array list of model names
+     * @var array list of model names.
      */
     private $models = [];
 
@@ -46,18 +46,17 @@ class MakeCrudRoutesCommand extends Command
         //check whether model names were submitted
         if (strlen($this->models[0]) === 0) {
             $this->error('Please specify model names in kebab notation');
-
             return;
         }
 
-        //compile api routes and load saved before stub
+        //get saved before stub
         $apiRoutesCompiler = new ApiRoutesCompiler(
             null,
             null,
             (new ApiRoutesCompiler())->getSavedStub());
 
 
-        //generate CRUD routes for all models
+        //compile REST API routes for all models
         $apiRoutesCompiler->compile(['models' => $this->models]);
 
         $this->info('make:crud-routes cmd executed');

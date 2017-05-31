@@ -37,7 +37,7 @@ class MakeRestAuthCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Create REST API authentication code.';
+    protected $description = 'Scaffold REST API authentication code.';
 
     /**
      * @var SchemaManager

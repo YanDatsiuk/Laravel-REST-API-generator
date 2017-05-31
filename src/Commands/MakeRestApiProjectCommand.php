@@ -149,7 +149,7 @@ class MakeRestApiProjectCommand extends Command
 
         $choice = $this->choice('What to do next?', [
             '0. Take models and tables list from configuration file.',
-            '1. Use default convention and take info from db schema.',
+            '1. Generate code for ALL database tables.',
         ], '1');
         $choice = substr($choice, 0, 1);
 
@@ -276,8 +276,7 @@ class MakeRestApiProjectCommand extends Command
 
         //php artisan make:rest-auth
         if ($this->confirm('Generate AUTH code?', true)) {
-            $cmd = new MakeRestAuthCommand($this->output);
-            $cmd->fire();
+            Artisan::call('make:rest-auth', [], $this->output);
         }
 
         //php artisan migrate:generate --no-interaction
@@ -287,6 +286,11 @@ class MakeRestApiProjectCommand extends Command
                     'tables' => implode(',', $this->tablesForMigrationGeneration),
                     '--no-interaction' => true
                 ]);
+        }
+
+        //php artisan ide-helper:all
+        if ($this->confirm('Generate ide helper documentation?', true)) {
+            Artisan::call('ide-helper:all', [], $this->output);
         }
 
     }

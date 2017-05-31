@@ -4,6 +4,7 @@ namespace TMPHP\RestApiGenerators\Commands;
 
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
 use TMPHP\RestApiGenerators\Compilers\CrudModelCompiler;
 
 /**
@@ -33,6 +34,11 @@ class IdeHelperCommand extends Command
      */
     public function fire()
     {
+        Artisan::call('clear-compiled', [], $this->output);
+        Artisan::call('ide-helper:generate', [], $this->output);
+        Artisan::call('optimize', [], $this->output);
+        Artisan::call('ide-helper:models', [], $this->output);
+        Artisan::call('ide-helper:meta', [], $this->output);
 
         $this->info('All ide-helper commands executed');
     }

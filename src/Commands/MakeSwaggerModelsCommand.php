@@ -26,7 +26,7 @@ class MakeSwaggerModelsCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Create swagger models.';
+    protected $description = 'Scaffold swagger models.';
 
     /**
      * List of model names.

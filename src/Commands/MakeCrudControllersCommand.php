@@ -25,11 +25,11 @@ class MakeCrudControllersCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Create controllers for CRUD REST API.';
+    protected $description = 'Scaffold controllers for REST API.';
 
 
     /**
-     * @var array list of model names
+     * @var array list of model names.
      */
     private $models = [];
 
@@ -50,7 +50,7 @@ class MakeCrudControllersCommand extends Command
             return;
         }
 
-        //generate CRUD controllers for all models
+        //compile CRUD controllers for all models
         foreach ($this->models as $model) {
             $crudControllerCompiler = new CrudControllerCompiler();
             $crudControllerCompiler->compile([

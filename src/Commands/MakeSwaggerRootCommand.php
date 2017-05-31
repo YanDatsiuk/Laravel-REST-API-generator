@@ -31,6 +31,8 @@ class MakeSwaggerRootCommand extends Command
     /**
      * Execute the console command.
      *
+     * TODO add command execution to composer update.
+     *
      * @return void
      */
     public function fire()

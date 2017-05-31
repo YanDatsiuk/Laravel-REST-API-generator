@@ -23,8 +23,9 @@ class MakeRestApiProjectCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'make:rest-api-project
-                            {--models= : List of models, written as CSV in kebab notation}}
+    protected $signature = 'make:rest-api-project 
+                            {silent-mode? : Whether all input should be default}
+                            {--models= : List of models, written as CSV in kebab notation}
                             {--tables= : List of tables, written as CSV}';
 
     /**
@@ -32,31 +33,31 @@ class MakeRestApiProjectCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Create REST API project.';
+    protected $description = 'Scaffold REST API project.';
 
     /**
-     * List of model names
+     * List of model names.
      *
      * @var array
      */
     private $modelNames = [];
 
     /**
-     * CSV - models in kebab notation
+     * CSV - models in kebab notation.
      *
      * @var string
      */
-    private $modelsInKebabNotaion;
+    private $modelsInKebabNotation;
 
     /**
-     * CSV - models in camel case notation
+     * CSV - models in camel case notation.
      *
      * @var string
      */
     private $modelsInCamelCaseNotation;
 
     /**
-     * List of table names for gathering schema info
+     * List of table names for gathering schema info.
      *
      * @var array
      */
@@ -72,6 +73,11 @@ class MakeRestApiProjectCommand extends Command
      * @var array list of the table names.
      */
     private $tablesForMigrationGeneration = [];
+
+    /**
+     * @var bool
+     */
+    private $silentMode = false;
 
 
     /**
@@ -107,9 +113,15 @@ class MakeRestApiProjectCommand extends Command
         $this->info('Please see all files in /storage/CRUD directory');
     }
 
-    /** Initialize submitted parameters or read them from configuration file */
+    /** Initialize submitted parameters or read them from configuration file. */
     private function initInputParams()
     {
+        //check "silent-mode" argument
+        if ($this->argument('silent-mode')) {
+            $this->silentMode = true;
+            $this->info('all user input will be default.');
+        }
+
         //get list of models
         $this->modelNames = explode(',', $this->option('models'));
 
@@ -146,13 +158,19 @@ class MakeRestApiProjectCommand extends Command
      */
     private function choicesOnAbsentOptions()
     {
+        //set default choice
+        $choice = "1";
 
-        $choice = $this->choice('What to do next?', [
-            '0. Take models and tables list from configuration file.',
-            '1. Use default convention and take info from db schema.',
-        ]);
-        $choice = substr($choice, 0, 1);
+        //get input from user if command isn't in silent mode
+        if (!$this->silentMode) {
+            $choice = $this->choice('What to do next?', [
+                '0. Take models and tables list from configuration file.',
+                '1. Generate code for ALL database tables.',
+            ], '1');
+            $choice = substr($choice, 0, 1);
+        }
 
+        //load list of models and tables from config file or use all tables from schema
         switch ($choice) {
             case "0":
                 $isValidConfig = $this->loadParametersFromConfigFile();
@@ -176,7 +194,7 @@ class MakeRestApiProjectCommand extends Command
         }
     }
 
-    /** Load parameters from configuration file. */
+    /** Load list of models and tables from configuration file. */
     private function loadParametersFromConfigFile()
     {
         $modelNamesTables = config('rest-api-generator.models');
@@ -186,7 +204,7 @@ class MakeRestApiProjectCommand extends Command
         return true;
     }
 
-    /** Load parameters from database schema, using Doctrine Schema Manager */
+    /** Load all models and tables from database schema, using Doctrine Schema Manager. */
     private function loadParametersFromDatabaseSchema()
     {
         //get all tables from database schema
@@ -202,10 +220,10 @@ class MakeRestApiProjectCommand extends Command
         return true;
     }
 
-    /** Transform model array to string variables with different notations */
+    /** Transform model array to string variables with different notations. */
     private function transformModelsToRequiredNotations()
     {
-        $this->modelsInKebabNotaion = implode(',', $this->modelNames);
+        $this->modelsInKebabNotation = implode(',', $this->modelNames);
 
         //transform model names from kebab to camelCase notation
         $_modelsInCamelCaseNotation = [];
@@ -240,53 +258,57 @@ class MakeRestApiProjectCommand extends Command
     }
 
     /**
-     * Call artisan commands for generating models, transformers, controllers, swagger-docs and routes
+     * Call artisan commands for generating models, transformers, controllers, swagger-docs and routes.
      */
     private function callGenerators()
     {
-        //create CRUD models.
+        //scaffold models
         Artisan::call('make:crud-models', [
             '--models' => $this->modelsInCamelCaseNotation,
             '--tables' => implode(',', $this->tableNames),
         ]);
 
-        //create transformers for CRUD REST API.
+        //scaffold transformers
         Artisan::call('make:crud-transformers', [
             '--models' => $this->modelsInCamelCaseNotation,
         ]);
 
-        //Create controllers for CRUD REST API.
+        //scaffold controllers
         Artisan::call('make:crud-controllers', [
             '--models' => $this->modelsInCamelCaseNotation,
         ]);
 
-        //php artisan make:swagger-models
+        //scaffold swagger models
         Artisan::call('make:swagger-models', [
-            '--models' => $this->modelsInKebabNotaion,
+            '--models' => $this->modelsInKebabNotation,
             '--tables' => implode(',', $this->tableNames),
         ]);
 
-        //php artisan make:crud-routes
+        //scaffold routes
         Artisan::call('make:crud-routes', [
-            '--models' => $this->modelsInKebabNotaion,
+            '--models' => $this->modelsInKebabNotation,
         ]);
 
-        //php artisan make:swagger-root
+        //scaffold swagger root
         Artisan::call('make:swagger-root');
 
-        //
-        //previous code: Artisan::call('make:rest-auth');
-        //We changed calling method, because we need here logic from MakeRestAuthCommand
-        $cmd = new MakeRestAuthCommand($this->output);
-        $cmd->fire();
+        //scaffold authentication code
+        if ($this->silentMode || $this->confirm('Generate AUTH code?', true)) {
+            Artisan::call('make:rest-auth', [], $this->output);
+        }
 
-        //php artisan migrate:generate --no-interaction
+        //generate migrations for database schema
         if ($this->tablesForMigrationGeneration) {
             Artisan::call('migrate:generate',
                 [
                     'tables' => implode(',', $this->tablesForMigrationGeneration),
                     '--no-interaction' => true
                 ]);
+        }
+
+        //generate ide helper documentation
+        if ($this->silentMode || $this->confirm('Generate ide helper documentation?', true)) {
+            Artisan::call('ide-helper:all', [], $this->output);
         }
 
     }

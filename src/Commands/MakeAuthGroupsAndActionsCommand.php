@@ -116,29 +116,29 @@ class MakeAuthGroupsAndActionsCommand extends Command
      */
     private function makeAuthGroupsAndActions()
     {
-        //create models for CRUD REST API.
+        //scaffold models
         Artisan::call('make:crud-models', [
             '--models' => 'User,AuthAction,AuthGroup,AuthActionGroup,AuthGroupUser',
             '--tables' => 'users,auth_actions,auth_groups,auth_action_group,auth_group_user',
         ]);
 
-        //create transformers for CRUD REST API.
+        //scaffold transformers
         Artisan::call('make:crud-transformers', [
             '--models' => 'User,AuthAction,AuthGroup,AuthActionGroup,AuthGroupUser',
         ]);
 
-        //create controllers for CRUD REST API.
+        //scaffold controllers
         Artisan::call('make:crud-controllers', [
             '--models' => 'User,AuthAction,AuthGroup,AuthActionGroup,AuthGroupUser',
         ]);
 
-        //php artisan make:swagger-models
+        //scaffold swagger models
         Artisan::call('make:swagger-models', [
             '--models' => 'user,auth-action,auth-group,auth-action-group,auth-group-user',
             '--tables' => 'users,auth_actions,auth_groups,auth_action_group,auth_group_user',
         ]);
 
-        //php artisan make:crud-routes
+        //scaffold routes
         Artisan::call('make:crud-routes', [
             '--models' => 'user,auth-action,auth-group,auth-action-group,auth-group-user',
         ]);
@@ -147,7 +147,8 @@ class MakeAuthGroupsAndActionsCommand extends Command
     }
 
     /**
-     * Check tables ("auth_actions", "auth_groups", "auth_action_group", "auth_group_user") existence.
+     * Check tables existence.
+     * ("auth_actions", "auth_groups", "auth_action_group", "auth_group_user")
      *
      * @return bool
      */

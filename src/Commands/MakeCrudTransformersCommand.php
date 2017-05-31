@@ -7,10 +7,10 @@ use Illuminate\Console\Command;
 use TMPHP\RestApiGenerators\Compilers\CrudTransformerCompiler;
 
 /**
- * Class MakeCrudTranformersCommand
+ * Class MakeCrudTransformersCommand
  * @package TMPHP\RestApiGenerators\Commands
  */
-class MakeCrudTranformersCommand extends Command
+class MakeCrudTransformersCommand extends Command
 {
     /**
      * The console command name.
@@ -25,11 +25,11 @@ class MakeCrudTranformersCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Create transformers for CRUD REST API.';
+    protected $description = 'Scaffold transformers for REST API.';
 
 
     /**
-     * @var array list of model names
+     * @var array list of model names.
      */
     private $models = [];
 
@@ -49,7 +49,7 @@ class MakeCrudTranformersCommand extends Command
             return;
         }
 
-        //generate CRUD controllers for all models
+        //compile transformers for all models
         foreach ($this->models as $model) {
 
             $crudTransformerCompiler = new CrudTransformerCompiler();

@@ -16,7 +16,7 @@ class ApiRoutesCompiler extends StubCompilerAbstract
     private $compiledCrudRoutesStubs;
 
     /**
-     * ApiRoutesCompiler constructor
+     * ApiRoutesCompiler constructor.
      *
      * @param string $saveToPath
      * @param string $saveFileName

@@ -26,15 +26,15 @@ class MakeCrudModelsCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Create CRUD models.';
+    protected $description = 'Scaffold CRUD models for REST API.';
 
     /**
-     * @var array list of model names
+     * @var array list of model names.
      */
     private $models = [];
 
     /**
-     * @var array list of table names for gathering schema info
+     * @var array list of table names for gathering schema info.
      */
     private $tables = [];
 
@@ -67,6 +67,7 @@ class MakeCrudModelsCommand extends Command
         //check whether table quantity are equal to model names quantity
         if (count($this->models) !== count($this->tables)) {
             $this->error('table names quantity are not equal to model names quantity');
+            return;
         }
 
         //compile swagger models

@@ -4,11 +4,12 @@ namespace TMPHP\RestApiGenerators;
 
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
+use TMPHP\RestApiGenerators\Commands\IdeHelperCommand;
 use TMPHP\RestApiGenerators\Commands\MakeAuthGroupsAndActionsCommand;
 use TMPHP\RestApiGenerators\Commands\MakeCrudControllersCommand;
 use TMPHP\RestApiGenerators\Commands\MakeCrudModelsCommand;
 use TMPHP\RestApiGenerators\Commands\MakeCrudRoutesCommand;
-use TMPHP\RestApiGenerators\Commands\MakeCrudTranformersCommand;
+use TMPHP\RestApiGenerators\Commands\MakeCrudTransformersCommand;
 use TMPHP\RestApiGenerators\Commands\MakeRestApiProjectCommand;
 use TMPHP\RestApiGenerators\Commands\MakeRestAuthCommand;
 use TMPHP\RestApiGenerators\Commands\MakeSwaggerModelsCommand;
@@ -73,11 +74,12 @@ class GeneratorsServiceProviders extends ServiceProvider
             MakeSwaggerModelsCommand::class,
             MakeCrudModelsCommand::class,
             MakeCrudControllersCommand::class,
-            MakeCrudTranformersCommand::class,
+            MakeCrudTransformersCommand::class,
             MakeRestApiProjectCommand::class,
             MakeSwaggerRootCommand::class,
             MakeRestAuthCommand::class,
             MakeAuthGroupsAndActionsCommand::class,
+            IdeHelperCommand::class,
         ]);
     }
 

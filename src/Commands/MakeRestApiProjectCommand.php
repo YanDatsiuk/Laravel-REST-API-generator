@@ -150,7 +150,7 @@ class MakeRestApiProjectCommand extends Command
         $choice = $this->choice('What to do next?', [
             '0. Take models and tables list from configuration file.',
             '1. Use default convention and take info from db schema.',
-        ]);
+        ], '1');
         $choice = substr($choice, 0, 1);
 
         switch ($choice) {
@@ -274,11 +274,11 @@ class MakeRestApiProjectCommand extends Command
         //php artisan make:swagger-root
         Artisan::call('make:swagger-root');
 
-        //
-        //previous code: Artisan::call('make:rest-auth');
-        //We changed calling method, because we need here logic from MakeRestAuthCommand
-        $cmd = new MakeRestAuthCommand($this->output);
-        $cmd->fire();
+        //php artisan make:rest-auth
+        if ($this->confirm('Generate AUTH code?', true)) {
+            $cmd = new MakeRestAuthCommand($this->output);
+            $cmd->fire();
+        }
 
         //php artisan migrate:generate --no-interaction
         if ($this->tablesForMigrationGeneration) {

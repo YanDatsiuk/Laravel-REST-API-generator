@@ -23,8 +23,9 @@ class MakeRestApiProjectCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'make:rest-api-project
-                            {--models= : List of models, written as CSV in kebab notation}}
+    protected $signature = 'make:rest-api-project 
+                            {silent-mode? : Whether all input should be default}
+                            {--models= : List of models, written as CSV in kebab notation}
                             {--tables= : List of tables, written as CSV}';
 
     /**
@@ -73,6 +74,11 @@ class MakeRestApiProjectCommand extends Command
      */
     private $tablesForMigrationGeneration = [];
 
+    /**
+     * @var bool
+     */
+    private $silentMode = false;
+
 
     /**
      * Execute the console command.
@@ -110,6 +116,12 @@ class MakeRestApiProjectCommand extends Command
     /** Initialize submitted parameters or read them from configuration file. */
     private function initInputParams()
     {
+        //check "silent-mode" argument
+        if ($this->argument('silent-mode')) {
+            $this->silentMode = true;
+            $this->info('all user input will be default.');
+        }
+
         //get list of models
         $this->modelNames = explode(',', $this->option('models'));
 
@@ -146,13 +158,19 @@ class MakeRestApiProjectCommand extends Command
      */
     private function choicesOnAbsentOptions()
     {
+        //set default choice
+        $choice = "1";
 
-        $choice = $this->choice('What to do next?', [
-            '0. Take models and tables list from configuration file.',
-            '1. Generate code for ALL database tables.',
-        ], '1');
-        $choice = substr($choice, 0, 1);
+        //get input from user if command isn't in silent mode
+        if (!$this->silentMode) {
+            $choice = $this->choice('What to do next?', [
+                '0. Take models and tables list from configuration file.',
+                '1. Generate code for ALL database tables.',
+            ], '1');
+            $choice = substr($choice, 0, 1);
+        }
 
+        //load list of models and tables from config file or use all tables from schema
         switch ($choice) {
             case "0":
                 $isValidConfig = $this->loadParametersFromConfigFile();
@@ -176,7 +194,7 @@ class MakeRestApiProjectCommand extends Command
         }
     }
 
-    /** Load parameters from configuration file. */
+    /** Load list of models and tables from configuration file. */
     private function loadParametersFromConfigFile()
     {
         $modelNamesTables = config('rest-api-generator.models');
@@ -186,7 +204,7 @@ class MakeRestApiProjectCommand extends Command
         return true;
     }
 
-    /** Load parameters from database schema, using Doctrine Schema Manager. */
+    /** Load all models and tables from database schema, using Doctrine Schema Manager. */
     private function loadParametersFromDatabaseSchema()
     {
         //get all tables from database schema
@@ -275,7 +293,7 @@ class MakeRestApiProjectCommand extends Command
         Artisan::call('make:swagger-root');
 
         //scaffold authentication code
-        if ($this->confirm('Generate AUTH code?', true)) {
+        if ($this->silentMode || $this->confirm('Generate AUTH code?', true)) {
             Artisan::call('make:rest-auth', [], $this->output);
         }
 
@@ -289,7 +307,7 @@ class MakeRestApiProjectCommand extends Command
         }
 
         //generate ide helper documentation
-        if ($this->confirm('Generate ide helper documentation?', true)) {
+        if ($this->silentMode || $this->confirm('Generate ide helper documentation?', true)) {
             Artisan::call('ide-helper:all', [], $this->output);
         }
 

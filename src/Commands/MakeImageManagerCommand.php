@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schema;
 use TMPHP\RestApiGenerators\Compilers\CrudModelCompiler;
 use TMPHP\RestApiGenerators\Compilers\ImageControllerCompiler;
+use TMPHP\RestApiGenerators\Compilers\ImageRoutesCompiler;
 
 /**
  * Class MakeImageManagerCommand
@@ -42,8 +43,6 @@ class MakeImageManagerCommand extends Command
 
         //generate models, controllers, definitions and transformers
         $this->scaffoldCode();
-
-        //todo compile image management routes
 
         $this->info('make:image-manager-api command executed');
     }
@@ -87,6 +86,10 @@ class MakeImageManagerCommand extends Command
             '--models' => 'image',
             '--tables' => 'images',
         ]);
+
+        //scaffold image management routes
+        $imageRoutesCompiler = new ImageRoutesCompiler();
+        $imageRoutesCompiler->compile();
 
         $this->info('All code for image management generated!');
     }

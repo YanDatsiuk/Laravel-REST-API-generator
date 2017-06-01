@@ -19,10 +19,13 @@ class ImageUploader
         $fileContent = file_get_contents($filePath);
         $relativePath = 'public/uploads/pictures/' . rand() . '/' . time() . '_pic';
 
-        //Saving image
+        //save image
         Storage::put($relativePath, $fileContent, 'public');
 
-        //Creating new record with image info
+        //change path for access it via URL
+        $relativePath = str_replace_first('public', 'storage', $relativePath);
+
+        //create new record with image info
         $image = Image::create([
             'image_src' => $relativePath
         ]);

@@ -1,0 +1,42 @@
+<?php
+
+namespace {{controllersNamespace}};
+
+use {{modelsNamespace}}\{{Model}};
+use {{transformersNamespace}}\{{Model}}Transformer;
+use Dingo\Api\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use TMPHP\RestApiGenerators\Support\ImageUploader;
+use TMPHP\RestApiGenerators\AbstractEntities\ControllerAbstract;
+
+class {{Model}}Controller extends ControllerAbstract
+{
+    {{rulesArray}}
+
+    /**
+     * {{Model}}Controller constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct(new {{Model}}(), {{Model}}Transformer::class);
+    }
+
+    public function upload(Request $request)
+    {
+        //get file from request
+        $file = $request->file('image');
+
+        //validate images extensions and size
+        $validator = Validator::make((array)$file, ['image' => 'sometimes|image|mimes:jpeg,bmp,svg,png|size:51200']);
+        if ($validator->fails()) {
+            return $this->responseWithValidatorErrors($validator);
+        }
+
+        //upload image
+        $image = ImageUploader::file($file);
+
+        //response
+        return $this->response->item($image, new ImageTransformer());
+
+    }
+}

@@ -10,6 +10,7 @@ use TMPHP\RestApiGenerators\Commands\MakeCrudControllersCommand;
 use TMPHP\RestApiGenerators\Commands\MakeCrudModelsCommand;
 use TMPHP\RestApiGenerators\Commands\MakeCrudRoutesCommand;
 use TMPHP\RestApiGenerators\Commands\MakeCrudTransformersCommand;
+use TMPHP\RestApiGenerators\Commands\MakeImageManagerCommand;
 use TMPHP\RestApiGenerators\Commands\MakeRestApiProjectCommand;
 use TMPHP\RestApiGenerators\Commands\MakeRestAuthCommand;
 use TMPHP\RestApiGenerators\Commands\MakeSwaggerModelsCommand;
@@ -46,6 +47,12 @@ class GeneratorsServiceProviders extends ServiceProvider
         if (!$this->app->routesAreCached() && file_exists($authRouteFilePath)) {
             require $authRouteFilePath;
         }
+
+        //register generated image management routes
+        $imageRouteFilePath = base_path(config('rest-api-generator.paths.routes'). 'images.php');
+        if (!$this->app->routesAreCached() && file_exists($imageRouteFilePath)) {
+            require $imageRouteFilePath;
+        }
     }
 
     /**
@@ -80,6 +87,7 @@ class GeneratorsServiceProviders extends ServiceProvider
             MakeRestAuthCommand::class,
             MakeAuthGroupsAndActionsCommand::class,
             IdeHelperCommand::class,
+            MakeImageManagerCommand::class,
         ]);
     }
 

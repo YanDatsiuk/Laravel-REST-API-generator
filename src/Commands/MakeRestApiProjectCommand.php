@@ -297,6 +297,11 @@ class MakeRestApiProjectCommand extends Command
             Artisan::call('make:rest-auth', [], $this->output);
         }
 
+        //scaffold api for image management
+        if ($this->silentMode || $this->confirm('Generate API for image management?', true)) {
+            Artisan::call('make:image-manager-api', [], $this->output);
+        }
+
         //generate migrations for database schema
         if ($this->tablesForMigrationGeneration) {
             Artisan::call('migrate:generate',

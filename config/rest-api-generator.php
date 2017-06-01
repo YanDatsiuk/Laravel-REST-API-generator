@@ -64,7 +64,7 @@ return [
      * which will not take a part in generation API process.
      * For them WILL NOT be generated: models, controllers, routes, e.t.c...
      */
-    'excluded_tables' => ['migrations', 'password_resets'],
+    'excluded_tables' => ['migrations', 'password_resets', 'images'],
 
     /**
      * This is a credentials for super admin user.

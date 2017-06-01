@@ -44,6 +44,9 @@ class MakeImageManagerCommand extends Command
         //generate models, controllers, definitions and transformers
         $this->scaffoldCode();
 
+        //create storage link to public folder
+        Artisan::call('storage:link');
+
         $this->info('make:image-manager-api command executed');
     }
 

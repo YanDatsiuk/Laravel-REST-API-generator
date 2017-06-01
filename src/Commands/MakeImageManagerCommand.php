@@ -36,8 +36,12 @@ class MakeImageManagerCommand extends Command
      */
     public function fire()
     {
-        //todo run migrations
-        //todo generate models, controllers, definitions and transformers
+        //run migrations
+        $this->migrateRequiredTables();
+
+        //generate models, controllers, definitions and transformers
+        $this->scaffoldCode();
+
         //todo compile image management routes
 
         $this->info('make:image-manager-api command executed');
@@ -57,6 +61,33 @@ class MakeImageManagerCommand extends Command
             });
         }
 
+    }
+
+    private function scaffoldCode()
+    {
+        //scaffold models
+        Artisan::call('make:crud-models', [
+            '--models' => 'Image',
+            '--tables' => 'images',
+        ]);
+
+        //scaffold transformers
+        Artisan::call('make:crud-transformers', [
+            '--models' => 'Image',
+        ]);
+
+        //scaffold controllers todo compile ImageControllerCompiler
+//        Artisan::call('make:crud-controllers', [
+//            '--models' => 'Image',
+//        ]);
+
+        //scaffold swagger models
+        Artisan::call('make:swagger-models', [
+            '--models' => 'image',
+            '--tables' => 'images',
+        ]);
+
+        $this->info('All code for image management generated!');
     }
 
 }

@@ -3,6 +3,7 @@
 namespace TMPHP\RestApiGenerators\Database\Seeds;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Log;
 
 class AuthGroupUsersTableSeeder extends Seeder
 {
@@ -18,13 +19,13 @@ class AuthGroupUsersTableSeeder extends Seeder
         $authGroupModel = $modelsNamespace . '\AuthGroup';
         $userModel = $modelsNamespace . '\User';
 
-        //create user admin
-
-        $admin = (new $userModel())
-            ->where(['email' => config('est-api-generator.admin_credentials.email')])
+        //find user admin
+        $admin = $userModel
+            ::where(['email' => config('rest-api-generator.admin_credentials.email')])
             ->first();
 
-        if (!$admin) {
+        //create user admin
+        if ($admin === null) {
             $admin = $userModel::firstOrCreate(
                 [
                     'name' => config('rest-api-generator.admin_credentials.name'),

@@ -47,6 +47,12 @@ class GeneratorsServiceProviders extends ServiceProvider
         if (!$this->app->routesAreCached() && file_exists($authRouteFilePath)) {
             require $authRouteFilePath;
         }
+
+        //register generated image management routes
+        $imageRouteFilePath = base_path(config('rest-api-generator.paths.routes'). 'images.php');
+        if (!$this->app->routesAreCached() && file_exists($imageRouteFilePath)) {
+            require $imageRouteFilePath;
+        }
     }
 
     /**

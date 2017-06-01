@@ -8,6 +8,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schema;
 use TMPHP\RestApiGenerators\Compilers\CrudModelCompiler;
+use TMPHP\RestApiGenerators\Compilers\ImageControllerCompiler;
 
 /**
  * Class MakeImageManagerCommand
@@ -65,23 +66,23 @@ class MakeImageManagerCommand extends Command
 
     private function scaffoldCode()
     {
-        //scaffold models
+        //scaffold model
         Artisan::call('make:crud-models', [
             '--models' => 'Image',
             '--tables' => 'images',
         ]);
 
-        //scaffold transformers
+        //scaffold transformer
         Artisan::call('make:crud-transformers', [
             '--models' => 'Image',
         ]);
 
-        //scaffold controllers todo compile ImageControllerCompiler
-//        Artisan::call('make:crud-controllers', [
-//            '--models' => 'Image',
-//        ]);
+        //scaffold controller
+        $imageControllerCompiler = new ImageControllerCompiler();
+        $imageControllerCompiler->compile();
 
-        //scaffold swagger models
+
+        //scaffold swagger model
         Artisan::call('make:swagger-models', [
             '--models' => 'image',
             '--tables' => 'images',

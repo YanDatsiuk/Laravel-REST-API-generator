@@ -156,4 +156,24 @@ abstract class StubCompilerAbstract
 
         return $this;
     }
+
+    /**
+     * todo test
+     * Append method to the class.
+     * 1. Finds last bracket.
+     * 2. Inserts code before last bracket.
+     *
+     * @param string $method body of the method
+     * @return $this
+     */
+    public function appendMethodToClass(string $method){
+
+        $replace = "\n\t";
+        $replace .= $method;
+        $replace .= "\n\n}";
+
+        $this->stub = str_replace_last('}', $replace, $this->stub);
+
+        return $this;
+    }
 }

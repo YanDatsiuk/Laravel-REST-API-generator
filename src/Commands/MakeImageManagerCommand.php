@@ -58,7 +58,7 @@ class MakeImageManagerCommand extends Command
     {
         if (!Schema::hasTable('images')) {
             Schema::create('images', function (Blueprint $table) {
-                $table->integer('id', true);
+                $table->increments('id');
                 $table->string('image_src');
                 $table->timestamps();
             });

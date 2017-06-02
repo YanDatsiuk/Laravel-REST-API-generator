@@ -1,10 +1,17 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/bdc684fc4dc84708a4cd201ae70499a6)](https://www.codacy.com/app/YanDatsyuk/Laravel-REST-API-generator?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=YanDatsyuk/Laravel-REST-API-generator&amp;utm_campaign=Badge_Grade)
+<a href="https://packagist.org/packages/tmphp/rest-api-generators"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
 
 Laravel REST API Generator
 ==========================
 
 Code scaffolding for REST API project by database schema. 
 This package is available also on [packagist](https://packagist.org/packages/tmphp/rest-api-generators). And installation via packagist is preferred way.
+
+## Examples
+
+There are two open source REST API projects on GitHub, developed using this generator:
+* [Social network](https://github.com/YanDatsyuk/social-network-rest-api-backend)
+* [Appartment rentals](https://github.com/YanDatsyuk/apartment-rentals-rest-api-backend)
 
 ## Installation
 

@@ -103,6 +103,8 @@ class CrudTransformerCompiler extends StubCompilerAbstract
             }catch (\Exception $e){
                 Log::error('Try to fix this - relation is executing before model was generated.');
                 Log::error($e->getMessage());
+                $relations[] = "'$method'";
+                $methodResult = null;
             }
 
             if ($methodResult instanceof Relation) {

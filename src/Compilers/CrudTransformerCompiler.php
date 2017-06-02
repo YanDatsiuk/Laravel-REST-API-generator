@@ -97,7 +97,13 @@ class CrudTransformerCompiler extends StubCompilerAbstract
 
         //check methods, whether they are relations and add their names if yes
         foreach ($methods as $method) {
-            $methodResult = $model->$method();
+
+            try{
+                $methodResult = $model->$method();
+            }catch (\Exception $e){
+                Log::error('Try to fix this - relation is executing before model was generated.');
+                Log::error($e->getMessage());
+            }
 
             if ($methodResult instanceof Relation) {
                 $relations[] = "'$method'";

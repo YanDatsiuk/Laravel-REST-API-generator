@@ -5,10 +5,10 @@ namespace TMPHP\RestApiGenerators\Compilers\Scopes;
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 
 /**
- * Class WhereScopeCompiler
+ * Class WhereIntegerScopeCompiler
  * @package TMPHP\RestApiGenerators\Compilers\Scopes
  */
-class WhereScopeCompiler extends StubCompilerAbstract
+class WhereIntegerScopeCompiler extends StubCompilerAbstract
 {
 
     /**
@@ -33,7 +33,17 @@ class WhereScopeCompiler extends StubCompilerAbstract
      */
     public function compile(array $params): string
     {
-        //todo
+        /** @var \Doctrine\DBAL\Schema\Column $column */
+        $column = $params['column'];
+        $columnName = $column->getName();
+
+        //todo add detection on column type
+
+        //
+        $this->replaceInStub([
+            '{{columnName}}' => $columnName,
+            '{{columnNameStudlyCase}}' => studly_case($column->getName()),
+        ]);
 
         return $this->stub;
     }

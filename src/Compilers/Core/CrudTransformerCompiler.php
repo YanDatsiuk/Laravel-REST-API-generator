@@ -99,7 +99,9 @@ class CrudTransformerCompiler extends StubCompilerAbstract
         foreach ($methods as $method) {
 
             try{
-                $methodResult = $model->$method();
+                if (!starts_with($method,'scope')){
+                    $methodResult = $model->$method();
+                }
             }catch (\Exception $e){
                 Log::error('Try to fix this - relation is executing before model was generated.');
                 Log::error($e->getMessage());

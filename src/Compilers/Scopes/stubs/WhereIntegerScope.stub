@@ -1,0 +1,14 @@
+    public function scopeWhere{{columnNameStudlyCase}}($query, $value)
+    {
+        return $query->where('{{columnName}}', $value);
+    }
+
+    public function scopeWhere{{columnNameStudlyCase}}In($query, array $values)
+    {
+        return $query->whereIn('{{columnName}}', $values);
+    }
+
+    public function scopeWhere{{columnNameStudlyCase}}Between($query, array $range)
+    {
+        return $query->whereBetween('{{columnName}}', $range);
+    }

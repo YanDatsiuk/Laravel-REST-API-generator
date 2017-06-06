@@ -5,6 +5,7 @@ namespace TMPHP\RestApiGenerators\Compilers\Models;
 
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 use TMPHP\RestApiGenerators\Compilers\Core\FillableArrayCompiler;
+use TMPHP\RestApiGenerators\Compilers\Scopes\WhereIntegerScopeCompiler;
 use TMPHP\RestApiGenerators\Support\Helper;
 use TMPHP\RestApiGenerators\Support\SchemaManager;
 
@@ -138,11 +139,11 @@ class CrudModelCompiler extends StubCompilerAbstract
             $belongToRelationName = Helper::columnNameToBelongToRelationName($foreignKey->getColumns()[0]);//todo
 
             $relationCompiler = new BelongsToRelationCompiler();
-            $relationsCompiled .= "\n\n\t".$relationCompiler->compile([
-                'relatedModelName' => $relatedModelName,
-                'belongToRelationName' => $belongToRelationName,
-                'modelsNamespace' => $this->modelsNamespace,
-            ]);
+            $relationsCompiled .= "\n\n\t" . $relationCompiler->compile([
+                    'relatedModelName' => $relatedModelName,
+                    'belongToRelationName' => $belongToRelationName,
+                    'modelsNamespace' => $this->modelsNamespace,
+                ]);
         }
 
         //{{BelongsToRelations}}
@@ -174,11 +175,11 @@ class CrudModelCompiler extends StubCompilerAbstract
             $modelName = Helper::tableNameToModelName($localTableName, $this->dbTablePrefix);
 
             $relationCompiler = new HasManyRelationCompiler();
-            $relationsCompiled .= "\n\n\t".$relationCompiler->compile([
-                'modelName' => $modelName,
-                'foreignKey' => $foreignKey->getColumns()[0],
-                'modelsNamespace' => $this->modelsNamespace,
-            ]);
+            $relationsCompiled .= "\n\n\t" . $relationCompiler->compile([
+                    'modelName' => $modelName,
+                    'foreignKey' => $foreignKey->getColumns()[0],
+                    'modelsNamespace' => $this->modelsNamespace,
+                ]);
         }
 
         //{{HasManyRelations}}
@@ -207,16 +208,16 @@ class CrudModelCompiler extends StubCompilerAbstract
             $relationName = $this->guessBelongsToManyRelationName($relatedModel, $pivotTableName, $relationsCompiled);
 
             $relationCompiler = new BelongsToManyRelationCompiler();
-            $relationsCompiled .= "\n\n\t".$relationCompiler->compile([
-                'relatedModelStudlyCasePlural' => $relatedModelStudlyCasePlural,
-                'relatedModelStudlyCaseSingular' => $relatedModelStudlyCaseSingular,
-                'relationName' => $relationName,
-                'relatedModelCamelCaseSingular' => $relatedModelCamelCaseSingular,
-                'pivotTableName' => $pivotTableName,
-                'modelsNamespace' => $this->modelsNamespace,
-                'foreignKey' => $foreignKey->getLocalColumns()[0],
-                'relatedKey' => $belongsToManyForeignKey->getLocalColumns()[0]
-            ]);
+            $relationsCompiled .= "\n\n\t" . $relationCompiler->compile([
+                    'relatedModelStudlyCasePlural' => $relatedModelStudlyCasePlural,
+                    'relatedModelStudlyCaseSingular' => $relatedModelStudlyCaseSingular,
+                    'relationName' => $relationName,
+                    'relatedModelCamelCaseSingular' => $relatedModelCamelCaseSingular,
+                    'pivotTableName' => $pivotTableName,
+                    'modelsNamespace' => $this->modelsNamespace,
+                    'foreignKey' => $foreignKey->getLocalColumns()[0],
+                    'relatedKey' => $belongsToManyForeignKey->getLocalColumns()[0]
+                ]);
         }
 
         //{{BelongsToManyRelations}}
@@ -232,14 +233,17 @@ class CrudModelCompiler extends StubCompilerAbstract
      * @param string $relationsCompiled
      * @return string
      */
-    private function guessBelongsToManyRelationName(string $relatedModel, string $pivotTableName, string $relationsCompiled)
-    {
+    private function guessBelongsToManyRelationName(
+        string $relatedModel,
+        string $pivotTableName,
+        string $relationsCompiled
+    ) {
         //set relation name
         $relationName = camel_case(str_plural($relatedModel));
 
         //check whether relation name is already generated in stub, or in $relationsCompiled.
-        if (str_contains($this->stub. $relationsCompiled, $relationName.'()')){
-            $relationName = $pivotTableName. '_'. $relationName;
+        if (str_contains($this->stub . $relationsCompiled, $relationName . '()')) {
+            $relationName = $pivotTableName . '_' . $relationName;
         }
 
         return $relationName;
@@ -252,7 +256,25 @@ class CrudModelCompiler extends StubCompilerAbstract
     {
         //todo
 
-        $scopedCompiled = '//ok';
+        $scopedCompiled = "\n";
+
+        /**
+         * @var \Doctrine\DBAL\Schema\Column[] local table columns
+         */
+        $columns = $this->schema->listTableColumns($this->tableName);
+
+        //compile scope for each local column
+        foreach ($columns as $column) {
+            $type = $column->getType();
+            if ($type === 'Integer' || $type === 'SmallInt' || $type === 'BigInt') {
+                $whereScope = new WhereIntegerScopeCompiler();
+                $scopedCompiled .= $whereScope->compile(['column' => $column]);
+            }
+        }
+
+        //get all model relations
+
+        //for each model relation compile scope for each related table column
 
         //{{DynamicScopes}}
         $this->replaceInStub(['{{DynamicScopes}}' => $scopedCompiled]);

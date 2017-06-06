@@ -1,7 +1,7 @@
 *      @SWG\Parameter(
                  *         name="filters[]",
                  *         in="query",
-                 *         description="filters",
+                 *         description="filters in format {scopeName|parameter}",
                  *         default="",
                  *         required=false,
                  *         type="array",

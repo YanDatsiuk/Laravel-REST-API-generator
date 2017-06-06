@@ -3,14 +3,14 @@
         return $query->where('{{columnName}}', $value);
     }
 
-    public function scopeWhere{{columnNameStudlyCase}}In($query, array $values)
+    public function scopeWhere{{columnNameStudlyCase}}In($query, $values)
     {
-        return $query->whereIn('{{columnName}}', $values);
+        return $query->whereIn('{{columnName}}', explode(',', $values));
     }
 
-    public function scopeWhere{{columnNameStudlyCase}}Between($query, array $range)
+    public function scopeWhere{{columnNameStudlyCase}}Between($query, $range)
     {
-        return $query->whereBetween('{{columnName}}', $range);
+        return $query->whereBetween('{{columnName}}', explode(',', $range));
     }
 
     public function scopeWhere{{columnNameStudlyCase}}GreaterThan($query, $value)

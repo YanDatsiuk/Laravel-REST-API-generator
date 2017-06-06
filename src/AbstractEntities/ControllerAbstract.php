@@ -364,8 +364,19 @@ abstract class ControllerAbstract extends IlluminateController
         return $this->response->accepted();
     }
 
-    private function applyScopes($input)
+    /**
+     * Applying scopes to query
+     *
+     * @param $filters
+     */
+    private function applyScopes($filters)
     {
-        //todo realize
+        foreach ($filters as $filter) {
+            $explodedFilter = explode('|', $filter);
+            $scopeName = $explodedFilter[0];
+            $parameters = $explodedFilter[1];
+
+            $this->query->$scopeName($parameters);
+        }
     }
 }

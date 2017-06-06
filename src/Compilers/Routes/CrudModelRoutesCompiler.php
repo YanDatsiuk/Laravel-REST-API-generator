@@ -5,6 +5,7 @@ namespace TMPHP\RestApiGenerators\Compilers\Routes;
 
 use Illuminate\Database\Eloquent\Model;
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
+use TMPHP\RestApiGenerators\Compilers\Swagger\SwaggerFiltersCompiler;
 use TMPHP\RestApiGenerators\Compilers\Swagger\SwaggerIntegerFiltersCompiler;
 use TMPHP\RestApiGenerators\Support\Helper;
 use TMPHP\RestApiGenerators\Support\SchemaManager;
@@ -104,35 +105,14 @@ class CrudModelRoutesCompiler extends StubCompilerAbstract
 
 
     /**
-     * //todo realize
+     * Compile swagger filters for index endpoint
      *
-     * @return string
+     * @return bool|mixed|string
      */
     private function compileSwaggerFilters()
     {
-        $compiledFilters = '';
-
-        /** @var \Doctrine\DBAL\Schema\Column[] $columns local table columns */
-        $columns = $this->schema->listTableColumns($this->tableName);
-
-        //compile scope for each local column
-        foreach ($columns as $column) {
-            $type = $column->getType();
-            if ($type == 'Integer' || $type == 'SmallInt' || $type == 'BigInt') {
-                $swaggerIntegerFilters = new SwaggerIntegerFiltersCompiler();
-                $compiledFilters .= $swaggerIntegerFilters->compile([
-                    'columnNameStudlyCase' => studly_case($column->getName())
-                ]);
-            }
-
-            if ($type == 'Float' || $type == 'Decimal') {
-                //todo add float filters compilation
-            }
-
-            if ($type == 'String') {
-                //todo add string filters compilation
-            }
-        }
+        $swaggerFiltersCompiler = new SwaggerFiltersCompiler();
+        $compiledFilters = $swaggerFiltersCompiler->compile([]);
 
         return $compiledFilters;
     }

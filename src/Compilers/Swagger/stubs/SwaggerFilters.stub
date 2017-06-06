@@ -1,0 +1,12 @@
+                 *      @SWG\Parameter(
+                 *         name="filters[]",
+                 *         in="query",
+                 *         description="filters",
+                 *         default="",
+                 *         required=false,
+                 *         type="array",
+                 *         @SWG\Items(
+                 *             type="string"
+                 *         ),
+                 *         collectionFormat="multi"
+                 *     ),

@@ -187,6 +187,10 @@ abstract class ControllerAbstract extends IlluminateController
         if ($request->input('include')) {
             $this->setRelations($request->input('include'));
         }
+
+        if ($request->input('filters')){
+            $this->applyScopes($request->input('filters'));
+        }
     }
 
     /**
@@ -358,5 +362,10 @@ abstract class ControllerAbstract extends IlluminateController
         $model->delete();
 
         return $this->response->accepted();
+    }
+
+    private function applyScopes($input)
+    {
+        //todo realize
     }
 }

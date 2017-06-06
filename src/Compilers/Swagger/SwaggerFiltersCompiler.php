@@ -2,19 +2,19 @@
 
 namespace TMPHP\RestApiGenerators\Compilers\Swagger;
 
-use Illuminate\Database\Eloquent\Model;
+
+use Illuminate\Support\Facades\Log;
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 
 /**
- * Class SwaggerIntegerFiltersCompiler
+ * Class SwaggerFiltersCompiler
  * @package TMPHP\RestApiGenerators\Compilers\Swagger
  */
-class SwaggerIntegerFiltersCompiler extends StubCompilerAbstract
+class SwaggerFiltersCompiler extends StubCompilerAbstract
 {
 
     /**
-     * SwaggerIntegerFiltersCompiler constructor.
-     *
+     * SwaggerFiltersCompiler constructor.
      * @param null $saveToPath
      * @param null $saveFileName
      * @param null $stub
@@ -33,10 +33,11 @@ class SwaggerIntegerFiltersCompiler extends StubCompilerAbstract
      */
     public function compile(array $params): string
     {
-        //
-        $this->replaceInStub([
-            '{{columnNameStudlyCase}}' => $params['columnNameStudlyCase'],
-        ]);
+
+        //todo add comments generation (what filters are acceptable)
+//        $this->replaceInStub([
+//            '{{filters}}' => strtolower($params['']),
+//        ]);
 
         //
         return $this->stub;

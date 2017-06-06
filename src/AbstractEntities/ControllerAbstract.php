@@ -187,6 +187,10 @@ abstract class ControllerAbstract extends IlluminateController
         if ($request->input('include')) {
             $this->setRelations($request->input('include'));
         }
+
+        if ($request->input('filters')){
+            $this->applyScopes($request->input('filters'));
+        }
     }
 
     /**
@@ -358,5 +362,21 @@ abstract class ControllerAbstract extends IlluminateController
         $model->delete();
 
         return $this->response->accepted();
+    }
+
+    /**
+     * Applying scopes to query
+     *
+     * @param $filters
+     */
+    private function applyScopes($filters)
+    {
+        foreach ($filters as $filter) {
+            $explodedFilter = explode('|', $filter);
+            $scopeName = $explodedFilter[0];
+            $parameters = $explodedFilter[1];
+
+            $this->query->$scopeName($parameters);
+        }
     }
 }

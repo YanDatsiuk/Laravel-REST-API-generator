@@ -1,0 +1,4 @@
+    public function scopeWhere{{columnNameStudlyCase}}Like($query, $value)
+    {
+        return $query->where('{{columnName}}', 'ilike', '%' . $value . '%');
+    }

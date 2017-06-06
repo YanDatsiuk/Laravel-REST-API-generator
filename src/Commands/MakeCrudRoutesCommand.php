@@ -4,7 +4,7 @@ namespace TMPHP\RestApiGenerators\Commands;
 
 
 use Illuminate\Console\Command;
-use TMPHP\RestApiGenerators\Compilers\ApiRoutesCompiler;
+use TMPHP\RestApiGenerators\Compilers\Routes\ApiRoutesCompiler;
 
 /**
  * Class MakeCrudRoutesCommand

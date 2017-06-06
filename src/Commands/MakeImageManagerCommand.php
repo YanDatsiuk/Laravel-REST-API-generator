@@ -7,9 +7,8 @@ use Illuminate\Console\Command;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schema;
-use TMPHP\RestApiGenerators\Compilers\CrudModelCompiler;
-use TMPHP\RestApiGenerators\Compilers\ImageControllerCompiler;
-use TMPHP\RestApiGenerators\Compilers\ImageRoutesCompiler;
+use TMPHP\RestApiGenerators\Compilers\Controllers\ImageControllerCompiler;
+use TMPHP\RestApiGenerators\Compilers\Routes\ImageRoutesCompiler;
 
 /**
  * Class MakeImageManagerCommand

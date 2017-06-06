@@ -9,15 +9,6 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
-use TMPHP\RestApiGenerators\Compilers\ApiRoutesCompiler;
-use TMPHP\RestApiGenerators\Compilers\AuthControllerCompiler;
-use TMPHP\RestApiGenerators\Compilers\AuthRoutesCompiler;
-use TMPHP\RestApiGenerators\Compilers\ForgotPasswordControllerCompiler;
-use TMPHP\RestApiGenerators\Compilers\LoginDefinitionCompiler;
-use TMPHP\RestApiGenerators\Compilers\RegisterDefinitionCompiler;
-use TMPHP\RestApiGenerators\Compilers\ResetDefinitionCompiler;
-use TMPHP\RestApiGenerators\Compilers\ResetLinkRequestDefinitionCompiler;
-use TMPHP\RestApiGenerators\Compilers\ResetPasswordControllerCompiler;
 use TMPHP\RestApiGenerators\Support\SchemaManager;
 
 /**

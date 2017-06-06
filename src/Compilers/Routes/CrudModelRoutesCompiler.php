@@ -121,7 +121,7 @@ class CrudModelRoutesCompiler extends StubCompilerAbstract
             if ($type == 'Integer' || $type == 'SmallInt' || $type == 'BigInt') {
                 $swaggerIntegerFilters = new SwaggerIntegerFiltersCompiler();
                 $compiledFilters .= $swaggerIntegerFilters->compile([
-                    'model' => $this->model
+                    'columnNameStudlyCase' => studly_case($column->getName())
                 ]);
             }
 

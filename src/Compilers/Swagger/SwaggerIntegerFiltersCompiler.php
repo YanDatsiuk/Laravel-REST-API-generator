@@ -33,13 +33,10 @@ class SwaggerIntegerFiltersCompiler extends StubCompilerAbstract
      */
     public function compile(array $params): string
     {
-        /** @var Model $model */
-        $model = $params['model'];
-
-        //todo
-        //$this->replaceInStub([
-        //    '{{name}}' => $params['name'],
-        //]);
+        //
+        $this->replaceInStub([
+            '{{columnNameStudlyCase}}' => $params['columnNameStudlyCase'],
+        ]);
 
         //
         return $this->stub;

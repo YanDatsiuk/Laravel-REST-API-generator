@@ -87,6 +87,9 @@ class CrudModelCompiler extends StubCompilerAbstract
         //{{BelongsToManyRelations}}
         $this->compileBelongsToManyRelations($this->tableName);
 
+        //{{DynamicScopes}}
+        $this->compileDynamicScopes();
+
 
         //
         $this->replaceInStub(
@@ -240,6 +243,19 @@ class CrudModelCompiler extends StubCompilerAbstract
         }
 
         return $relationName;
+    }
+
+    /**
+     * Compile dynamic scopes for model
+     */
+    private function compileDynamicScopes()
+    {
+        //todo
+
+        $scopedCompiled = '//ok';
+
+        //{{DynamicScopes}}
+        $this->replaceInStub(['{{DynamicScopes}}' => $scopedCompiled]);
     }
 
 }

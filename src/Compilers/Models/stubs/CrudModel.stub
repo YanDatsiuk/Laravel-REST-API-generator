@@ -27,4 +27,6 @@ class {{ModelCapitalized}} extends Model
     {{HasManyRelations}}
 
     {{BelongsToManyRelations}}
+
+    {{DynamicScopes}}
 }

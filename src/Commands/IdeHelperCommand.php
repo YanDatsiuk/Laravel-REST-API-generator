@@ -5,7 +5,7 @@ namespace TMPHP\RestApiGenerators\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
-use TMPHP\RestApiGenerators\Compilers\CrudModelCompiler;
+
 
 /**
  * Class IdeHelperCommand

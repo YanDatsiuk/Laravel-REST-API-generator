@@ -1,17 +1,15 @@
 <?php
 
-namespace TMPHP\RestApiGenerators\Compilers;
+namespace TMPHP\RestApiGenerators\Compilers\Models;
 
 
-use Doctrine\DBAL\Schema\AbstractSchemaManager;
-use Illuminate\Support\Facades\Log;
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 
 /**
- * Class HasManyRelationCompiler
+ * Class BelongsToManyRelationCompiler
  * @package TMPHP\RestApiGenerators\Compilers
  */
-class HasManyRelationCompiler extends StubCompilerAbstract
+class BelongsToManyRelationCompiler extends StubCompilerAbstract
 {
 
     /**
@@ -34,14 +32,16 @@ class HasManyRelationCompiler extends StubCompilerAbstract
      */
     public function compile(array $params): string
     {
-        $modelName = $params['modelName'];
-
         //
         $this->replaceInStub([
-            '{{relatedModelCamelCasePlural}}' => str_plural(camel_case($modelName)),
-            '{{relatedModelStudlyCaseSingular}}' => studly_case($modelName),
-            '{{foreignKey}}' => $params['foreignKey'],
+            '{{relatedModelStudlyCasePlural}}' => $params['relatedModelStudlyCasePlural'],
+            '{{relatedModelStudlyCaseSingular}}' => $params['relatedModelStudlyCaseSingular'],
+            '{{relationName}}' => $params['relationName'],//todo change to relationName
+            '{{relatedModelCamelCaseSingular}}' => $params['relatedModelCamelCaseSingular'],
+            '{{pivotTableName}}' => $params['pivotTableName'],
             '{{modelsNamespace}}' => $params['modelsNamespace'],
+            '{{foreignKey}}' => $params['foreignKey'],
+            '{{relatedKey}}' => $params['relatedKey'],
         ]);
 
         //

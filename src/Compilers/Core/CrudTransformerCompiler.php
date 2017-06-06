@@ -1,6 +1,6 @@
 <?php
 
-namespace TMPHP\RestApiGenerators\Compilers;
+namespace TMPHP\RestApiGenerators\Compilers\Core;
 
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Log;

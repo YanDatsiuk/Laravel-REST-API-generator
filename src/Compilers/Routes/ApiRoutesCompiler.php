@@ -1,6 +1,6 @@
 <?php
 
-namespace TMPHP\RestApiGenerators\Compilers;
+namespace TMPHP\RestApiGenerators\Compilers\Routes;
 
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 
@@ -24,7 +24,7 @@ class ApiRoutesCompiler extends StubCompilerAbstract
      */
     public function __construct($saveToPath = null, $saveFileName = null, $stub = null)
     {
-        $saveToPath   = base_path(config('rest-api-generator.paths.routes'));
+        $saveToPath = base_path(config('rest-api-generator.paths.routes'));
         $saveFileName = 'api.php';
 
         parent::__construct($saveToPath, $saveFileName, $stub);
@@ -39,7 +39,7 @@ class ApiRoutesCompiler extends StubCompilerAbstract
     {
         //generate CRUD routes for all models
         foreach ($params['models'] as $model) {
-            $crudModelRoutesCompiler       = new CrudModelRoutesCompiler();
+            $crudModelRoutesCompiler = new CrudModelRoutesCompiler();
             $this->compiledCrudRoutesStubs .= $crudModelRoutesCompiler->compile(['modelName' => $model]);
         }
 

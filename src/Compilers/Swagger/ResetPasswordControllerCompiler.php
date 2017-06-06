@@ -1,14 +1,14 @@
 <?php
 
-namespace TMPHP\RestApiGenerators\Compilers;
+namespace TMPHP\RestApiGenerators\Compilers\Swagger;
 
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 
 /**
- * Class ForgotPasswordControllerCompiler
+ * Class ResetPasswordControllerCompiler
  * @package TMPHP\RestApiGenerators\Compilers
  */
-class ForgotPasswordControllerCompiler extends StubCompilerAbstract
+class ResetPasswordControllerCompiler extends StubCompilerAbstract
 {
 
     /** @var string $controllersNamespace */
@@ -40,8 +40,8 @@ class ForgotPasswordControllerCompiler extends StubCompilerAbstract
      */
     public function compile(array $params): string
     {
-        $this->saveFileName = 'ForgotPasswordController.php';
-        
+        $this->saveFileName = 'ResetPasswordController.php';
+
         //
         $this->replaceInStub([
             '{{controllersNamespace}}' => $this->controllersNamespace,

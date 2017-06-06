@@ -1,10 +1,8 @@
 <?php
 
-namespace TMPHP\RestApiGenerators\Compilers;
+namespace TMPHP\RestApiGenerators\Compilers\Models;
 
 
-use Doctrine\DBAL\Schema\AbstractSchemaManager;
-use Illuminate\Support\Facades\Log;
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 
 class BelongsToRelationCompiler extends StubCompilerAbstract

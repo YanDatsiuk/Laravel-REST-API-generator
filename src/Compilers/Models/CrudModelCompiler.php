@@ -1,10 +1,10 @@
 <?php
 
-namespace TMPHP\RestApiGenerators\Compilers;
+namespace TMPHP\RestApiGenerators\Compilers\Models;
 
 
-use Illuminate\Support\Facades\Log;
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
+use TMPHP\RestApiGenerators\Compilers\Core\FillableArrayCompiler;
 use TMPHP\RestApiGenerators\Support\Helper;
 use TMPHP\RestApiGenerators\Support\SchemaManager;
 

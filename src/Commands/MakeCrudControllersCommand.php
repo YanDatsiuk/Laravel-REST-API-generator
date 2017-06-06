@@ -4,7 +4,7 @@ namespace TMPHP\RestApiGenerators\Commands;
 
 
 use Illuminate\Console\Command;
-use TMPHP\RestApiGenerators\Compilers\CrudControllerCompiler;
+use TMPHP\RestApiGenerators\Compilers\Controllers\CrudControllerCompiler;
 
 /**
  * Class MakeCrudControllersCommand

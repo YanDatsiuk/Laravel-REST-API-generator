@@ -1,14 +1,14 @@
 <?php
 
-namespace TMPHP\RestApiGenerators\Compilers;
+namespace TMPHP\RestApiGenerators\Compilers\Controllers;
 
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 
 /**
- * Class ResetPasswordControllerCompiler
+ * Class AuthControllerCompiler
  * @package TMPHP\RestApiGenerators\Compilers
  */
-class ResetPasswordControllerCompiler extends StubCompilerAbstract
+class AuthControllerCompiler extends StubCompilerAbstract
 {
 
     /** @var string $controllersNamespace */
@@ -40,7 +40,7 @@ class ResetPasswordControllerCompiler extends StubCompilerAbstract
      */
     public function compile(array $params): string
     {
-        $this->saveFileName = 'ResetPasswordController.php';
+        $this->saveFileName = 'AuthController.php';
 
         //
         $this->replaceInStub([

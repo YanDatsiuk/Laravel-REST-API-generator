@@ -1,6 +1,6 @@
 <?php
 
-namespace TMPHP\RestApiGenerators\Compilers;
+namespace TMPHP\RestApiGenerators\Compilers\Routes;
 
 
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;

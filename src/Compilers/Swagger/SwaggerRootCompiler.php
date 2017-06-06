@@ -1,20 +1,19 @@
 <?php
 
-namespace TMPHP\RestApiGenerators\Compilers;
+namespace TMPHP\RestApiGenerators\Compilers\Swagger;
 
 
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 
-
 /**
- * Class LoginDefinitionCompiler
+ * Class SwaggerRootCompiler
  * @package TMPHP\RestApiGenerators\Compilers
  */
-class LoginDefinitionCompiler extends StubCompilerAbstract
+class SwaggerRootCompiler extends StubCompilerAbstract
 {
 
     /**
-     * LoginDefinitionCompiler constructor.
+     * SwaggerRootCompiler constructor.
      * @param null $saveToPath
      * @param null $saveFileName
      * @param null $stub
@@ -22,18 +21,23 @@ class LoginDefinitionCompiler extends StubCompilerAbstract
     public function __construct($saveToPath = null, $saveFileName = null, $stub = null)
     {
         $saveToPath = base_path(config('rest-api-generator.paths.documentations'));
-        $saveFileName = 'login.php';
+        $saveFileName = 'root-object.php';
 
         parent::__construct($saveToPath, $saveFileName, $stub);
     }
 
     /**
      * @param array $params
-     * @return bool|mixed|string
+     * @return string
      */
     public function compile(array $params): string
     {
         //
+        $this->replaceInStub([
+            '{{Host}}' => $params['Host'],
+        ]);
+
+        //saving
         $this->saveStub();
 
         //

@@ -1,11 +1,11 @@
 <?php
 
-namespace TMPHP\RestApiGenerators\Compilers;
+namespace TMPHP\RestApiGenerators\Compilers\Controllers;
 
 use Doctrine\DBAL\Schema\Column;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
+use TMPHP\RestApiGenerators\Compilers\Core\RulesArrayCompiler;
 use TMPHP\RestApiGenerators\Support\SchemaManager;
 
 /**

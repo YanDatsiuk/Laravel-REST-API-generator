@@ -1,6 +1,6 @@
 <?php
 
-namespace TMPHP\RestApiGenerators\Compilers;
+namespace TMPHP\RestApiGenerators\Compilers\Swagger;
 
 
 use Illuminate\Support\Facades\Log;

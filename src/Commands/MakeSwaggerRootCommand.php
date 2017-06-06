@@ -4,7 +4,7 @@ namespace TMPHP\RestApiGenerators\Commands;
 
 
 use Illuminate\Console\Command;
-use TMPHP\RestApiGenerators\Compilers\SwaggerRootCompiler;
+use TMPHP\RestApiGenerators\Compilers\Swagger\SwaggerRootCompiler;
 use TMPHP\RestApiGenerators\Support\Helper;
 
 /**

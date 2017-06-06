@@ -70,22 +70,17 @@ class CrudModelCompiler extends StubCompilerAbstract
         $this->tableName = $params['tableName'];
         $this->modelName = ucfirst($params['modelName']);
 
-        /**
-         * @var \Doctrine\DBAL\Schema\Column[]
-         */
-        $columns = $this->schema->listTableColumns($this->tableName);
-
         //{{FillableArray}}
-        $this->compileFillableArray($columns);
+        $this->compileFillableArray();
 
         //{{BelongsToRelations}}
-        $this->compileBelongsToRelations($this->tableName);
+        $this->compileBelongsToRelations();
 
         //{{HasManyRelations}}
-        $this->compileHasManyRelations($this->tableName);
+        $this->compileHasManyRelations();
 
         //{{BelongsToManyRelations}}
-        $this->compileBelongsToManyRelations($this->tableName);
+        $this->compileBelongsToManyRelations();
 
         //{{DynamicScopes}}
         $this->compileDynamicScopes();
@@ -108,10 +103,15 @@ class CrudModelCompiler extends StubCompilerAbstract
     }
 
     /**
-     * @param array $columns
+     *
      */
-    private function compileFillableArray(array $columns)
+    private function compileFillableArray()
     {
+        /**
+         * @var \Doctrine\DBAL\Schema\Column[]
+         */
+        $columns = $this->schema->listTableColumns($this->tableName);
+
         $fillableArrayCompiler = new FillableArrayCompiler();
         $fillableArrayCompiled = $fillableArrayCompiler->compile(['columns' => $columns]);
 
@@ -120,12 +120,12 @@ class CrudModelCompiler extends StubCompilerAbstract
     }
 
     /**
-     * @param string $tableName
+     *
      */
-    private function compileBelongsToRelations(string $tableName)
+    private function compileBelongsToRelations()
     {
         /** @var  $foreignKeys \Doctrine\DBAL\Schema\ForeignKeyConstraint[] */
-        $foreignKeys = $this->schema->listTableForeignKeys($tableName);
+        $foreignKeys = $this->schema->listTableForeignKeys($this->tableName);
 
         $relationsCompiled = '';
 
@@ -150,9 +150,9 @@ class CrudModelCompiler extends StubCompilerAbstract
     }
 
     /**
-     * @param string $tableName
+     *
      */
-    private function compileHasManyRelations(string $tableName)
+    private function compileHasManyRelations()
     {
         //get all foreign keys
         $foreignKeys = $this->schema->listForeignKeys();
@@ -160,7 +160,7 @@ class CrudModelCompiler extends StubCompilerAbstract
         //get all foreign keys, where foreign table is equal to this table
         $filteredForeignKeys = [];
         foreach ($foreignKeys as $foreignKey) {
-            if ($foreignKey->getForeignTableName() === $tableName) {
+            if ($foreignKey->getForeignTableName() === $this->tableName) {
                 array_push($filteredForeignKeys, $foreignKey);
             }
         }
@@ -186,12 +186,12 @@ class CrudModelCompiler extends StubCompilerAbstract
     }
 
     /**
-     * @param string $tableName
+     *
      */
-    private function compileBelongsToManyRelations(string $tableName)
+    private function compileBelongsToManyRelations()
     {
         //get all foreign keys, which have "belongs to many" nature
-        $belongsToManyForeignKeys = $this->schema->listBelongsToManyForeignKeys($tableName);
+        $belongsToManyForeignKeys = $this->schema->listBelongsToManyForeignKeys($this->tableName);
 
         //compile all "belongs to many" relations
         $relationsCompiled = '';
@@ -203,7 +203,7 @@ class CrudModelCompiler extends StubCompilerAbstract
             $relatedModelStudlyCaseSingular = studly_case($relatedModel);
             $relatedModelCamelCaseSingular = camel_case($relatedModel);
             $pivotTableName = $belongsToManyForeignKey->getLocalTableName();
-            $foreignKey = $this->schema->getKeyInTableWhichPointsToTable($pivotTableName, $tableName);
+            $foreignKey = $this->schema->getKeyInTableWhichPointsToTable($pivotTableName, $this->tableName);
             $relationName = $this->guessBelongsToManyRelationName($relatedModel, $pivotTableName, $relationsCompiled);
 
             $relationCompiler = new BelongsToManyRelationCompiler();

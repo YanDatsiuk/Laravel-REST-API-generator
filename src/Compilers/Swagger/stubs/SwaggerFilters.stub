@@ -1,4 +1,4 @@
-                 *      @SWG\Parameter(
+*      @SWG\Parameter(
                  *         name="filters[]",
                  *         in="query",
                  *         description="filters",

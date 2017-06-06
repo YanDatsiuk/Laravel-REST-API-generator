@@ -126,11 +126,11 @@ class CrudModelRoutesCompiler extends StubCompilerAbstract
             }
 
             if ($type == 'Float' || $type == 'Decimal') {
-
+                //todo add float filters compilation
             }
 
             if ($type == 'String') {
-
+                //todo add string filters compilation
             }
         }
 

@@ -5,14 +5,14 @@ namespace TMPHP\RestApiGenerators\Compilers\Scopes;
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 
 /**
- * Class WhereIntegerScopeCompiler
+ * Class WhereFloatScopeCompiler
  * @package TMPHP\RestApiGenerators\Compilers\Scopes
  */
-class WhereIntegerScopeCompiler extends StubCompilerAbstract
+class WhereFloatScopeCompiler extends StubCompilerAbstract
 {
 
     /**
-     * WhereScopeCompiler constructor.
+     * WhereFloatScopeCompiler constructor.
      *
      * @param null $saveToPath
      * @param null $saveFileName

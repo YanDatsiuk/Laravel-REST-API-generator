@@ -5,7 +5,9 @@ namespace TMPHP\RestApiGenerators\Compilers\Models;
 
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 use TMPHP\RestApiGenerators\Compilers\Core\FillableArrayCompiler;
+use TMPHP\RestApiGenerators\Compilers\Scopes\WhereFloatScopeCompiler;
 use TMPHP\RestApiGenerators\Compilers\Scopes\WhereIntegerScopeCompiler;
+use TMPHP\RestApiGenerators\Compilers\Scopes\WhereStringScopeCompiler;
 use TMPHP\RestApiGenerators\Support\Helper;
 use TMPHP\RestApiGenerators\Support\SchemaManager;
 
@@ -266,8 +268,18 @@ class CrudModelCompiler extends StubCompilerAbstract
         //compile scope for each local column
         foreach ($columns as $column) {
             $type = $column->getType();
-            if ($type === 'Integer' || $type === 'SmallInt' || $type === 'BigInt') {
+            if ($type == 'Integer' || $type == 'SmallInt' || $type == 'BigInt') {
                 $whereScope = new WhereIntegerScopeCompiler();
+                $scopedCompiled .= $whereScope->compile(['column' => $column]);
+            }
+
+            if ($type == 'Float' || $type == 'Decimal') {
+                $whereScope = new WhereFloatScopeCompiler();
+                $scopedCompiled .= $whereScope->compile(['column' => $column]);
+            }
+
+            if ($type == 'String') {
+                $whereScope = new WhereStringScopeCompiler();
                 $scopedCompiled .= $whereScope->compile(['column' => $column]);
             }
         }

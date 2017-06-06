@@ -8,7 +8,7 @@ use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
  * Class WhereIntegerScopeCompiler
  * @package TMPHP\RestApiGenerators\Compilers\Scopes
  */
-class WhereIntegerScopeCompiler extends StubCompilerAbstract
+class WhereStringScopeCompiler extends StubCompilerAbstract
 {
 
     /**

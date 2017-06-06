@@ -1,0 +1,270 @@
+
+        //{{ModelPlurarLowercase}} CRUD
+        $api->group(
+            ['prefix' => '/{{ModelPlurarLowercase}}'],
+            function ($api) {
+
+                /**
+                 * @SWG\Get(
+                 *     path="/{{ModelPlurarLowercase}}",
+                 *     tags={"{{ModelPlurarLowercase}}"},
+                 *     description="Get list of {{ModelPlurarLowercase}}",
+                 *     produces= {"application/json"},
+                 *
+                 *      @SWG\Parameter(
+                 *         name="Authorization",
+                 *         in="header",
+                 *         description="JWTAuthToken example - Bearer {token}",
+                 *         required=true,
+                 *         type="string"
+                 *     ),
+                 *      @SWG\Parameter(
+                 *         name="include[]",
+                 *         in="query",
+                 *         description="List of model relations with limit and offset parameter. Example: {relationName}:limit({limit}|{offset})",
+                 *         default="",
+                 *         required=false,
+                 *         type="array",
+                 *         @SWG\Items(
+                 *             type="string"
+                 *         ),
+                 *         collectionFormat="multi"
+                 *     ),
+                 {{filters}}
+                 *     @SWG\Parameter(
+                 *         name="page",
+                 *         in="query",
+                 *         description="Page number",
+                 *         required=false,
+                 *         default=1,
+                 *         type="integer"
+                 *     ),
+                 *     @SWG\Parameter(
+                 *         name="limit",
+                 *         in="query",
+                 *         description="Items limit per page",
+                 *         required=false,
+                 *         default=10,
+                 *         type="integer"
+                 *     ),
+                 *     @SWG\Response(
+                 *         response="200",
+                 *         description="Requested resource collection"
+                 *     ),
+                 *
+                 *     @SWG\Response(
+                 *         response="403",
+                 *         description="Access forbidden"
+                 *     ),
+                 *     @SWG\Response(
+                 *         response="default",
+                 *         description="Unexpected error",
+                 *         @SWG\Schema(
+                 *             ref="#/definitions/error"
+                 *         )
+                 *     )
+                 * )
+                 */
+                $api->get('/', '{{controllersNamespace}}\{{ModelSingularUppercase}}Controller@index')
+                    ->name('{{ModelPlurarLowercase}}');
+
+                /**
+                 * @SWG\Get(
+                 *     path="/{{ModelPlurarLowercase}}/show/{id}",
+                 *     tags={"{{ModelPlurarLowercase}}"},
+                 *     description="Get specific {{ModelSingularLowercase}} by Id",
+                 *     produces= {"application/json"},
+                 *
+                 *      @SWG\Parameter(
+                 *         name="Authorization",
+                 *         in="header",
+                 *         description="JWTAuthToken example - Bearer {token}",
+                 *         required=true,
+                 *         type="string"
+                 *     ),
+                 *
+                 *     @SWG\Parameter(
+                 *         name="id",
+                 *         in="path",
+                 *         required=true,
+                 *         type="integer"
+                 *     ),
+                 *
+                 *     @SWG\Response(
+                 *         response="200",
+                 *         description="{{ModelSingularLowercase}} with specified id"
+                 *     ),
+                 *
+                 *     @SWG\Response(
+                 *         response="403",
+                 *         description="Access forbidden"
+                 *     ),
+                 *     @SWG\Response(
+                 *         response="422",
+                 *         description="Unprocessable entity"
+                 *     ),
+                 *     @SWG\Response(
+                 *         response="default",
+                 *         description="Unexpected error",
+                 *         @SWG\Schema(
+                 *             ref="#/definitions/error"
+                 *         )
+                 *     )
+                 * )
+                 */
+                $api->get('/show/{id}', '{{controllersNamespace}}\{{ModelSingularUppercase}}Controller@show')
+                    ->name('{{ModelPlurarLowercase}}.show.id');
+
+                /**
+                 * @SWG\Post(
+                 *     path="/{{ModelPlurarLowercase}}/create",
+                 *     tags={"{{ModelPlurarLowercase}}"},
+                 *     description="Create {{ModelSingularLowercase}}",
+                 *     produces= {"application/json"},
+                 *
+                 *     @SWG\Parameter(
+                 *         name="Authorization",
+                 *         in="header",
+                 *         description="JWTAuthToken example - Bearer {token}",
+                 *         required=true,
+                 *         type="string"
+                 *     ),
+                 *     @SWG\Parameter(
+                 *         name="",
+                 *         in="body",
+                 *         description="",
+                 *         required=true,
+                 *         @SWG\Schema(
+                 *             ref="#/definitions/{{ModelSingularLowercase}}",
+                 *         )
+                 *     ),
+                 *
+                 *     @SWG\Response(
+                 *         response="200",
+                 *         description="Created entity"
+                 *     ),
+                 *
+                 *     @SWG\Response(
+                 *         response="403",
+                 *         description="Access forbidden"
+                 *     ),
+                 *     @SWG\Response(
+                 *         response="422",
+                 *         description="Unprocessable entity"
+                 *     ),
+                 *     @SWG\Response(
+                 *         response="default",
+                 *         description="Unexpected error",
+                 *         @SWG\Schema(
+                 *             ref="#/definitions/error"
+                 *         )
+                 *     )
+                 * )
+                 */
+                $api->post('/create/', '{{controllersNamespace}}\{{ModelSingularUppercase}}Controller@store')
+                    ->name('{{ModelPlurarLowercase}}.create');
+
+                /**
+                 * @SWG\Patch(
+                 *     path="/{{ModelPlurarLowercase}}/update/{id}",
+                 *     tags={"{{ModelPlurarLowercase}}"},
+                 *     description="Update specific {{ModelSingularLowercase}} by Id",
+                 *     produces= {"application/json"},
+                 *
+                 *     @SWG\Parameter(
+                 *         name="Authorization",
+                 *         in="header",
+                 *         description="JWTAuthToken example - Bearer {token}",
+                 *         required=true,
+                 *         type="string"
+                 *     ),
+                 *     @SWG\Parameter(
+                 *         name="id",
+                 *         in="path",
+                 *         description="",
+                 *         required=true,
+                 *         type="integer"
+                 *     ),
+                 *     @SWG\Parameter(
+                 *         name="",
+                 *         in="body",
+                 *         description="",
+                 *         required=true,
+                 *         @SWG\Schema(
+                 *             ref="#/definitions/{{ModelSingularLowercase}}"
+                 *         )
+                 *     ),
+                 *
+                 *     @SWG\Response(
+                 *         response="200",
+                 *         description="Updated entity"
+                 *     ),
+                 *
+                 *     @SWG\Response(
+                 *         response="403",
+                 *         description="Access forbidden"
+                 *     ),
+                 *     @SWG\Response(
+                 *         response="422",
+                 *         description="Unprocessable entity"
+                 *     ),
+                 *     @SWG\Response(
+                 *         response="default",
+                 *         description="Unexpected error",
+                 *         @SWG\Schema(
+                 *             ref="#/definitions/error"
+                 *         )
+                 *     )
+                 * )
+                 */
+                $api->patch('/update/{id}', '{{controllersNamespace}}\{{ModelSingularUppercase}}Controller@update')
+                    ->name('{{ModelPlurarLowercase}}.update');
+
+                /**
+                 * @SWG\Delete(
+                 *     path="/{{ModelPlurarLowercase}}/delete/{id}",
+                 *     tags={"{{ModelPlurarLowercase}}"},
+                 *     description="Delete specific {{ModelSingularLowercase}} by Id",
+                 *     produces= {"application/json"},
+                 *
+                 *     @SWG\Parameter(
+                 *         name="Authorization",
+                 *         in="header",
+                 *         description="JWTAuthToken example - Bearer {token}",
+                 *         required=true,
+                 *         type="string"
+                 *     ),
+                 *     @SWG\Parameter(
+                 *         name="id",
+                 *         in="path",
+                 *         description="",
+                 *         required=true,
+                 *         type="integer"
+                 *     ),
+                 *
+                 *     @SWG\Response(
+                 *         response="204",
+                 *         description="Deleted entity"
+                 *     ),
+                 *
+                 *     @SWG\Response(
+                 *         response="403",
+                 *         description="Access forbidden"
+                 *     ),
+                 *     @SWG\Response(
+                 *         response="422",
+                 *         description="Unprocessable entity"
+                 *     ),
+                 *     @SWG\Response(
+                 *         response="default",
+                 *         description="Unexpected error",
+                 *         @SWG\Schema(
+                 *             ref="#/definitions/error"
+                 *         )
+                 *     )
+                 * )
+                 */
+                $api->delete('/delete/{id}', '{{controllersNamespace}}\{{ModelSingularUppercase}}Controller@destroy')
+                    ->name('{{ModelPlurarLowercase}}.delete');
+            }
+        );

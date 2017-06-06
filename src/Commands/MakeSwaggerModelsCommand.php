@@ -4,7 +4,7 @@ namespace TMPHP\RestApiGenerators\Commands;
 
 
 use Illuminate\Console\Command;
-use TMPHP\RestApiGenerators\Compilers\SwaggerDefinitionCompiler;
+use TMPHP\RestApiGenerators\Compilers\Swagger\SwaggerDefinitionCompiler;
 
 /**
  * Class MakeSwaggerModelsCommand

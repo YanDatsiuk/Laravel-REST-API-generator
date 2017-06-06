@@ -256,8 +256,6 @@ class CrudModelCompiler extends StubCompilerAbstract
      */
     private function compileDynamicScopes()
     {
-        //todo
-
         $scopedCompiled = "\n";
 
         /**
@@ -284,7 +282,7 @@ class CrudModelCompiler extends StubCompilerAbstract
             }
         }
 
-        //get all model relations
+        //get all model relations //todo
 
         //for each model relation compile scope for each related table column
 

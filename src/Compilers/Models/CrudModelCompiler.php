@@ -258,9 +258,7 @@ class CrudModelCompiler extends StubCompilerAbstract
     {
         $scopedCompiled = "\n";
 
-        /**
-         * @var \Doctrine\DBAL\Schema\Column[] local table columns
-         */
+        /** @var \Doctrine\DBAL\Schema\Column[] $columns local table columns*/
         $columns = $this->schema->listTableColumns($this->tableName);
 
         //compile scope for each local column

@@ -187,6 +187,10 @@ abstract class ControllerAbstract extends IlluminateController
         if ($request->input('include')) {
             $this->setRelations($request->input('include'));
         }
+
+        if ($request->input('filters')){////todo override in each child class
+            $this->applyScopes($request->input('filters'));
+        }
     }
 
     /**

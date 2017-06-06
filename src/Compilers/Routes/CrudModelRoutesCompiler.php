@@ -3,20 +3,44 @@
 namespace TMPHP\RestApiGenerators\Compilers\Routes;
 
 
+use Illuminate\Database\Eloquent\Model;
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
+use TMPHP\RestApiGenerators\Compilers\Swagger\SwaggerIntegerFiltersCompiler;
 use TMPHP\RestApiGenerators\Support\Helper;
+use TMPHP\RestApiGenerators\Support\SchemaManager;
 
 /**
  * Class CrudModelRoutesCompiler
+ * @property  model
  * @package TMPHP\RestApiGenerators\Compilers
  */
 class CrudModelRoutesCompiler extends StubCompilerAbstract
 {
 
     /**
+     * @var Model
+     */
+    private $model;
+
+    /**
+     * @var string
+     */
+    private $tableName;
+
+    /**
+     * @var SchemaManager
+     */
+    private $schema;
+
+    /**
      * @var string
      */
     private $controllersNamespace;
+
+    /**
+     * @var string
+     */
+    private $modelsNamespace;
 
     /**
      * CrudModelRoutesCompiler constructor.
@@ -30,7 +54,9 @@ class CrudModelRoutesCompiler extends StubCompilerAbstract
         $saveToPath = base_path(config('rest-api-generator.paths.routes'));
         $saveFileName = '';
 
+        $this->schema = new SchemaManager();
         $this->controllersNamespace = config('rest-api-generator.namespaces.controllers');
+        $this->modelsNamespace = config('rest-api-generator.namespaces.models');
 
         parent::__construct($saveToPath, $saveFileName, $stub);
     }
@@ -55,17 +81,61 @@ class CrudModelRoutesCompiler extends StubCompilerAbstract
         }
 
         //
+        $modelFullClassName = $this->modelsNamespace . '\\' . studly_case($modelSingularUppercase);
+        $this->model = new $modelFullClassName();
+
+        $this->tableName = $this->model->getTable();
+
+        //compile swagger filters for index method
+        $compiledFilters = $this->compileSwaggerFilters();
+
+        //
         $this->replaceInStub([
             '{{ModelSingularLowercase}}' => $modelSingularLowercase,
             '{{ModelPlurarLowercase}}' => $modelPlurarLowercase,
             '{{ModelSingularUppercase}}' => $modelSingularUppercase,
             '{{controllersNamespace}}' => $this->controllersNamespace,
+            '{{filters}}' => $compiledFilters,
         ]);
 
         //
         return $this->stub;
     }
 
+
+    /**
+     * //todo realize
+     *
+     * @return string
+     */
+    private function compileSwaggerFilters()
+    {
+        $compiledFilters = '';
+
+        /** @var \Doctrine\DBAL\Schema\Column[] $columns local table columns */
+        $columns = $this->schema->listTableColumns($this->tableName);
+
+        //compile scope for each local column
+        foreach ($columns as $column) {
+            $type = $column->getType();
+            if ($type == 'Integer' || $type == 'SmallInt' || $type == 'BigInt') {
+                $swaggerIntegerFilters = new SwaggerIntegerFiltersCompiler();
+                $compiledFilters .= $swaggerIntegerFilters->compile([
+                    'model' => $this->model
+                ]);
+            }
+
+            if ($type == 'Float' || $type == 'Decimal') {
+
+            }
+
+            if ($type == 'String') {
+
+            }
+        }
+
+        return $compiledFilters;
+    }
 
 
 }

@@ -30,6 +30,7 @@
                  *         ),
                  *         collectionFormat="multi"
                  *     ),
+                 {{filters}}
                  *     @SWG\Parameter(
                  *         name="page",
                  *         in="query",

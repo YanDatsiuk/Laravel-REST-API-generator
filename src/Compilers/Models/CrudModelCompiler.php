@@ -26,7 +26,12 @@ class CrudModelCompiler extends StubCompilerAbstract
     /**
      * @var string
      */
-    private $modelsNamespace;
+    private $tableName;
+
+    /**
+     * @var string
+     */
+    private $modelName;
 
     /**
      * @var string
@@ -36,12 +41,7 @@ class CrudModelCompiler extends StubCompilerAbstract
     /**
      * @var string
      */
-    private $tableName;
-
-    /**
-     * @var string
-     */
-    private $modelName;
+    private $modelsNamespace;
 
     /**
      * CrudModelCompiler constructor.
@@ -106,13 +106,12 @@ class CrudModelCompiler extends StubCompilerAbstract
     }
 
     /**
-     *
+     * Generate list of fillable columns
+     * and save this array to a model's stub file.
      */
     private function compileFillableArray()
     {
-        /**
-         * @var \Doctrine\DBAL\Schema\Column[]
-         */
+        /** @var \Doctrine\DBAL\Schema\Column[] $columns */
         $columns = $this->schema->listTableColumns($this->tableName);
 
         $fillableArrayCompiler = new FillableArrayCompiler();
@@ -123,7 +122,8 @@ class CrudModelCompiler extends StubCompilerAbstract
     }
 
     /**
-     *
+     * Generate a list of "belongsTo" relations
+     * and save this methods to a model's stub file.
      */
     private function compileBelongsToRelations()
     {
@@ -153,7 +153,8 @@ class CrudModelCompiler extends StubCompilerAbstract
     }
 
     /**
-     *
+     * Generate a list of "hasMany" relations
+     * and save this methods to a model's stub file.
      */
     private function compileHasManyRelations()
     {
@@ -189,7 +190,8 @@ class CrudModelCompiler extends StubCompilerAbstract
     }
 
     /**
-     *
+     * Generate a list of "belongsToMany" relations
+     * and save this methods to a model's stub file.
      */
     private function compileBelongsToManyRelations()
     {
@@ -252,13 +254,14 @@ class CrudModelCompiler extends StubCompilerAbstract
     }
 
     /**
-     * Compile dynamic scopes for model
+     * Generate a list of dynamic scopes
+     * and save this methods to a model's stub file.
      */
     private function compileDynamicScopes()
     {
         $scopedCompiled = "\n";
 
-        /** @var \Doctrine\DBAL\Schema\Column[] $columns local table columns*/
+        /** @var \Doctrine\DBAL\Schema\Column[] $columns local table columns */
         $columns = $this->schema->listTableColumns($this->tableName);
 
         //compile scope for each local column

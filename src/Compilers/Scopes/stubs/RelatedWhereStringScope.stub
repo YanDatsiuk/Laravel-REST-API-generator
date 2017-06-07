@@ -1,0 +1,6 @@
+    public function scopeWhere{{model}}{{columnNameStudlyCase}}Like($query, $value)
+    {
+        return $query->whereHas('{{relation}}', function ($q) use ($value){
+            $q->where('{{columnName}}', 'ilike', '%' . $value . '%');
+        });
+    }

@@ -1,0 +1,27 @@
+    public function scopeWhere{{model}}{{columnNameStudlyCase}}($query, $value)
+    {
+        return $query->whereHas('{{relation}}', function ($q) use ($value){
+            $q->where('{{columnName}}', $value);
+        });
+    }
+
+    public function scopeWhere{{model}}{{columnNameStudlyCase}}Between($query, $range)
+    {
+        return $query->whereHas('{{relation}}', function ($q) use ($range){
+            $q->whereBetween('{{columnName}}', explode(',', $range));
+        });
+    }
+
+    public function scopeWhere{{model}}{{columnNameStudlyCase}}GreaterThan($query, $value)
+    {
+        return $query->whereHas('{{relation}}', function ($q) use ($value){
+            $q->where('{{columnName}}', '>', $value);
+        });
+    }
+
+    public function scopeWhere{{model}}{{columnNameStudlyCase}}LessThan($query, $value)
+    {
+        return $query->whereHas('{{relation}}', function ($q) use ($value){
+            $q->where('{{columnName}}', '<', $value);
+        });
+    }

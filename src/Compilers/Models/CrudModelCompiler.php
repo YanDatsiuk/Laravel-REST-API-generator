@@ -5,6 +5,11 @@ namespace TMPHP\RestApiGenerators\Compilers\Models;
 
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 use TMPHP\RestApiGenerators\Compilers\Core\FillableArrayCompiler;
+use TMPHP\RestApiGenerators\Compilers\Scopes\RelatedWhereFloatScopeCompiler;
+use TMPHP\RestApiGenerators\Compilers\Scopes\RelatedWhereIntegerScopeCompiler;
+use TMPHP\RestApiGenerators\Compilers\Scopes\RelatedWhereStringScopeCompiler;
+use TMPHP\RestApiGenerators\Compilers\Scopes\Support\CompiledScopesHelper;
+use TMPHP\RestApiGenerators\Compilers\Scopes\Support\RelationTableModelParamBag;
 use TMPHP\RestApiGenerators\Compilers\Scopes\WhereFloatScopeCompiler;
 use TMPHP\RestApiGenerators\Compilers\Scopes\WhereIntegerScopeCompiler;
 use TMPHP\RestApiGenerators\Compilers\Scopes\WhereStringScopeCompiler;
@@ -18,30 +23,23 @@ use TMPHP\RestApiGenerators\Support\SchemaManager;
 class CrudModelCompiler extends StubCompilerAbstract
 {
 
-    /**
-     * @var SchemaManager
-     */
+    /** @var SchemaManager $schema */
     private $schema;
 
-    /**
-     * @var string
-     */
-    private $modelsNamespace;
-
-    /**
-     * @var string
-     */
-    private $dbTablePrefix;
-
-    /**
-     * @var string
-     */
+    /** @var  string $tableName */
     private $tableName;
 
-    /**
-     * @var string
-     */
+    /** @var  string $modelName */
     private $modelName;
+
+    /** @var mixed $dbTablePrefix */
+    private $dbTablePrefix;
+
+    /** @var  RelationTableModelParamBag[] $relationTableModelParams */
+    private $relationTableModelParams = [];
+
+    /** @var string $modelsNamespace */
+    private $modelsNamespace;
 
     /**
      * CrudModelCompiler constructor.
@@ -106,13 +104,12 @@ class CrudModelCompiler extends StubCompilerAbstract
     }
 
     /**
-     *
+     * Generate list of fillable columns
+     * and save this array to a model's stub file.
      */
     private function compileFillableArray()
     {
-        /**
-         * @var \Doctrine\DBAL\Schema\Column[]
-         */
+        /** @var \Doctrine\DBAL\Schema\Column[] $columns */
         $columns = $this->schema->listTableColumns($this->tableName);
 
         $fillableArrayCompiler = new FillableArrayCompiler();
@@ -123,7 +120,8 @@ class CrudModelCompiler extends StubCompilerAbstract
     }
 
     /**
-     *
+     * Generate a list of "belongsTo" relations
+     * and save this methods to a model's stub file.
      */
     private function compileBelongsToRelations()
     {
@@ -146,6 +144,13 @@ class CrudModelCompiler extends StubCompilerAbstract
                     'belongToRelationName' => $belongToRelationName,
                     'modelsNamespace' => $this->modelsNamespace,
                 ]);
+
+            //add new param
+            $this->relationTableModelParams[] = new RelationTableModelParamBag(
+                $belongToRelationName,
+                $foreignTableName,
+                $relatedModelName);
+
         }
 
         //{{BelongsToRelations}}
@@ -153,7 +158,8 @@ class CrudModelCompiler extends StubCompilerAbstract
     }
 
     /**
-     *
+     * Generate a list of "hasMany" relations
+     * and save this methods to a model's stub file.
      */
     private function compileHasManyRelations()
     {
@@ -182,6 +188,12 @@ class CrudModelCompiler extends StubCompilerAbstract
                     'foreignKey' => $foreignKey->getColumns()[0],
                     'modelsNamespace' => $this->modelsNamespace,
                 ]);
+
+            //add new param
+            $this->relationTableModelParams[] = new RelationTableModelParamBag(
+                str_plural(camel_case($modelName)),
+                $localTableName,
+                $modelName);
         }
 
         //{{HasManyRelations}}
@@ -189,7 +201,8 @@ class CrudModelCompiler extends StubCompilerAbstract
     }
 
     /**
-     *
+     * Generate a list of "belongsToMany" relations
+     * and save this methods to a model's stub file.
      */
     private function compileBelongsToManyRelations()
     {
@@ -220,6 +233,12 @@ class CrudModelCompiler extends StubCompilerAbstract
                     'foreignKey' => $foreignKey->getLocalColumns()[0],
                     'relatedKey' => $belongsToManyForeignKey->getLocalColumns()[0]
                 ]);
+
+            //add new param
+            $this->relationTableModelParams[] = new RelationTableModelParamBag(
+                $relationName,
+                $pivotTableName,
+                $relatedModelStudlyCaseSingular);
         }
 
         //{{BelongsToManyRelations}}
@@ -252,40 +271,120 @@ class CrudModelCompiler extends StubCompilerAbstract
     }
 
     /**
-     * Compile dynamic scopes for model
+     * Generate a list of dynamic scopes
+     * and save this methods to a model's stub file.
      */
     private function compileDynamicScopes()
     {
-        $scopedCompiled = "\n";
+        $scopesCompiled = "\n";
 
-        /** @var \Doctrine\DBAL\Schema\Column[] $columns local table columns*/
+        //compile scopes for each column of a local model.
+        $scopesCompiled .= $this->compileLocalModelScopes();
+
+        //compile scopes for each column for each related model.
+        $scopesCompiled .= $this->compileRelatedModelsScopes();
+
+        //remove duplicate scopes
+        $scopesCompiled = $this->removeDuplicatesInScopes($scopesCompiled);
+
+        //{{DynamicScopes}}
+        $this->replaceInStub(['{{DynamicScopes}}' => $scopesCompiled]);
+    }
+
+    /**
+     * Compile scopes for each column of a local model.
+     *
+     * @return string
+     */
+    private function compileLocalModelScopes()
+    {
+        /** @var \Doctrine\DBAL\Schema\Column[] $columns local table columns */
         $columns = $this->schema->listTableColumns($this->tableName);
+        $scopesCompiled = '';
 
         //compile scope for each local column
         foreach ($columns as $column) {
             $type = $column->getType();
             if ($type == 'Integer' || $type == 'SmallInt' || $type == 'BigInt') {
                 $whereScope = new WhereIntegerScopeCompiler();
-                $scopedCompiled .= $whereScope->compile(['column' => $column]);
+                $scopesCompiled .= $whereScope->compile(['column' => $column]);
             }
 
             if ($type == 'Float' || $type == 'Decimal') {
                 $whereScope = new WhereFloatScopeCompiler();
-                $scopedCompiled .= $whereScope->compile(['column' => $column]);
+                $scopesCompiled .= $whereScope->compile(['column' => $column]);
             }
 
             if ($type == 'String') {
                 $whereScope = new WhereStringScopeCompiler();
-                $scopedCompiled .= $whereScope->compile(['column' => $column]);
+                $scopesCompiled .= $whereScope->compile(['column' => $column]);
             }
         }
 
-        //get all model relations //todo
+        return $scopesCompiled;
+    }
 
-        //for each model relation compile scope for each related table column
+    /**
+     * Compile scopes for each column for each related model.
+     *
+     * @return string
+     */
+    private function compileRelatedModelsScopes()
+    {
+        $scopesCompiled = '';
 
-        //{{DynamicScopes}}
-        $this->replaceInStub(['{{DynamicScopes}}' => $scopedCompiled]);
+        //compile scopes for each column for each related model.
+        foreach ($this->relationTableModelParams as $paramBag){
+
+            /** @var \Doctrine\DBAL\Schema\Column[] $columns */
+            $columns = $this->schema->listTableColumns($paramBag->getTable());
+
+            //compile scope for each column
+            foreach ($columns as $column) {
+                $type = $column->getType();
+                if ($type == 'Integer' || $type == 'SmallInt' || $type == 'BigInt') {
+                    $whereScope = new RelatedWhereIntegerScopeCompiler();
+                    $scopesCompiled .= $whereScope->compile([
+                        'column' => $column,
+                        'model' => $paramBag->getModel(),
+                        'relation' => $paramBag->getRelation(),
+                    ]);
+                }
+
+                if ($type == 'Float' || $type == 'Decimal') {
+                    $whereScope = new RelatedWhereFloatScopeCompiler();
+                    $scopesCompiled .= $whereScope->compile([
+                        'column' => $column,
+                        'model' => $paramBag->getModel(),
+                        'relation' => $paramBag->getRelation(),
+                    ]);
+                }
+
+                if ($type == 'String') {
+                    $whereScope = new RelatedWhereStringScopeCompiler();
+                    $scopesCompiled .= $whereScope->compile([
+                        'column' => $column,
+                        'model' => $paramBag->getModel(),
+                        'relation' => $paramBag->getRelation(),
+                    ]);
+                }
+            }
+
+        }
+
+        return $scopesCompiled;
+    }
+
+    /**
+     * @param string $scopesCompiled
+     * @return string
+     */
+    private function removeDuplicatesInScopes(string $scopesCompiled)
+    {
+        $compiledScopesHelper = new CompiledScopesHelper($scopesCompiled);
+        $result = $compiledScopesHelper->removeDuplicates();
+
+        return $result;
     }
 
 }

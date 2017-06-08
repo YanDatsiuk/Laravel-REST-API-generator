@@ -188,6 +188,12 @@ class CrudModelCompiler extends StubCompilerAbstract
                     'foreignKey' => $foreignKey->getColumns()[0],
                     'modelsNamespace' => $this->modelsNamespace,
                 ]);
+
+            //add new param
+            $this->relationTableModelParams[] = new RelationTableModelParamBag(
+                str_plural(camel_case($modelName)),
+                $localTableName,
+                $modelName);
         }
 
         //{{HasManyRelations}}
@@ -227,6 +233,12 @@ class CrudModelCompiler extends StubCompilerAbstract
                     'foreignKey' => $foreignKey->getLocalColumns()[0],
                     'relatedKey' => $belongsToManyForeignKey->getLocalColumns()[0]
                 ]);
+
+            //add new param
+            $this->relationTableModelParams[] = new RelationTableModelParamBag(
+                $relationName,
+                $pivotTableName,
+                $relatedModelStudlyCaseSingular);
         }
 
         //{{BelongsToManyRelations}}

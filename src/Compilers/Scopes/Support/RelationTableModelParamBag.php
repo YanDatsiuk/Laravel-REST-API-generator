@@ -38,7 +38,7 @@ class RelationTableModelParamBag
     {
         $this->relation = $relation;
         $this->table = $table;
-        $this->model = $model;
+        $this->model = studly_case($model);
     }
 
     /**
@@ -86,7 +86,7 @@ class RelationTableModelParamBag
      */
     public function setModel(string $model)
     {
-        $this->model = $model;
+        $this->model = studly_case($model);
     }
 
 

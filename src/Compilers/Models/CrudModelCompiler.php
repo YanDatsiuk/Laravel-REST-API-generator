@@ -5,6 +5,9 @@ namespace TMPHP\RestApiGenerators\Compilers\Models;
 
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 use TMPHP\RestApiGenerators\Compilers\Core\FillableArrayCompiler;
+use TMPHP\RestApiGenerators\Compilers\Scopes\RelatedWhereFloatScopeCompiler;
+use TMPHP\RestApiGenerators\Compilers\Scopes\RelatedWhereIntegerScopeCompiler;
+use TMPHP\RestApiGenerators\Compilers\Scopes\RelatedWhereStringScopeCompiler;
 use TMPHP\RestApiGenerators\Compilers\Scopes\Support\RelationTableModelParamBag;
 use TMPHP\RestApiGenerators\Compilers\Scopes\WhereFloatScopeCompiler;
 use TMPHP\RestApiGenerators\Compilers\Scopes\WhereIntegerScopeCompiler;
@@ -32,7 +35,7 @@ class CrudModelCompiler extends StubCompilerAbstract
     private $dbTablePrefix;
 
     /** @var  RelationTableModelParamBag[] $relationTableModelParams */
-    private $relationTableModelParams;
+    private $relationTableModelParams = [];
 
     /** @var string $modelsNamespace */
     private $modelsNamespace;
@@ -140,6 +143,13 @@ class CrudModelCompiler extends StubCompilerAbstract
                     'belongToRelationName' => $belongToRelationName,
                     'modelsNamespace' => $this->modelsNamespace,
                 ]);
+
+            //add new param //todo check
+            $this->relationTableModelParams[] = new RelationTableModelParamBag(
+                $belongToRelationName,
+                $foreignTableName,
+                $relatedModelName);
+
         }
 
         //{{BelongsToRelations}}
@@ -263,6 +273,8 @@ class CrudModelCompiler extends StubCompilerAbstract
         //compile scopes for each column for each related model.
         $scopesCompiled .= $this->compileRelatedModelsScopes();
 
+        //remove duplicate scopes //todo
+
         //{{DynamicScopes}}
         $this->replaceInStub(['{{DynamicScopes}}' => $scopesCompiled]);
     }
@@ -309,7 +321,44 @@ class CrudModelCompiler extends StubCompilerAbstract
     {
         $scopesCompiled = '';
 
-        //todo implement
+        //compile scopes for each column for each related model.
+        foreach ($this->relationTableModelParams as $paramBag){
+
+            /** @var \Doctrine\DBAL\Schema\Column[] $columns */
+            $columns = $this->schema->listTableColumns($paramBag->getTable());
+
+            //compile scope for each column
+            foreach ($columns as $column) {
+                $type = $column->getType();
+                if ($type == 'Integer' || $type == 'SmallInt' || $type == 'BigInt') {
+                    $whereScope = new RelatedWhereIntegerScopeCompiler();
+                    $scopesCompiled .= $whereScope->compile([
+                        'column' => $column,
+                        'model' => $paramBag->getModel(),
+                        'relation' => $paramBag->getRelation(),
+                    ]);
+                }
+
+                if ($type == 'Float' || $type == 'Decimal') {
+                    $whereScope = new RelatedWhereFloatScopeCompiler();
+                    $scopesCompiled .= $whereScope->compile([
+                        'column' => $column,
+                        'model' => $paramBag->getModel(),
+                        'relation' => $paramBag->getRelation(),
+                    ]);
+                }
+
+                if ($type == 'String') {
+                    $whereScope = new RelatedWhereStringScopeCompiler();
+                    $scopesCompiled .= $whereScope->compile([
+                        'column' => $column,
+                        'model' => $paramBag->getModel(),
+                        'relation' => $paramBag->getRelation(),
+                    ]);
+                }
+            }
+
+        }
 
         return $scopesCompiled;
     }

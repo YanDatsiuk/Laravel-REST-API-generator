@@ -259,36 +259,51 @@ class CrudModelCompiler extends StubCompilerAbstract
      */
     private function compileDynamicScopes()
     {
-        $scopedCompiled = "\n";
+        $scopesCompiled = "\n";
+
+        //compile scopes for each column of a local model.
+        $scopesCompiled .= $this->compileLocalModelScopes();
+
+        //get all model relations //todo
+
+        //for each model relation compile scope for each related table column //todo
+
+        //{{DynamicScopes}}
+        $this->replaceInStub(['{{DynamicScopes}}' => $scopesCompiled]);
+    }
+
+    /**
+     * Compile scopes for each column of a local model.
+     *
+     * @return string
+     */
+    private function compileLocalModelScopes()
+    {
 
         /** @var \Doctrine\DBAL\Schema\Column[] $columns local table columns */
         $columns = $this->schema->listTableColumns($this->tableName);
+        $scopesCompiled = '';
 
         //compile scope for each local column
         foreach ($columns as $column) {
             $type = $column->getType();
             if ($type == 'Integer' || $type == 'SmallInt' || $type == 'BigInt') {
                 $whereScope = new WhereIntegerScopeCompiler();
-                $scopedCompiled .= $whereScope->compile(['column' => $column]);
+                $scopesCompiled .= $whereScope->compile(['column' => $column]);
             }
 
             if ($type == 'Float' || $type == 'Decimal') {
                 $whereScope = new WhereFloatScopeCompiler();
-                $scopedCompiled .= $whereScope->compile(['column' => $column]);
+                $scopesCompiled .= $whereScope->compile(['column' => $column]);
             }
 
             if ($type == 'String') {
                 $whereScope = new WhereStringScopeCompiler();
-                $scopedCompiled .= $whereScope->compile(['column' => $column]);
+                $scopesCompiled .= $whereScope->compile(['column' => $column]);
             }
         }
 
-        //get all model relations //todo
-
-        //for each model relation compile scope for each related table column
-
-        //{{DynamicScopes}}
-        $this->replaceInStub(['{{DynamicScopes}}' => $scopedCompiled]);
+        return $scopesCompiled;
     }
 
 }

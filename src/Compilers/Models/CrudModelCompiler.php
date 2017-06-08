@@ -5,6 +5,7 @@ namespace TMPHP\RestApiGenerators\Compilers\Models;
 
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 use TMPHP\RestApiGenerators\Compilers\Core\FillableArrayCompiler;
+use TMPHP\RestApiGenerators\Compilers\Scopes\Support\RelationTableModelParamBag;
 use TMPHP\RestApiGenerators\Compilers\Scopes\WhereFloatScopeCompiler;
 use TMPHP\RestApiGenerators\Compilers\Scopes\WhereIntegerScopeCompiler;
 use TMPHP\RestApiGenerators\Compilers\Scopes\WhereStringScopeCompiler;
@@ -18,29 +19,22 @@ use TMPHP\RestApiGenerators\Support\SchemaManager;
 class CrudModelCompiler extends StubCompilerAbstract
 {
 
-    /**
-     * @var SchemaManager
-     */
+    /** @var SchemaManager $schema */
     private $schema;
 
-    /**
-     * @var string
-     */
+    /** @var  string $tableName */
     private $tableName;
 
-    /**
-     * @var string
-     */
+    /** @var  string $modelName */
     private $modelName;
 
-    /**
-     * @var string
-     */
+    /** @var mixed $dbTablePrefix */
     private $dbTablePrefix;
 
-    /**
-     * @var string
-     */
+    /** @var  RelationTableModelParamBag[] $relationTableModelParams */
+    private $relationTableModelParams;
+
+    /** @var string $modelsNamespace */
     private $modelsNamespace;
 
     /**

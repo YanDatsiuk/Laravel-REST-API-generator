@@ -145,7 +145,7 @@ class CrudModelCompiler extends StubCompilerAbstract
                     'modelsNamespace' => $this->modelsNamespace,
                 ]);
 
-            //add new param //todo check
+            //add new param
             $this->relationTableModelParams[] = new RelationTableModelParamBag(
                 $belongToRelationName,
                 $foreignTableName,

@@ -8,6 +8,7 @@ use TMPHP\RestApiGenerators\Compilers\Core\FillableArrayCompiler;
 use TMPHP\RestApiGenerators\Compilers\Scopes\RelatedWhereFloatScopeCompiler;
 use TMPHP\RestApiGenerators\Compilers\Scopes\RelatedWhereIntegerScopeCompiler;
 use TMPHP\RestApiGenerators\Compilers\Scopes\RelatedWhereStringScopeCompiler;
+use TMPHP\RestApiGenerators\Compilers\Scopes\Support\CompiledScopesHelper;
 use TMPHP\RestApiGenerators\Compilers\Scopes\Support\RelationTableModelParamBag;
 use TMPHP\RestApiGenerators\Compilers\Scopes\WhereFloatScopeCompiler;
 use TMPHP\RestApiGenerators\Compilers\Scopes\WhereIntegerScopeCompiler;
@@ -268,12 +269,11 @@ class CrudModelCompiler extends StubCompilerAbstract
         //compile scopes for each column of a local model.
         $scopesCompiled .= $this->compileLocalModelScopes();
 
-        //get all model relations //todo
-
         //compile scopes for each column for each related model.
         $scopesCompiled .= $this->compileRelatedModelsScopes();
 
-        //remove duplicate scopes //todo
+        //remove duplicate scopes
+        $scopesCompiled = $this->removeDuplicatesInScopes($scopesCompiled);
 
         //{{DynamicScopes}}
         $this->replaceInStub(['{{DynamicScopes}}' => $scopesCompiled]);
@@ -361,6 +361,18 @@ class CrudModelCompiler extends StubCompilerAbstract
         }
 
         return $scopesCompiled;
+    }
+
+    /**
+     * @param string $scopesCompiled
+     * @return string
+     */
+    private function removeDuplicatesInScopes(string $scopesCompiled)
+    {
+        $compiledScopesHelper = new CompiledScopesHelper($scopesCompiled);
+        $result = $compiledScopesHelper->removeDuplicates();
+
+        return $result;
     }
 
 }

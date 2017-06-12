@@ -123,9 +123,11 @@ class CompiledScopesHelper
         });
 
         foreach ($methodNamesToMakeUnique as $methodName => $repeatQuantity) {
-            for ($i = 1; $i < $repeatQuantity; $i++) {
-                $this->removeDuplicatedMethod($explodedScopes, $methodName);
-            }
+
+            //leave one method (between duplicates) presented in scopes
+            $repeatQuantity--;
+
+            $this->removeDuplicatedMethod($explodedScopes, $methodName, $repeatQuantity);
         }
     }
 
@@ -135,8 +137,9 @@ class CompiledScopesHelper
      *
      * @param array $explodedScopes
      * @param string $methodName
+     * @param int $repeatQuantity
      */
-    private function removeDuplicatedMethod(array $explodedScopes, string $methodName)
+    private function removeDuplicatedMethod(array $explodedScopes, string $methodName, int $repeatQuantity)
     {
         for ($i = count($explodedScopes) - 1; $i >= 0; $i--) {
             if (starts_with($explodedScopes[$i], $methodName.'(')) {
@@ -144,7 +147,12 @@ class CompiledScopesHelper
                     'public function ' . $explodedScopes[$i],
                     '',
                     $this->scopes);
-                return;
+
+                $repeatQuantity--;
+            }
+
+            if ($repeatQuantity === 0){
+                break;
             }
         }
     }

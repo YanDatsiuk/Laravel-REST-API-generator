@@ -1,0 +1,19 @@
+    public function scopeWhere{{columnNameStudlyCase}}($query, $value)
+    {
+        return $query->where('{{columnName}}', $value);
+    }
+
+    public function scopeWhere{{columnNameStudlyCase}}Between($query, $range)
+    {
+        return $query->whereBetween('{{columnName}}', explode(',', $range));
+    }
+
+    public function scopeWhere{{columnNameStudlyCase}}GreaterThan($query, $value)
+    {
+        return $query->where('{{columnName}}', '>', $value);
+    }
+
+    public function scopeWhere{{columnNameStudlyCase}}LessThan($query, $value)
+    {
+        return $query->where('{{columnName}}', '<', $value);
+    }

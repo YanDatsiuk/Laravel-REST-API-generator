@@ -191,6 +191,10 @@ abstract class ControllerAbstract extends IlluminateController
         if ($request->input('filters')){
             $this->applyScopes($request->input('filters'));
         }
+
+        if ($request->input('sort')){
+            $this->applySorting($request->input('sort'));
+        }
     }
 
     /**
@@ -365,7 +369,7 @@ abstract class ControllerAbstract extends IlluminateController
     }
 
     /**
-     * Applying scopes to query
+     * Apply scopes to query.
      *
      * @param $filters
      */
@@ -377,6 +381,29 @@ abstract class ControllerAbstract extends IlluminateController
             $parameters = $explodedFilter[1];
 
             $this->query->$scopeName($parameters);
+        }
+    }
+
+    /**
+     * Apply sorting to query.
+     *
+     * @param $input
+     */
+    private function applySorting($input)
+    {
+        //
+        $sortByColumns = explode(',', $input);
+
+        foreach ($sortByColumns as $sortByColumn){
+
+            $sortingDirection = 'asc';
+
+            if (starts_with($sortByColumn, '-')){
+                $sortByColumn = substr($sortByColumn, 1);
+                $sortingDirection = 'desc';
+            }
+
+            $this->query->orderBy($sortByColumn, $sortingDirection);
         }
     }
 }

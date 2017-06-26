@@ -47,6 +47,13 @@
                  *         default=10,
                  *         type="integer"
                  *     ),
+                 *     @SWG\Parameter(
+                 *         name="sort",
+                 *         in="query",
+                 *         description="Sorting fields and directions. Example: sort=price,-created_at",
+                 *         required=false,
+                 *         type="integer"
+                 *     ),
                  *     @SWG\Response(
                  *         response="200",
                  *         description="Requested resource collection"

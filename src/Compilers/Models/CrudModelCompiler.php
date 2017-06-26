@@ -3,6 +3,7 @@
 namespace TMPHP\RestApiGenerators\Compilers\Models;
 
 
+use Illuminate\Support\Facades\Log;
 use TMPHP\RestApiGenerators\AbstractEntities\StubCompilerAbstract;
 use TMPHP\RestApiGenerators\Compilers\Core\FillableArrayCompiler;
 use TMPHP\RestApiGenerators\Compilers\Scopes\RelatedWhereFloatScopeCompiler;
@@ -10,6 +11,7 @@ use TMPHP\RestApiGenerators\Compilers\Scopes\RelatedWhereIntegerScopeCompiler;
 use TMPHP\RestApiGenerators\Compilers\Scopes\RelatedWhereStringScopeCompiler;
 use TMPHP\RestApiGenerators\Compilers\Scopes\Support\CompiledScopesHelper;
 use TMPHP\RestApiGenerators\Compilers\Scopes\Support\RelationTableModelParamBag;
+use TMPHP\RestApiGenerators\Compilers\Scopes\WhereDateTimeScopeCompiler;
 use TMPHP\RestApiGenerators\Compilers\Scopes\WhereFloatScopeCompiler;
 use TMPHP\RestApiGenerators\Compilers\Scopes\WhereIntegerScopeCompiler;
 use TMPHP\RestApiGenerators\Compilers\Scopes\WhereStringScopeCompiler;
@@ -308,17 +310,28 @@ class CrudModelCompiler extends StubCompilerAbstract
             if ($type == 'Integer' || $type == 'SmallInt' || $type == 'BigInt') {
                 $whereScope = new WhereIntegerScopeCompiler();
                 $scopesCompiled .= $whereScope->compile(['column' => $column]);
+                continue;
             }
 
             if ($type == 'Float' || $type == 'Decimal') {
                 $whereScope = new WhereFloatScopeCompiler();
                 $scopesCompiled .= $whereScope->compile(['column' => $column]);
+                continue;
             }
 
             if ($type == 'String') {
                 $whereScope = new WhereStringScopeCompiler();
                 $scopesCompiled .= $whereScope->compile(['column' => $column]);
+                continue;
             }
+
+            if ($type == 'DateTime') {
+                $whereScope = new WhereDateTimeScopeCompiler();
+                $scopesCompiled .= $whereScope->compile(['column' => $column]);
+                continue;
+            }
+            Log::alert('unprocessed column type in CrudModelCompiler... '. $type);//todo remove after realized
+
         }
 
         return $scopesCompiled;

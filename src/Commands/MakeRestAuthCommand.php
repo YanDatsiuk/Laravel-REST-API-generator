@@ -134,7 +134,7 @@ class MakeRestAuthCommand extends Command
         $this->compileAuthRoutes();
 
         //add auth seeds calls to DatabaseSeeder run() method
-        $this->addAuthSeeds();
+        $this->addAclSeeds();
 
         $this->info('All files for REST API authentication code were generated!');
     }
@@ -225,19 +225,19 @@ class MakeRestAuthCommand extends Command
     /**
      * Add auth seeds calls to DatabaseSeeder run() method
      */
-    private function addAuthSeeds()
+    private function addAclSeeds()
     {
         $dbSeederContent = file_get_contents(database_path('seeds/DatabaseSeeder.php'));
 
-        if (strpos($dbSeederContent, 'AuthActionsTableSeeder')) {
+        if (strpos($dbSeederContent, 'AclActionsTableSeeder')) {
             return;
         }
 
         //prepare replacement code
-        $replacement = "\n\n\t\t" . '$this->call(\TMPHP\RestApiGenerators\Database\Seeds\AuthActionsTableSeeder::class);';
-        $replacement .= "\n\t\t" . '$this->call(\TMPHP\RestApiGenerators\Database\Seeds\AuthGroupsTableSeeder::class);';
-        $replacement .= "\n\t\t" . '$this->call(\TMPHP\RestApiGenerators\Database\Seeds\AuthActionGroupsTableSeeder::class);';
-        $replacement .= "\n\t\t" . '$this->call(\TMPHP\RestApiGenerators\Database\Seeds\AuthGroupUsersTableSeeder::class);';
+        $replacement = "\n\n\t\t" . '$this->call(\TMPHP\RestApiGenerators\Database\Seeds\AclActionsTableSeeder::class);';
+        $replacement .= "\n\t\t" . '$this->call(\TMPHP\RestApiGenerators\Database\Seeds\AclGroupsTableSeeder::class);';
+        $replacement .= "\n\t\t" . '$this->call(\TMPHP\RestApiGenerators\Database\Seeds\AclActionGroupsTableSeeder::class);';
+        $replacement .= "\n\t\t" . '$this->call(\TMPHP\RestApiGenerators\Database\Seeds\AclGroupUsersTableSeeder::class);';
         $replacement .= "\n";
 
         $newDbSeederContent = Helper::appendCodeToMethod($dbSeederContent, $replacement, ' run()');

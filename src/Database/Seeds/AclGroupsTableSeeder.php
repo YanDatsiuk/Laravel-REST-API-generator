@@ -5,7 +5,7 @@ namespace TMPHP\RestApiGenerators\Database\Seeds;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Log;
 
-class AuthGroupsTableSeeder extends Seeder
+class AclGroupsTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,7 +15,7 @@ class AuthGroupsTableSeeder extends Seeder
     public function run()
     {
         $modelsNamespace = config('rest-api-generator.namespaces.models');
-        $authGroupModel = $modelsNamespace.'\AuthGroup';
+        $authGroupModel = $modelsNamespace.'\AclGroup';
 
         $authGroupModel::firstOrCreate(['name' => 'guest']);
         $authGroupModel::firstOrCreate(['name' => 'registered']);

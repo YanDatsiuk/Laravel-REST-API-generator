@@ -54,29 +54,29 @@ class CheckAccess
     private function checkAccessToAction($user)
     {
         if ($user) {
-            $authGroupUsers = $user->authGroupUsers;
+            $aclGroupUsers = $user->aclGroupUsers;
 
             $groups = collect([]);
-            foreach ($authGroupUsers as $authGroupUser) {
-                $groups->push($authGroupUser->group);
+            foreach ($aclGroupUsers as $aclGroupUser) {
+                $groups->push($aclGroupUser->group);
             }
         } else {
             $groups = collect([]);
             $modelsNamespace = config('rest-api-generator.namespaces.models');
-            $authGroupModel = $modelsNamespace.'\AclGroup';
-            $guestGroup = $authGroupModel::firstOrCreate(['name' => 'guest']);
+            $aclGroupModel = $modelsNamespace.'\AclGroup';
+            $guestGroup = $aclGroupModel::firstOrCreate(['name' => 'guest']);
             $groups->push($guestGroup);
         }
 
-        $authActionGroups = collect([]);
+        $aclActionGroups = collect([]);
         foreach ($groups as $group) {
-            $authActionGroups->push($group->authActionGroups);
+            $aclActionGroups->push($group->aclActionGroups);
         }
-        $authActionGroups = $authActionGroups->flatten();
+        $aclActionGroups = $aclActionGroups->flatten();
 
         $actions = collect([]);
-        foreach ($authActionGroups as $authActionGroup) {
-            $actions->push($authActionGroup->action);
+        foreach ($aclActionGroups as $aclActionGroup) {
+            $actions->push($aclActionGroup->action);
         }
 
         $actionNames = array_unique($actions->pluck('name')->toArray());

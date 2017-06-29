@@ -110,7 +110,7 @@ class MakeAuthGroupsAndActionsCommand extends Command
         //scaffold models
         Artisan::call('make:crud-models', [
             '--models' => 'User,AuthAction,AuthGroup,AuthActionGroup,AuthGroupUser',
-            '--tables' => 'users,auth_actions,auth_groups,auth_action_group,auth_group_user',
+            '--tables' => 'users,acl_actions,acl_groups,acl_action_group,acl_group_user',
         ]);
 
         //scaffold transformers
@@ -126,7 +126,7 @@ class MakeAuthGroupsAndActionsCommand extends Command
         //scaffold swagger models
         Artisan::call('make:swagger-models', [
             '--models' => 'user,auth-action,auth-group,auth-action-group,auth-group-user',
-            '--tables' => 'users,auth_actions,auth_groups,auth_action_group,auth_group_user',
+            '--tables' => 'users,acl_actions,acl_groups,acl_action_group,acl_group_user',
         ]);
 
         //scaffold routes
@@ -139,7 +139,7 @@ class MakeAuthGroupsAndActionsCommand extends Command
 
     /**
      * Check tables existence.
-     * ("auth_actions", "auth_groups", "auth_action_group", "auth_group_user")
+     * ("acl_actions", "acl_groups", "acl_action_group", "acl_group_user")
      *
      * @return bool
      */
@@ -147,16 +147,16 @@ class MakeAuthGroupsAndActionsCommand extends Command
     {
         return $this->schema->existsTables([
             'users',
-            'auth_actions',
-            'auth_groups',
-            'auth_action_group',
-            'auth_group_user'
+            'acl_actions',
+            'acl_groups',
+            'acl_action_group',
+            'acl_group_user'
         ]);
     }
 
     /**
      * Create missed tables in the database schema.
-     * ('auth_actions', 'auth_groups', 'auth_action_group', 'auth_group_user')
+     * ('acl_actions', 'acl_groups', 'acl_action_group', 'acl_group_user')
      * TODO refactor possible: 1. Move migration code into the separate files. 2. Create folder "migrations".
      * TODO 3. Check schema from here, but run migrations from outer files.
      */
@@ -173,47 +173,47 @@ class MakeAuthGroupsAndActionsCommand extends Command
             });
         }
 
-        if (!Schema::hasTable('auth_actions')) {
-            Schema::create('auth_actions', function(Blueprint $table)
+        if (!Schema::hasTable('acl_actions')) {
+            Schema::create('acl_actions', function(Blueprint $table)
             {
                 $table->increments('id');
                 $table->string('name', 1024)->nullable();
             });
         }
 
-        if (!Schema::hasTable('auth_groups')) {
-            Schema::create('auth_groups', function(Blueprint $table)
+        if (!Schema::hasTable('acl_groups')) {
+            Schema::create('acl_groups', function(Blueprint $table)
             {
                 $table->increments('id');
                 $table->string('name', 1024)->nullable();
             });
         }
 
-        if (!Schema::hasTable('auth_action_group')) {
-            Schema::create('auth_action_group', function(Blueprint $table)
+        if (!Schema::hasTable('acl_action_group')) {
+            Schema::create('acl_action_group', function(Blueprint $table)
             {
                 $table->increments('id');
                 $table->integer('action_id')->unsigned()->nullable()->index('index2');
                 $table->integer('group_id')->unsigned()->nullable()->index('index3');
             });
-            Schema::table('auth_action_group', function(Blueprint $table)
+            Schema::table('acl_action_group', function(Blueprint $table)
             {
-                $table->foreign('action_id', 'fk_auth_action_group_1')->references('id')->on('auth_actions')->onUpdate('CASCADE')->onDelete('CASCADE');
-                $table->foreign('group_id', 'fk_auth_action_group_2')->references('id')->on('auth_groups')->onUpdate('CASCADE')->onDelete('CASCADE');
+                $table->foreign('action_id', 'fk_acl_action_group_1')->references('id')->on('acl_actions')->onUpdate('CASCADE')->onDelete('CASCADE');
+                $table->foreign('group_id', 'fk_acl_action_group_2')->references('id')->on('acl_groups')->onUpdate('CASCADE')->onDelete('CASCADE');
             });
         }
 
-        if (!Schema::hasTable('auth_group_user')) {
-            Schema::create('auth_group_user', function(Blueprint $table)
+        if (!Schema::hasTable('acl_group_user')) {
+            Schema::create('acl_group_user', function(Blueprint $table)
             {
                 $table->increments('id');
                 $table->integer('group_id')->unsigned()->nullable()->index('index2');
                 $table->integer('user_id')->unsigned()->nullable()->index('index3');
             });
-            Schema::table('auth_group_user', function(Blueprint $table)
+            Schema::table('acl_group_user', function(Blueprint $table)
             {
-                $table->foreign('group_id', 'fk_auth_group_user_1')->references('id')->on('auth_groups')->onUpdate('CASCADE')->onDelete('CASCADE');
-                $table->foreign('user_id', 'fk_auth_group_user_2')->references('id')->on('users')->onUpdate('CASCADE')->onDelete('CASCADE');
+                $table->foreign('group_id', 'fk_acl_group_user_1')->references('id')->on('acl_groups')->onUpdate('CASCADE')->onDelete('CASCADE');
+                $table->foreign('user_id', 'fk_acl_group_user_2')->references('id')->on('users')->onUpdate('CASCADE')->onDelete('CASCADE');
             });
         }
     }

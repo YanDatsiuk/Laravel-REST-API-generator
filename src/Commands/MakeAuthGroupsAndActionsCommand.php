@@ -63,7 +63,7 @@ class MakeAuthGroupsAndActionsCommand extends Command
         //check default tables existence
         if ($this->existsRequiredTables()) {
 
-            $this->makeAuthGroupsAndActions();
+            $this->makeAclGroupsAndActions();
         } else {
 
             $this->alert('No required exist.');
@@ -88,7 +88,7 @@ class MakeAuthGroupsAndActionsCommand extends Command
 
             case "0":
                 $this->migrateRequiredTables();
-                $this->makeAuthGroupsAndActions();
+                $this->makeAclGroupsAndActions();
                 $this->info('Auth code was generated.');
                 break;
 
@@ -105,7 +105,7 @@ class MakeAuthGroupsAndActionsCommand extends Command
     /**
      *
      */
-    private function makeAuthGroupsAndActions()
+    private function makeAclGroupsAndActions()
     {
         //scaffold models
         Artisan::call('make:crud-models', [

@@ -7,7 +7,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
-class AuthActionGroupsTableSeeder extends Seeder
+class AclActionGroupsTableSeeder extends Seeder
 {
 
     private $authActionGroupModel;
@@ -20,9 +20,9 @@ class AuthActionGroupsTableSeeder extends Seeder
     public function run()
     {
         $modelsNamespace = config('rest-api-generator.namespaces.models');
-        $authActionModel = $modelsNamespace . '\AuthAction';
-        $authGroupModel = $modelsNamespace . '\AuthGroup';
-        $this->authActionGroupModel = $modelsNamespace . '\AuthActionGroup';
+        $authActionModel = $modelsNamespace . '\AclAction';
+        $authGroupModel = $modelsNamespace . '\AclGroup';
+        $this->authActionGroupModel = $modelsNamespace . '\AclActionGroup';
 
         //get all actions
         $allActions = $authActionModel::all();

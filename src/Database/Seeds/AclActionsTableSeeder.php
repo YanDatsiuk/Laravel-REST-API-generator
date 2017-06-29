@@ -5,7 +5,7 @@ namespace TMPHP\RestApiGenerators\Database\Seeds;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Log;
 
-class AuthActionsTableSeeder extends Seeder
+class AclActionsTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -28,7 +28,7 @@ class AuthActionsTableSeeder extends Seeder
         }
 
         $modelsNamespace = config('rest-api-generator.namespaces.models');
-        $authActionModel = $modelsNamespace.'\AuthAction';
+        $authActionModel = $modelsNamespace.'\AclAction';
 
         //saving actions
         foreach ($routeNames as $routeName) {

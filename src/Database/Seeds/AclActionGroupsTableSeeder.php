@@ -7,7 +7,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
-class AuthActionGroupsTableSeeder extends Seeder
+class AclActionGroupsTableSeeder extends Seeder
 {
 
     private $authActionGroupModel;

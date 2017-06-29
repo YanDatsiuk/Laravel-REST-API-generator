@@ -63,7 +63,7 @@ class CheckAccess
         } else {
             $groups = collect([]);
             $modelsNamespace = config('rest-api-generator.namespaces.models');
-            $authGroupModel = $modelsNamespace.'\AuthGroup';
+            $authGroupModel = $modelsNamespace.'\AclGroup';
             $guestGroup = $authGroupModel::firstOrCreate(['name' => 'guest']);
             $groups->push($guestGroup);
         }

@@ -51,7 +51,7 @@ class MakeImageManagerCommand extends Command
 
     /**
      * Create missed tables in the database schema.
-     * ('images', 'auth_groups', 'auth_action_group', 'auth_group_user')
+     * ('images', 'acl_groups', 'acl_action_group', 'acl_group_user')
      */
     private function migrateRequiredTables()
     {

@@ -10,7 +10,7 @@
     "darkaonline/l5-swagger": "~5.8",
     "laravel/framework": ">=5.4",
     "laravel/tinker": ">=1.0",
-    "tymon/jwt-auth": ">=0.5.*",
+    "tymon/jwt-auth": ">=0.5",
     "xethron/migrations-generator": ">=2.0",
     "abhijitghogre/laravel-db-clear-command": ">=1.0",
     "felixkiss/uniquewith-validator": ">=3.1",

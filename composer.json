@@ -14,7 +14,8 @@
     "xethron/migrations-generator": ">=2.0",
     "abhijitghogre/laravel-db-clear-command": ">=1.0",
     "felixkiss/uniquewith-validator": ">=3.1",
-    "barryvdh/laravel-ide-helper": ">=2.6.2"
+    "barryvdh/laravel-ide-helper": ">=2.6.2",
+    "zircote/swagger-php": "2.*"
   },
   "require-dev": {
     "mockery/mockery": "0.9.*",
